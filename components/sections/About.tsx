@@ -50,20 +50,17 @@ export default function About() {
             transition={{ duration: 0.8 }}
             className="lg:col-span-2 flex flex-col items-center lg:items-start gap-6"
           >
-            {/* Photo placeholder */}
-            <div className="relative">
-              <div className="w-64 h-80 rounded-3xl glass-strong overflow-hidden border border-white/10 shadow-premium flex items-center justify-center">
-                {/* In production: replace with actual headshot <Image> */}
-                <div className="flex flex-col items-center gap-3 text-ink-muted">
-                  <div className="w-24 h-24 rounded-full bg-toyota-red/20 flex items-center justify-center">
-                    <span className="font-display text-4xl text-toyota-red">N</span>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-white font-semibold">Nahom Estifanos</div>
-                    <div className="text-ink-secondary text-sm">Professional headshot here</div>
-                  </div>
-                </div>
-              </div>
+            import Image from "next/image";
+
+<div className="w-64 h-80 rounded-3xl overflow-hidden border border-white/10 shadow-premium relative">
+  <Image
+    src="/headshot.jpg"
+    alt="Nahom Estifanos – Toyota Product Specialist"
+    fill
+    className="object-cover object-top"
+    priority
+  />
+</div>
 
               {/* Floating badge */}
               <motion.div
