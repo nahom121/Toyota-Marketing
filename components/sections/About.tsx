@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Heart, Target, Award, Users, MapPin, Linkedin, Instagram, Facebook } from "lucide-react";
 
 const values = [
@@ -50,17 +51,17 @@ export default function About() {
             transition={{ duration: 0.8 }}
             className="lg:col-span-2 flex flex-col items-center lg:items-start gap-6"
           >
-            import Image from "next/image";
-
-<div className="w-64 h-80 rounded-3xl overflow-hidden border border-white/10 shadow-premium relative">
-  <Image
-    src="/headshot.jpg"
-    alt="Nahom Estifanos – Toyota Product Specialist"
-    fill
-    className="object-cover object-top"
-    priority
-  />
-</div>
+            {/* Photo */}
+            <div className="relative">
+              <div className="w-64 h-80 rounded-3xl overflow-hidden border border-white/10 shadow-premium relative">
+                <Image
+                  src="/headshot.jpg"
+                  alt="Nahom Estifanos – Toyota Product Specialist"
+                  fill
+                  className="object-cover object-top"
+                  priority
+                />
+              </div>
 
               {/* Floating badge */}
               <motion.div
