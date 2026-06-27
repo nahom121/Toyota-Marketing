@@ -12,6 +12,7 @@ type Vehicle = {
   image: string;
   floatDuration: number;
   floatDelay: number;
+  electric?: boolean;
 };
 
 const cars: Vehicle[] = [
@@ -56,12 +57,13 @@ const cars: Vehicle[] = [
 const suvs: Vehicle[] = [
   {
     model: "C-HR",
-    tagline: "Striking Urban Style",
+    tagline: "All-Electric Urban SUV",
     passengers: "5 Passengers",
-    efficiency: "Up to 37 MPG",
+    efficiency: "Up to 226 mi Range",
     image: "/vehicles/chr.png",
     floatDuration: 3.3,
     floatDelay: 0,
+    electric: true,
   },
   {
     model: "bZ4X",
@@ -71,6 +73,7 @@ const suvs: Vehicle[] = [
     image: "/vehicles/bz4x.png",
     floatDuration: 3.6,
     floatDelay: 0.3,
+    electric: true,
   },
   {
     model: "RAV4",
@@ -231,10 +234,17 @@ function VehicleCard({ vehicle, index }: { vehicle: Vehicle; index: number }) {
           <Users className="w-3 h-3 text-ink-muted" />
           {vehicle.passengers}
         </span>
-        <span className="flex items-center gap-1.5 text-xs text-ink-secondary bg-white/05 border border-white/08 px-3 py-1.5 rounded-full">
-          <Fuel className="w-3 h-3 text-ink-muted" />
-          {vehicle.efficiency}
-        </span>
+        {vehicle.electric ? (
+          <span className="flex items-center gap-1.5 text-xs text-blue-300 bg-blue-500/10 border border-blue-500/25 px-3 py-1.5 rounded-full">
+            <Zap className="w-3 h-3 text-blue-400" />
+            {vehicle.efficiency}
+          </span>
+        ) : (
+          <span className="flex items-center gap-1.5 text-xs text-ink-secondary bg-white/05 border border-white/08 px-3 py-1.5 rounded-full">
+            <Fuel className="w-3 h-3 text-ink-muted" />
+            {vehicle.efficiency}
+          </span>
+        )}
       </div>
     </motion.div>
   );
