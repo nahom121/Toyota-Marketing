@@ -21,6 +21,11 @@
   margin: 0;
 }
 
+input, textarea, select {
+  color-scheme: dark;
+  color: white;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;

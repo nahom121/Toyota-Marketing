@@ -15,7 +15,6 @@ export async function POST(request: NextRequest) {
     await resend.emails.send({
       from: "Toyota Site <onboarding@resend.dev>",
       to: TO_EMAIL,
-      replyTo: email || undefined,
       subject: `New Appointment Request – ${name}`,
       html: `
         <h2 style="color:#EB0A1E">New Appointment Request</h2>

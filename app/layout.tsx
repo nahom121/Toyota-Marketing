@@ -91,10 +91,10 @@ const jsonLd = {
     name: "Toyota of Katy",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "23710 Katy Fwy",
+      streetAddress: "21555 Katy Fwy",
       addressLocality: "Katy",
       addressRegion: "TX",
-      postalCode: "77494",
+      postalCode: "77450",
       addressCountry: "US",
     },
     telephone: "+12813940700",

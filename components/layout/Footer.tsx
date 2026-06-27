@@ -8,7 +8,6 @@ const footerLinks = {
     { label: "Toyota Vehicles", href: "#vehicles" },
     { label: "Customer Reviews", href: "#testimonials" },
     { label: "Trade-In Estimate", href: "#trade-in" },
-    { label: "Special Offers", href: "#special-offers" },
     { label: "About Nahom", href: "#about" },
   ],
   "Toyota Models": [
@@ -20,8 +19,8 @@ const footerLinks = {
     { label: "Sequoia", href: "#vehicles" },
   ],
   "Areas Served": [
-    { label: "Katy, TX", href: "#contact" },
-    { label: "Houston, TX", href: "#contact" },
+    { label: "All of Texas", href: "#contact" },
+    { label: "Katy & Houston", href: "#contact" },
     { label: "Sugar Land, TX", href: "#contact" },
     { label: "Cypress, TX", href: "#contact" },
     { label: "Richmond, TX", href: "#contact" },
@@ -55,9 +54,9 @@ export default function Footer() {
             </div>
 
             <p className="text-ink-secondary text-sm leading-relaxed mb-6 max-w-xs">
-              A dedicated Toyota Product Specialist helping Houston and Katy
-              families find their perfect vehicle — with complete transparency,
-              zero pressure, and lifetime powertrain warranty protection.
+              A dedicated Toyota Product Specialist helping Texas families find
+              their perfect vehicle — with complete transparency, zero pressure,
+              and lifetime powertrain warranty protection.
             </p>
 
             {/* Contact */}
@@ -81,7 +80,7 @@ export default function Footer() {
                 className="flex items-center gap-2.5 text-sm text-ink-secondary hover:text-white transition-colors group"
               >
                 <MapPin className="w-4 h-4 text-toyota-red group-hover:scale-110 transition-transform" />
-                23710 Katy Fwy, Katy, TX 77494
+                21555 Katy Fwy, Katy, TX 77450
               </a>
             </div>
 

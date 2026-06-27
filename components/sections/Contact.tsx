@@ -53,7 +53,7 @@ const contactMethods = [
     label: "Visit the Dealership",
     value: "Toyota of Katy · Katy, TX",
     href: "https://maps.google.com/?q=Toyota+of+Katy",
-    description: "23710 Katy Fwy, Katy, TX 77494",
+    description: "21555 Katy Fwy, Katy, TX 77450",
     color: "bg-toyota-red hover:bg-toyota-red-light",
     textColor: "text-toyota-red",
     borderColor: "hover:border-toyota-red/30",
