@@ -88,7 +88,7 @@ export default function Contact() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
-  const [form, setForm] = useState({ name: "", phone: "", interest: "" });
+  const [form, setForm] = useState({ name: "", phone: "", interest: "", message: "" });
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -300,6 +300,22 @@ export default function Contact() {
                   </select>
                   <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-ink-muted pointer-events-none" />
                 </div>
+              </div>
+
+              {/* Message */}
+              <div>
+                <label className="block text-xs font-medium text-ink-secondary mb-1.5">
+                  Tell Me More (Optional)
+                </label>
+                <textarea
+                  name="message"
+                  value={form.message}
+                  onChange={(e) => setForm((prev) => ({ ...prev, message: e.target.value }))}
+                  rows={3}
+                  placeholder="Any details that would help — color preference, trade-in, timeline, questions…"
+                  className="w-full bg-white/05 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-ink-muted
+                             focus:outline-none focus:border-toyota-red/50 focus:bg-white/08 transition-all resize-none"
+                />
               </div>
 
               <button
