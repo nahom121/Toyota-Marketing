@@ -25,14 +25,14 @@ export default function FloatingActions() {
       icon: Phone,
       label: "Call Now",
       color: "bg-green-600 hover:bg-green-500",
-      href: "tel:+12815551234",
+      href: "tel:+12025531080",
       type: "link",
     },
     {
       icon: MessageSquare,
       label: "Text Me",
       color: "bg-blue-600 hover:bg-blue-500",
-      href: "sms:+12815551234",
+      href: "sms:+12025531080",
       type: "link",
     },
   ];

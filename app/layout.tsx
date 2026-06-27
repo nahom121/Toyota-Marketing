@@ -15,8 +15,11 @@ const inter = Inter({
   display: "swap",
 });
 
+// TODO: Replace YOUR-DOMAIN-HERE.com with your real domain before launch
+const SITE_URL = "https://YOUR-DOMAIN-HERE.com";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nahomtoyota.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Nahom Estifanos | Toyota Product Specialist – Katy & Houston, TX",
     template: "%s | Nahom Estifanos – Toyota of Katy",
@@ -45,7 +48,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://nahomtoyota.com",
+    url: SITE_URL,
     title: "Nahom Estifanos | Your Trusted Toyota Advisor in Katy & Houston",
     description:
       "Experience a stress-free, transparent car buying journey. Lifetime powertrain warranty, complimentary service loaners, and a dedicated advisor from start to finish.",
@@ -71,11 +74,10 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
-  verification: {
-    google: "your-google-verification-code",
-  },
+  // TODO: Add your Google Search Console verification code here before launch
+  // verification: { google: "your-code-from-search-console" },
   alternates: {
-    canonical: "https://nahomtoyota.com",
+    canonical: SITE_URL,
   },
 };
 
@@ -98,9 +100,9 @@ const jsonLd = {
     telephone: "+12813940700",
     url: "https://www.toyotaofkaty.com",
   },
-  telephone: "+12815551234",
-  email: "nahom@nahomtoyota.com",
-  url: "https://nahomtoyota.com",
+  telephone: "+12025531080",
+  email: "nahom.estifanos@drivetoyotaofkaty.com",
+  url: SITE_URL,
   sameAs: [
     "https://www.linkedin.com/in/nahomestifanos",
     "https://www.facebook.com/nahomtoyota",

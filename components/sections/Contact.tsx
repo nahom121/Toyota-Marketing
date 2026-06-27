@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Phone,
   MessageSquare,
@@ -9,7 +10,6 @@ import {
   Mail,
   MapPin,
   Send,
-  CheckCircle,
   Clock,
   ChevronDown,
 } from "lucide-react";
@@ -18,8 +18,8 @@ const contactMethods = [
   {
     icon: Phone,
     label: "Call Nahom",
-    value: "(281) 555-1234",
-    href: "tel:+12815551234",
+    value: "(202) 553-1080",
+    href: "tel:+12025531080",
     description: "Available 9am–8pm, 7 days a week",
     color: "bg-green-600 hover:bg-green-500",
     textColor: "text-green-400",
@@ -29,8 +29,8 @@ const contactMethods = [
   {
     icon: MessageSquare,
     label: "Text Nahom",
-    value: "(281) 555-1234",
-    href: "sms:+12815551234",
+    value: "(202) 553-1080",
+    href: "sms:+12025531080",
     description: "Fastest response — usually within minutes",
     color: "bg-blue-600 hover:bg-blue-500",
     textColor: "text-blue-400",
@@ -40,8 +40,8 @@ const contactMethods = [
   {
     icon: Mail,
     label: "Email Nahom",
-    value: "nahom@nahomtoyota.com",
-    href: "mailto:nahom@nahomtoyota.com",
+    value: "nahom.estifanos@drivetoyotaofkaty.com",
+    href: "mailto:nahom.estifanos@drivetoyotaofkaty.com",
     description: "For detailed inquiries and quotes",
     color: "bg-purple-600 hover:bg-purple-500",
     textColor: "text-purple-400",
@@ -79,7 +79,9 @@ const timeOptions = [
 ];
 
 export default function Contact() {
-  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -95,9 +97,22 @@ export default function Contact() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed");
+      router.push("/thank-you");
+    } catch {
+      setError("Something went wrong. Please call or text me directly.");
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -199,34 +214,7 @@ export default function Contact() {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="lg:col-span-3"
           >
-            {submitted ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="glass-strong rounded-3xl p-12 text-center h-full flex flex-col items-center justify-center"
-              >
-                <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
-                  <CheckCircle className="w-10 h-10 text-green-400" />
-                </div>
-                <h3 className="font-display text-3xl text-white mb-4">
-                  You&apos;re All Set!
-                </h3>
-                <p className="text-ink-secondary leading-relaxed max-w-sm">
-                  I received your request and will reach out within{" "}
-                  <span className="text-white font-medium">1–2 hours</span> during
-                  business hours. Looking forward to helping you find your perfect Toyota!
-                </p>
-                <div className="mt-8 glass rounded-2xl px-6 py-3">
-                  <p className="text-ink-secondary text-sm">
-                    For immediate assistance, call or text{" "}
-                    <a href="tel:+12815551234" className="text-toyota-red font-medium">
-                      (281) 555-1234
-                    </a>
-                  </p>
-                </div>
-              </motion.div>
-            ) : (
-              <form
+            <form
                 onSubmit={handleSubmit}
                 className="glass-strong rounded-3xl p-7 md:p-8 space-y-5"
               >
@@ -349,17 +337,20 @@ export default function Contact() {
                   />
                 </div>
 
-                <button type="submit" className="btn-primary w-full text-base py-4">
+                <button type="submit" disabled={submitting} className="btn-primary w-full text-base py-4 disabled:opacity-60 disabled:cursor-not-allowed">
                   <Send className="w-5 h-5" />
-                  Send My Request
+                  {submitting ? "Sending…" : "Send My Request"}
                 </button>
+
+                {error && (
+                  <p className="text-red-400 text-sm text-center">{error}</p>
+                )}
 
                 <p className="text-ink-muted text-xs text-center">
                   🔒 Your information is never sold or shared. I&apos;ll reach out
                   personally within 1–2 hours.
                 </p>
-              </form>
-            )}
+            </form>
           </motion.div>
         </div>
       </div>

@@ -139,7 +139,7 @@ export default function ExitIntentPopup() {
                       Schedule Now
                     </button>
                     <a
-                      href="tel:+12815551234"
+                      href="tel:+12025531080"
                       className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium glass rounded-xl hover:bg-white/10 transition-all text-white"
                     >
                       <Phone className="w-4 h-4 text-green-400" />

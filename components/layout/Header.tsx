@@ -72,11 +72,11 @@ export default function Header() {
             {/* CTA */}
             <div className="hidden md:flex items-center gap-3">
               <a
-                href="tel:+12815551234"
+                href="tel:+12025531080"
                 className="flex items-center gap-2 px-4 py-2 text-sm text-ink-secondary hover:text-white transition-colors duration-200 font-medium"
               >
                 <Phone className="w-4 h-4 text-toyota-red" />
-                (281) 555-1234
+                (202) 553-1080
               </a>
               <button
                 onClick={() => handleLinkClick("#contact")}
@@ -134,7 +134,7 @@ export default function Header() {
               ))}
 
               <div className="mt-8 flex flex-col gap-3">
-                <a href="tel:+12815551234" className="btn-secondary text-center w-full">
+                <a href="tel:+12025531080" className="btn-secondary text-center w-full">
                   <Phone className="w-4 h-4" />
                   Call Nahom
                 </a>

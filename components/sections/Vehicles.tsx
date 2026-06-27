@@ -3,16 +3,16 @@
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 import { useInView } from "framer-motion";
-import { ArrowRight, Car, Users, Fuel, Zap } from "lucide-react";
+import { ArrowRight, Car, Zap } from "lucide-react";
 
 const vehicles = [
   {
     model: "RAV4",
     tagline: "America's Best-Selling SUV",
-    description: "The perfect blend of capability and fuel efficiency. Ideal for families and adventurers alike.",
-    badge: "Most Popular",
+    description: "The RAV4 goes all-hybrid for 2026 — more efficient, more capable. Choose standard hybrid or plug-in hybrid with up to 50 miles of EV range.",
+    badge: "All-Hybrid Lineup",
     badgeColor: "bg-toyota-red text-white",
-    specs: ["5 Passengers", "27–38 MPG", "Available AWD"],
+    specs: ["5 Passengers", "Up to 47 City / 40 Hwy MPG", "PHEV: Up to 50 mi EV Range"],
     gradient: "from-red-950/80 via-red-900/40 to-transparent",
     accentColor: "text-red-400",
     borderColor: "hover:border-red-500/30",
@@ -21,11 +21,11 @@ const vehicles = [
   },
   {
     model: "Highlander",
-    tagline: "3-Row Family Luxury",
-    description: "Premium comfort for the whole family with intelligent AWD and a refined interior.",
-    badge: "Family Favorite",
+    tagline: "Family Favorite",
+    description: "Premium comfort for the whole family. AWD is now standard across the entire Highlander lineup — gas or hybrid.",
+    badge: "AWD Standard",
     badgeColor: "bg-blue-600 text-white",
-    specs: ["8 Passengers", "27–36 MPG", "AWD Available"],
+    specs: ["Up to 8 Passengers", "35-36 MPG Combined (Hybrid)", "AWD Standard Across Lineup"],
     gradient: "from-blue-950/80 via-blue-900/40 to-transparent",
     accentColor: "text-blue-400",
     borderColor: "hover:border-blue-500/30",
@@ -34,11 +34,11 @@ const vehicles = [
   },
   {
     model: "Grand Highlander",
-    tagline: "Next-Level 3-Row SUV",
-    description: "More space, more power, more capability. The Grand Highlander redefines what a family SUV can be.",
-    badge: "New Model",
+    tagline: "Room to Spare",
+    description: "More space, more power, more versatility. Available in Gas, Hybrid, or Hybrid MAX — with serious towing capability.",
+    badge: "Hybrid MAX",
     badgeColor: "bg-gold text-black",
-    specs: ["8 Passengers", "2.4L Turbo", "Available PHEV"],
+    specs: ["Up to 8 Passengers", "Gas, Hybrid or Hybrid MAX", "Tows up to 5,000 lbs"],
     gradient: "from-yellow-950/80 via-yellow-900/40 to-transparent",
     accentColor: "text-yellow-400",
     borderColor: "hover:border-yellow-500/30",
@@ -47,11 +47,11 @@ const vehicles = [
   },
   {
     model: "Camry",
-    tagline: "The Sedan Reimagined",
-    description: "Sporty, elegant, and fuel-efficient. The Camry proves sedans never went out of style.",
-    badge: "#1 Selling Car",
+    tagline: "#1 Selling Car",
+    description: "America's best-selling car goes fully hybrid for 2026. Incredible efficiency, available AWD, and a sportier look than ever.",
+    badge: "All-Hybrid Lineup",
     badgeColor: "bg-purple-600 text-white",
-    specs: ["5 Passengers", "28–32 MPG", "Hybrid Option"],
+    specs: ["5 Passengers", "Up to 51 MPG Combined", "AWD Available"],
     gradient: "from-purple-950/80 via-purple-900/40 to-transparent",
     accentColor: "text-purple-400",
     borderColor: "hover:border-purple-500/30",
@@ -60,11 +60,11 @@ const vehicles = [
   },
   {
     model: "Corolla",
-    tagline: "Trusted Worldwide",
-    description: "The world's most dependable compact car. Smart, efficient, and built to last decades.",
+    tagline: "Best Value",
+    description: "The world's most dependable compact car. Hybrid trims deliver up to 50 MPG combined and available AWD — unbeatable value.",
     badge: "Best Value",
     badgeColor: "bg-emerald-600 text-white",
-    specs: ["5 Passengers", "31–40 MPG", "Hybrid Option"],
+    specs: ["5 Passengers", "Up to 50 MPG Combined (Hybrid)", "AWD on Hybrid Trims"],
     gradient: "from-emerald-950/80 via-emerald-900/40 to-transparent",
     accentColor: "text-emerald-400",
     borderColor: "hover:border-emerald-500/30",
@@ -73,11 +73,11 @@ const vehicles = [
   },
   {
     model: "Tacoma",
-    tagline: "Born for the Outdoors",
-    description: "Texas's most beloved truck. Built tough, capable everywhere, and ready for anything you throw at it.",
-    badge: "Texas Favorite",
+    tagline: "Texas Favorite",
+    description: "Texas's most beloved truck. The i-FORCE MAX hybrid delivers 326 HP and tows up to 6,500 lbs — built for everything you throw at it.",
+    badge: "i-FORCE MAX",
     badgeColor: "bg-orange-600 text-white",
-    specs: ["5 Passengers", "4x4 Available", "Trail Hunter Ready"],
+    specs: ["5 Passengers", "Up to 326 HP (i-FORCE MAX)", "Tows up to 6,500 lbs"],
     gradient: "from-orange-950/80 via-orange-900/40 to-transparent",
     accentColor: "text-orange-400",
     borderColor: "hover:border-orange-500/30",
@@ -86,11 +86,11 @@ const vehicles = [
   },
   {
     model: "Tundra",
-    tagline: "Full-Size Powerhouse",
-    description: "Dominate with the Tundra's twin-turbo V6 hybrid powertrain. Capability redefined.",
-    badge: "iForce MAX",
+    tagline: "i-FORCE MAX",
+    description: "Full-size power, hybrid efficiency. The Tundra's i-FORCE MAX twin-turbo hybrid delivers 437 HP and tows up to 12,000 lbs.",
+    badge: "437 HP Hybrid",
     badgeColor: "bg-slate-600 text-white",
-    specs: ["5-6 Passengers", "20–23 MPG", "Hybrid Available"],
+    specs: ["Up to 6 Passengers (CrewMax)", "Up to 437 HP i-FORCE MAX", "Tows up to 12,000 lbs"],
     gradient: "from-slate-950/80 via-slate-800/40 to-transparent",
     accentColor: "text-slate-300",
     borderColor: "hover:border-slate-400/30",
@@ -99,11 +99,11 @@ const vehicles = [
   },
   {
     model: "Sequoia",
-    tagline: "Full-Size 3-Row SUV",
-    description: "The Sequoia's twin-turbo hybrid engine delivers 437 horsepower with class-leading towing.",
-    badge: "437 HP",
+    tagline: "437 HP Standard",
+    description: "The only full-size SUV with a standard hybrid powertrain. 437 HP, three rows, and serious towing — no compromises.",
+    badge: "Hybrid Standard",
     badgeColor: "bg-toyota-red text-white",
-    specs: ["8 Passengers", "19–22 MPG", "Twin-Turbo Hybrid"],
+    specs: ["Up to 8 Passengers", "437 HP i-FORCE MAX (Standard)", "Tows up to 9,520 lbs"],
     gradient: "from-red-950/80 via-slate-900/40 to-transparent",
     accentColor: "text-red-400",
     borderColor: "hover:border-red-400/30",
@@ -112,11 +112,11 @@ const vehicles = [
   },
   {
     model: "Sienna",
-    tagline: "The Ultimate Family Van",
-    description: "Every Sienna is a hybrid. Maximum space, maximum efficiency, and standard all-wheel drive.",
-    badge: "Standard AWD",
+    tagline: "Standard Hybrid",
+    description: "Every Sienna is a hybrid — no exceptions. Maximum space, up to 36 MPG, and available AWD. The ultimate family hauler.",
+    badge: "Hybrid-Only",
     badgeColor: "bg-teal-600 text-white",
-    specs: ["8 Passengers", "35–36 MPG", "Standard Hybrid"],
+    specs: ["Up to 8 Passengers", "Up to 36 MPG Combined", "AWD Available"],
     gradient: "from-teal-950/80 via-teal-900/40 to-transparent",
     accentColor: "text-teal-400",
     borderColor: "hover:border-teal-500/30",
@@ -125,16 +125,29 @@ const vehicles = [
   },
   {
     model: "Crown",
-    tagline: "The Future of Toyota",
-    description: "Bold. Hybrid. Iconic. The Crown sits above every sedan with its striking fastback design.",
-    badge: "PHEV Option",
+    tagline: "AWD Standard",
+    description: "Bold fastback design, AWD standard. Choose 236 HP hybrid for 41 MPG or Hybrid MAX for 340 HP — both with on-demand AWD.",
+    badge: "AWD Standard",
     badgeColor: "bg-gold text-black",
-    specs: ["5 Passengers", "41–43 MPG", "Sport Tuned AWD"],
+    specs: ["5 Passengers", "Up to 41 MPG Combined (236 HP)", "Hybrid MAX: 340 HP Option"],
     gradient: "from-yellow-950/80 via-yellow-900/40 to-transparent",
     accentColor: "text-yellow-400",
     borderColor: "hover:border-yellow-500/30",
     bgGlow: "bg-yellow-900/8",
     category: "Sport Sedan",
+  },
+  {
+    model: "Land Cruiser",
+    tagline: "Reborn Icon",
+    description: "An off-road legend reborn with a modern hybrid powertrain. The 2027 Land Cruiser brings 326 HP, full-time 4WD, and legendary capability.",
+    badge: "2027 Model",
+    badgeColor: "bg-green-700 text-white",
+    specs: ["5 Passengers", "326 HP i-FORCE MAX Hybrid", "Tows up to 6,000 lbs | Full-Time 4WD"],
+    gradient: "from-green-950/80 via-green-900/40 to-transparent",
+    accentColor: "text-green-400",
+    borderColor: "hover:border-green-500/30",
+    bgGlow: "bg-green-900/10",
+    category: "Off-Road SUV",
   },
 ];
 
@@ -163,12 +176,8 @@ function VehicleCard({ vehicle, index }: { vehicle: typeof vehicles[0]; index: n
         if (el) el.scrollIntoView({ behavior: "smooth" });
       }}
     >
-      {/* Vehicle visual area */}
       <div className={`relative h-48 ${vehicle.bgGlow} overflow-hidden`}>
-        {/* Background gradient */}
         <div className={`absolute inset-0 bg-gradient-to-b ${vehicle.gradient}`} />
-
-        {/* Model name as typography art */}
         <div className="absolute inset-0 flex items-center justify-center">
           <span
             className={`font-display text-7xl font-bold opacity-10 select-none pointer-events-none ${vehicle.accentColor}`}
@@ -177,22 +186,17 @@ function VehicleCard({ vehicle, index }: { vehicle: typeof vehicles[0]; index: n
             {vehicle.model}
           </span>
         </div>
-
-        {/* Car icon */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <Car className={`w-20 h-20 ${vehicle.accentColor} opacity-30 group-hover:opacity-50 transition-opacity duration-300`}
-               strokeWidth={0.8}
+          <Car
+            className={`w-20 h-20 ${vehicle.accentColor} opacity-30 group-hover:opacity-50 transition-opacity duration-300`}
+            strokeWidth={0.8}
           />
         </div>
-
-        {/* Category tag */}
         <div className="absolute top-3 left-3">
           <span className="glass text-xs text-ink-secondary font-medium px-2.5 py-1 rounded-full">
             {vehicle.category}
           </span>
         </div>
-
-        {/* Badge */}
         <div className="absolute top-3 right-3">
           <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${vehicle.badgeColor}`}>
             {vehicle.badge}
@@ -200,19 +204,12 @@ function VehicleCard({ vehicle, index }: { vehicle: typeof vehicles[0]; index: n
         </div>
       </div>
 
-      {/* Content */}
       <div className="p-5 bg-[#0D0D12]">
-        <h3 className="font-display text-2xl text-white mb-1">
-          Toyota {vehicle.model}
-        </h3>
+        <h3 className="font-display text-2xl text-white mb-1">Toyota {vehicle.model}</h3>
         <p className={`text-xs font-semibold uppercase tracking-wider mb-3 ${vehicle.accentColor}`}>
           {vehicle.tagline}
         </p>
-        <p className="text-ink-secondary text-sm leading-relaxed mb-4">
-          {vehicle.description}
-        </p>
-
-        {/* Specs */}
+        <p className="text-ink-secondary text-sm leading-relaxed mb-4">{vehicle.description}</p>
         <div className="flex flex-wrap gap-2 mb-5">
           {vehicle.specs.map((spec) => (
             <span key={spec} className="text-xs text-ink-secondary glass px-2.5 py-1 rounded-full border border-white/06">
@@ -220,8 +217,6 @@ function VehicleCard({ vehicle, index }: { vehicle: typeof vehicles[0]; index: n
             </span>
           ))}
         </div>
-
-        {/* CTA */}
         <div className={`flex items-center gap-1.5 text-sm font-semibold ${vehicle.accentColor} group-hover:gap-3 transition-all duration-300`}>
           Check Availability
           <ArrowRight className="w-4 h-4" />
@@ -238,9 +233,7 @@ export default function Vehicles() {
   return (
     <section id="vehicles" className="section-pad relative">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
       <div className="max-w-7xl mx-auto container-pad">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -250,19 +243,17 @@ export default function Vehicles() {
         >
           <div className="label-tag mx-auto mb-6">
             <Car className="w-3 h-3" />
-            Toyota Lineup
+            2026–2027 Toyota Lineup
           </div>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl mb-5 leading-tight">
-            Find Your{" "}
-            <span className="text-gradient-red">Perfect Toyota</span>
+            Find Your <span className="text-gradient-red">Perfect Toyota</span>
           </h2>
           <p className="text-ink-secondary text-lg max-w-2xl mx-auto leading-relaxed">
             Whether you need a fuel-efficient commuter, a family hauler, or a work truck —
-            I'll match you with the exact model, trim, and color you want.
+            I&apos;ll match you with the exact model, trim, and color you want.
           </p>
         </motion.div>
 
-        {/* Vehicle grid */}
         <motion.div
           ref={ref}
           initial="hidden"
@@ -274,16 +265,13 @@ export default function Vehicles() {
           ))}
         </motion.div>
 
-        {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center"
         >
-          <p className="text-ink-secondary mb-5">
-            Don&apos;t see exactly what you&apos;re looking for?
-          </p>
+          <p className="text-ink-secondary mb-5">Don&apos;t see exactly what you&apos;re looking for?</p>
           <button
             onClick={() => {
               const el = document.querySelector("#contact");

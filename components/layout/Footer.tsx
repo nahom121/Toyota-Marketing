@@ -62,17 +62,17 @@ export default function Footer() {
 
             {/* Contact */}
             <div className="space-y-2.5 mb-6">
-              <a href="tel:+12815551234" className="flex items-center gap-2.5 text-sm text-ink-secondary hover:text-white transition-colors group">
+              <a href="tel:+12025531080" className="flex items-center gap-2.5 text-sm text-ink-secondary hover:text-white transition-colors group">
                 <Phone className="w-4 h-4 text-green-400 group-hover:scale-110 transition-transform" />
-                (281) 555-1234
+                (202) 553-1080
               </a>
-              <a href="sms:+12815551234" className="flex items-center gap-2.5 text-sm text-ink-secondary hover:text-white transition-colors group">
+              <a href="sms:+12025531080" className="flex items-center gap-2.5 text-sm text-ink-secondary hover:text-white transition-colors group">
                 <MessageSquare className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
                 Text me anytime
               </a>
-              <a href="mailto:nahom@nahomtoyota.com" className="flex items-center gap-2.5 text-sm text-ink-secondary hover:text-white transition-colors group">
+              <a href="mailto:nahom.estifanos@drivetoyotaofkaty.com" className="flex items-center gap-2.5 text-sm text-ink-secondary hover:text-white transition-colors group">
                 <Mail className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
-                nahom@nahomtoyota.com
+                nahom.estifanos@drivetoyotaofkaty.com
               </a>
               <a
                 href="https://maps.google.com/?q=Toyota+of+Katy"

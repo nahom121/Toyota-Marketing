@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { TrendingUp, ArrowRight, Check, DollarSign } from "lucide-react";
 
 const benefits = [
@@ -12,7 +13,9 @@ const benefits = [
 ];
 
 export default function TradeIn() {
-  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -27,9 +30,22 @@ export default function TradeIn() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch("/api/trade-in", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed");
+      router.push("/thank-you");
+    } catch {
+      setError("Something went wrong. Please call or text me directly.");
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -109,23 +125,7 @@ export default function TradeIn() {
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.1 }}
           >
-            {submitted ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="glass-strong rounded-3xl p-10 text-center"
-              >
-                <div className="w-16 h-16 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-5">
-                  <TrendingUp className="w-8 h-8 text-gold" />
-                </div>
-                <h3 className="font-display text-2xl text-white mb-3">Request Received!</h3>
-                <p className="text-ink-secondary leading-relaxed">
-                  I&apos;ll reach out within 24 hours with a fair value for your vehicle.
-                  Looking forward to helping you get the most from your trade-in.
-                </p>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="glass-strong rounded-3xl p-7 space-y-4">
+            <form onSubmit={handleSubmit} className="glass-strong rounded-3xl p-7 space-y-4">
                 <h3 className="font-display text-2xl text-white mb-1">Get My Trade Value</h3>
                 <p className="text-ink-secondary text-sm mb-5">
                   Free. No obligation. Results within 24 hours.
@@ -231,17 +231,20 @@ export default function TradeIn() {
                   </div>
                 </div>
 
-                <button type="submit" className="btn-primary w-full mt-2">
+                <button type="submit" disabled={submitting} className="btn-primary w-full mt-2 disabled:opacity-60 disabled:cursor-not-allowed">
                   <TrendingUp className="w-4 h-4" />
-                  Get My Trade-In Value
-                  <ArrowRight className="w-4 h-4" />
+                  {submitting ? "Sending…" : "Get My Trade-In Value"}
+                  {!submitting && <ArrowRight className="w-4 h-4" />}
                 </button>
+
+                {error && (
+                  <p className="text-red-400 text-sm text-center">{error}</p>
+                )}
 
                 <p className="text-ink-muted text-xs text-center">
                   No spam. No pressure. Just a real number you can use.
                 </p>
               </form>
-            )}
           </motion.div>
         </div>
       </div>
