@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Phone,
@@ -62,37 +62,49 @@ const contactMethods = [
 ];
 
 const interestOptions = [
-  "Buying a New Toyota",
-  "Leasing a Toyota",
+  "Toyota RAV4",
+  "Toyota Highlander",
+  "Toyota Grand Highlander",
+  "Toyota Camry",
+  "Toyota Corolla",
+  "Toyota Prius",
+  "Toyota Crown",
+  "Toyota Crown Signia",
+  "Toyota bZ4X",
+  "Toyota C-HR",
+  "Toyota 4Runner",
+  "Toyota Sequoia",
+  "Toyota Sienna",
+  "Toyota Tacoma",
+  "Toyota Tundra",
+  "Toyota Land Cruiser",
+  "Not sure yet — need guidance",
   "Trade-In Appraisal",
-  "Financing Help",
-  "Specific Model Inquiry",
+  "Financing / Leasing Help",
   "General Question",
-];
-
-const timeOptions = [
-  "This week",
-  "Today if possible",
-  "This weekend",
-  "Next week",
-  "Just browsing",
 ];
 
 export default function Contact() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    interest: "",
-    timeline: "",
-    message: "",
-  });
+  const [form, setForm] = useState({ name: "", phone: "", interest: "" });
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const model = (e as CustomEvent<string>).detail;
+      const match =
+        interestOptions.find((o) =>
+          o.toLowerCase().includes(model.toLowerCase())
+        ) ?? model;
+      setForm((prev) => ({ ...prev, interest: match }));
+    };
+    window.addEventListener("selectVehicle", handler);
+    return () => window.removeEventListener("selectVehicle", handler);
+  }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -206,7 +218,7 @@ export default function Contact() {
             </motion.div>
           </div>
 
-          {/* Appointment form */}
+          {/* Form */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -215,141 +227,98 @@ export default function Contact() {
             className="lg:col-span-3"
           >
             <form
-                onSubmit={handleSubmit}
-                className="glass-strong rounded-3xl p-7 md:p-8 space-y-5"
-              >
-                <div>
-                  <h3 className="font-display text-2xl text-white mb-1">
-                    Schedule My Appointment
-                  </h3>
-                  <p className="text-ink-secondary text-sm">
-                    Fill this out and I&apos;ll be in touch fast — usually within the hour.
-                  </p>
-                </div>
-
-                {/* Name + Phone */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-ink-secondary mb-1.5">
-                      Full Name *
-                    </label>
-                    <input
-                      name="name"
-                      value={form.name}
-                      onChange={handleChange}
-                      required
-                      placeholder="Your name"
-                      className="w-full bg-white/05 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-ink-muted
-                                 focus:outline-none focus:border-toyota-red/50 focus:bg-white/08 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-ink-secondary mb-1.5">
-                      Phone Number *
-                    </label>
-                    <input
-                      name="phone"
-                      type="tel"
-                      value={form.phone}
-                      onChange={handleChange}
-                      required
-                      placeholder="(281) 555-0000"
-                      className="w-full bg-white/05 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-ink-muted
-                                 focus:outline-none focus:border-toyota-red/50 focus:bg-white/08 transition-all"
-                    />
-                  </div>
-                </div>
-
-                {/* Email */}
-                <div>
-                  <label className="block text-xs font-medium text-ink-secondary mb-1.5">
-                    Email Address
-                  </label>
-                  <input
-                    name="email"
-                    type="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="your@email.com"
-                    className="w-full bg-white/05 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-ink-muted
-                               focus:outline-none focus:border-toyota-red/50 focus:bg-white/08 transition-all"
-                  />
-                </div>
-
-                {/* Interest + Timeline */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-ink-secondary mb-1.5">
-                      I&apos;m Interested In *
-                    </label>
-                    <div className="relative">
-                      <select
-                        name="interest"
-                        value={form.interest}
-                        onChange={handleChange}
-                        required
-                        className="w-full appearance-none bg-[#0D0D12] border border-white/10 rounded-xl px-4 py-3 text-white text-sm
-                                   focus:outline-none focus:border-toyota-red/50 transition-all pr-10"
-                      >
-                        <option value="">Select an option</option>
-                        {interestOptions.map((o) => (
-                          <option key={o} value={o}>{o}</option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-ink-muted pointer-events-none" />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-ink-secondary mb-1.5">
-                      My Timeline
-                    </label>
-                    <div className="relative">
-                      <select
-                        name="timeline"
-                        value={form.timeline}
-                        onChange={handleChange}
-                        className="w-full appearance-none bg-[#0D0D12] border border-white/10 rounded-xl px-4 py-3 text-white text-sm
-                                   focus:outline-none focus:border-toyota-red/50 transition-all pr-10"
-                      >
-                        <option value="">When are you looking?</option>
-                        {timeOptions.map((o) => (
-                          <option key={o} value={o}>{o}</option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-ink-muted pointer-events-none" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Message */}
-                <div>
-                  <label className="block text-xs font-medium text-ink-secondary mb-1.5">
-                    Tell Me More (Optional)
-                  </label>
-                  <textarea
-                    name="message"
-                    value={form.message}
-                    onChange={handleChange}
-                    rows={3}
-                    placeholder="Which model are you interested in? Do you have a trade-in? Any questions?"
-                    className="w-full bg-white/05 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-ink-muted
-                               focus:outline-none focus:border-toyota-red/50 focus:bg-white/08 transition-all resize-none"
-                  />
-                </div>
-
-                <button type="submit" disabled={submitting} className="btn-primary w-full text-base py-4 disabled:opacity-60 disabled:cursor-not-allowed">
-                  <Send className="w-5 h-5" />
-                  {submitting ? "Sending…" : "Send My Request"}
-                </button>
-
-                {error && (
-                  <p className="text-red-400 text-sm text-center">{error}</p>
-                )}
-
-                <p className="text-ink-muted text-xs text-center">
-                  🔒 Your information is never sold or shared. I&apos;ll reach out
-                  personally within 1–2 hours.
+              onSubmit={handleSubmit}
+              className="glass-strong rounded-3xl p-7 md:p-8 space-y-5"
+            >
+              <div>
+                <h3 className="font-display text-2xl text-white mb-1">
+                  Send Me a Message
+                </h3>
+                <p className="text-ink-secondary text-sm">
+                  30 seconds to fill out. I&apos;ll reach out within the hour.
                 </p>
+              </div>
+
+              {/* Name */}
+              <div>
+                <label className="block text-xs font-medium text-ink-secondary mb-1.5">
+                  Full Name *
+                </label>
+                <input
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                  placeholder="Your name"
+                  className="w-full bg-white/05 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-ink-muted
+                             focus:outline-none focus:border-toyota-red/50 focus:bg-white/08 transition-all"
+                />
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="block text-xs font-medium text-ink-secondary mb-1.5">
+                  Phone Number *
+                </label>
+                <input
+                  name="phone"
+                  type="tel"
+                  value={form.phone}
+                  onChange={handleChange}
+                  required
+                  placeholder="(281) 555-0000"
+                  className="w-full bg-white/05 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-ink-muted
+                             focus:outline-none focus:border-toyota-red/50 focus:bg-white/08 transition-all"
+                />
+              </div>
+
+              {/* Interest */}
+              <div>
+                <label className="block text-xs font-medium text-ink-secondary mb-1.5">
+                  What can I help you with? *
+                </label>
+                <div className="relative">
+                  <select
+                    name="interest"
+                    value={form.interest}
+                    onChange={handleChange}
+                    required
+                    className="w-full appearance-none bg-[#0D0D12] border border-white/10 rounded-xl px-4 py-3 text-white text-sm
+                               focus:outline-none focus:border-toyota-red/50 transition-all pr-10"
+                  >
+                    <option value="">Select a model or topic…</option>
+                    <optgroup label="Toyota Models">
+                      {interestOptions.slice(0, 16).map((o) => (
+                        <option key={o} value={o}>{o}</option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="General">
+                      {interestOptions.slice(16).map((o) => (
+                        <option key={o} value={o}>{o}</option>
+                      ))}
+                    </optgroup>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-ink-muted pointer-events-none" />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn-primary w-full text-base py-4 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <Send className="w-5 h-5" />
+                {submitting ? "Sending…" : "Send My Request"}
+              </button>
+
+              {error && (
+                <p className="text-red-400 text-sm text-center">{error}</p>
+              )}
+
+              <p className="text-ink-muted text-xs text-center">
+                🔒 Your information is never sold or shared. I&apos;ll reach out
+                personally within 1–2 hours.
+              </p>
             </form>
           </motion.div>
         </div>

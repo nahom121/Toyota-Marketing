@@ -3,15 +3,11 @@
 import { motion } from "framer-motion";
 import { Shield, CheckCircle2, Infinity as InfinityIcon, Wrench, Heart } from "lucide-react";
 
-const coverageItems = [
-  "Engine & all internally lubricated parts",
-  "Transmission & transfer case",
-  "Drive axle & differential",
-  "Seals & gaskets for covered components",
+const trustItems = [
   "No mileage limit — ever",
   "Transferable to future owners",
-  "No deductible on covered repairs",
   "Valid at any Toyota dealership nationwide",
+  "No deductible on covered repairs",
 ];
 
 export default function LifetimeWarranty() {
@@ -112,15 +108,22 @@ export default function LifetimeWarranty() {
               No mileage limit. No expiration. As long as you own the vehicle.
             </p>
 
-            {/* Coverage list */}
+            {/* Plain-language coverage */}
+            <div className="glass rounded-2xl px-5 py-4 mb-6 border-l-2 border-toyota-red">
+              <p className="text-white text-base leading-relaxed">
+                Covers your <span className="font-semibold">engine and transmission</span>, plus your <span className="font-semibold">front and back driving axle</span>.
+              </p>
+            </div>
+
+            {/* Trust items */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-8">
-              {coverageItems.map((item, i) => (
+              {trustItems.map((item, i) => (
                 <motion.div
                   key={item}
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
+                  transition={{ delay: i * 0.07 }}
                   className="flex items-start gap-2"
                 >
                   <CheckCircle2 className="w-4 h-4 text-toyota-red mt-0.5 flex-shrink-0" />
