@@ -21,8 +21,8 @@ const SITE_URL = "https://YOUR-DOMAIN-HERE.com";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Nahom Estifanos | Toyota Product Specialist – Katy & Houston, TX",
-    template: "%s | Nahom Estifanos – Toyota of Katy",
+    default: "Drive With Nahom",
+    template: "%s | Drive With Nahom",
   },
   description:
     "Buy your next Toyota with confidence. Nahom Estifanos is a trusted Toyota Product Specialist at Toyota of Katy, TX. Transparent pricing, lifetime powertrain warranty, and a pressure-free experience. Serving Houston, Katy, and surrounding communities.",
@@ -131,7 +131,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="/favicon.ico" />
         <meta name="theme-color" content="#050507" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>

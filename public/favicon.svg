@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#050507"/>
+  <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle"
+        font-family="Georgia, serif" font-size="20" font-weight="700"
+        fill="#EB0A1E" letter-spacing="-1">N</text>
+</svg>
