@@ -212,7 +212,7 @@ export default function Contact() {
                 </div>
                 <div className="flex justify-between">
                   <span>Sunday</span>
-                  <span className="text-white">12:00 PM – 5:00 PM</span>
+                  <span className="text-ink-muted">Closed</span>
                 </div>
               </div>
             </motion.div>
@@ -235,7 +235,7 @@ export default function Contact() {
                   Send Me a Message
                 </h3>
                 <p className="text-ink-secondary text-sm">
-                  30 seconds to fill out. I&apos;ll reach out within the hour.
+                  30 seconds to fill out. I&apos;ll reach out within 30 minutes.
                 </p>
               </div>
 
@@ -333,7 +333,7 @@ export default function Contact() {
 
               <p className="text-ink-muted text-xs text-center">
                 🔒 Your information is never sold or shared. I&apos;ll reach out
-                personally within 1–2 hours.
+                personally within 30 minutes.
               </p>
             </form>
           </motion.div>

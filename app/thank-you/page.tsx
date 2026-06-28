@@ -21,7 +21,7 @@ export default function ThankYou() {
         </h1>
         <p className="text-ink-secondary text-lg leading-relaxed mb-8">
           I received your request and will reach out within{" "}
-          <span className="text-white font-medium">1–2 hours</span> during
+          <span className="text-white font-medium">30 minutes</span> during
           business hours. Looking forward to helping you find your perfect Toyota!
         </p>
 
