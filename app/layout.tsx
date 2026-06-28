@@ -15,8 +15,7 @@ const inter = Inter({
   display: "swap",
 });
 
-// TODO: Replace YOUR-DOMAIN-HERE.com with your real domain before launch
-const SITE_URL = "https://YOUR-DOMAIN-HERE.com";
+const SITE_URL = "https://www.drivewithnahom.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
