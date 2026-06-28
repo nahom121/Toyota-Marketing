@@ -48,7 +48,7 @@ export default function Hero() {
         >
           <div className="label-tag">
             <MapPin className="w-3 h-3" />
-            Toyota of Katy · Katy, Texas
+            Toyota Product Specialist · Katy, Texas
           </div>
         </motion.div>
 

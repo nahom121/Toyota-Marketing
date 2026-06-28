@@ -51,7 +51,7 @@ export default function Header() {
                 </div>
                 <div>
                   <div className="text-white font-semibold text-sm leading-none">Nahom Estifanos</div>
-                  <div className="text-ink-secondary text-[10px] leading-none mt-0.5 font-medium tracking-wider uppercase">Toyota of Katy</div>
+                  <div className="text-ink-secondary text-[10px] leading-none mt-0.5 font-medium tracking-wider uppercase">Toyota Specialist · Katy, TX</div>
                 </div>
               </div>
             </a>

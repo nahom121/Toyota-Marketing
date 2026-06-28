@@ -1,11 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Shield, CheckCircle2, Infinity as InfinityIcon, Wrench, Heart } from "lucide-react";
+import { Shield, CheckCircle2, Infinity as InfinityIcon, Wrench, Star } from "lucide-react";
 
 const trustItems = [
   "No mileage limit — ever",
-  "Transferable to future owners",
+  "Exclusive to my customers only",
   "Valid at any Toyota dealership nationwide",
   "No deductible on covered repairs",
 ];
@@ -51,7 +51,7 @@ export default function LifetimeWarranty() {
               {/* Orbiting badges */}
               {[
                 { label: "No Mileage Limit", icon: InfinityIcon, angle: 0 },
-                { label: "Transferable", icon: Heart, angle: 120 },
+                { label: "Exclusive Perk", icon: Star, angle: 120 },
                 { label: "All Dealers", icon: Wrench, angle: 240 },
               ].map(({ label, icon: Icon, angle }) => {
                 const rad = (angle * Math.PI) / 180;
@@ -102,9 +102,9 @@ export default function LifetimeWarranty() {
             </h2>
 
             <p className="text-ink-secondary text-lg leading-relaxed mb-8">
-              Every qualifying new Toyota purchased through me at Toyota of Katy comes
+              Every qualifying new Toyota purchased through me comes
               with a <span className="text-white font-medium">lifetime powertrain warranty</span> —
-              the most comprehensive ownership protection in the automotive industry.
+              an exclusive benefit you won&apos;t find just anywhere.
               No mileage limit. No expiration. As long as you own the vehicle.
             </p>
 

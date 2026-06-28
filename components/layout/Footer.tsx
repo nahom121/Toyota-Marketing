@@ -49,7 +49,7 @@ export default function Footer() {
               </div>
               <div>
                 <div className="text-white font-semibold text-sm">Nahom Estifanos</div>
-                <div className="text-ink-secondary text-[10px] uppercase tracking-wider">Toyota of Katy</div>
+                <div className="text-ink-secondary text-[10px] uppercase tracking-wider">Toyota Specialist · Katy, TX</div>
               </div>
             </div>
 
@@ -129,9 +129,9 @@ export default function Footer() {
           <div>
             <div className="font-semibold text-white text-sm mb-1">Lifetime Powertrain Warranty</div>
             <p className="text-ink-secondary text-xs leading-relaxed">
-              Every qualifying new Toyota purchased through me at Toyota of Katy includes a
+              Every qualifying new Toyota purchased through me includes an exclusive
               lifetime powertrain warranty — covering engine, transmission, and drivetrain
-              components for as long as you own the vehicle. No mileage cap. No hidden exclusions.
+              for as long as you own the vehicle. No mileage cap. No hidden exclusions.
             </p>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function Footer() {
       <div className="border-t border-white/06 px-4 sm:px-6 lg:px-8 py-5">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
           <p className="text-ink-muted text-xs text-center md:text-left">
-            © {new Date().getFullYear()} Nahom Estifanos · Toyota Product Specialist at Toyota of Katy.
+            © {new Date().getFullYear()} Nahom Estifanos · Toyota Product Specialist · Katy, TX.
             All rights reserved.
           </p>
           <p className="text-ink-muted text-xs text-center">
