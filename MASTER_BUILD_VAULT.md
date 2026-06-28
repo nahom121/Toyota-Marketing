@@ -1,332 +1,351 @@
 # Master Build Vault — Nahom Estifanos Toyota Website
-**Repository:** `nahom121/Toyota-Marketing`
-**Branch:** `claude/install-uiux-pro-max-skill-2afxpk` (also mirrored to `main` for Vercel)
-**Live URL:** `https://toyota-marketing.vercel.app` (Vercel auto-deploys from `main`)
+**Repository:** `nahom121/Toyota-Marketing`  
+**Branch:** `claude/install-uiux-pro-max-skill-2afxpk` (also mirrored to `main` for Vercel)  
+**Live URL:** `https://www.drivewithnahom.com` (Vercel auto-deploys from `main`)  
+**Last Updated:** June 28, 2026
 
 ---
 
-## 1. Tech Stack
+## 1. Project Overview
 
-| Layer | Technology |
+A personal brand marketing website for **Nahom Estifanos**, Toyota Product Specialist based in Katy, TX. Built with Next.js 15 (App Router), Tailwind CSS v3, and Framer Motion. The site functions as a lead-generation tool — visitors browse vehicles, click one, and are pre-routed to the contact form with that vehicle pre-selected. Nahom receives lead emails via Resend.
+
+**Core goal:** Build Nahom's personal brand. Minimal mention of the dealership name (Toyota of Katy) — every surface says "Nahom Estifanos, Toyota Specialist · Katy, TX."
+
+---
+
+## 2. Tech Stack
+
+| Layer | Tool |
 |---|---|
-| Framework | Next.js 15.5.19 (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS v3 + custom design tokens |
+| Framework | Next.js 15.5.x (App Router, TypeScript) |
+| Styling | Tailwind CSS v3 with custom design tokens |
 | Animations | Framer Motion v12 |
 | Icons | Lucide React |
-| Fonts | DM Serif Display (headings) + Inter (body) via next/font/google |
-| Email | Resend SDK v6 |
-| Deployment | Vercel (auto-deploy from main branch) |
-| Images | next/image with transparent PNG vehicle photos |
+| Fonts | DM Serif Display (display) + Inter (body) via next/font/google |
+| Email | Resend SDK v6 (lazy-init inside handler, NOT module-level) |
+| Hosting | Vercel (auto-deploy from `main`) |
+| Images | next/image with `fill` + `object-contain` for transparent PNG vehicles |
 
 ---
 
-## 2. Contact & Identity
+## 3. Nahom's Personal Info
 
 | Field | Value |
 |---|---|
-| Name | Nahom Estifanos |
-| Title | Toyota Product Specialist |
-| Dealership | Toyota of Katy |
-| Address | 21555 Katy Fwy, Katy, TX 77450 |
-| Phone | (202) 553-1080 / +12025531080 |
+| Phone | (202) 553-1080 |
+| SMS | (202) 553-1080 |
 | Email | nahom.estifanos@drivetoyotaofkaty.com |
-| Hours | Mon–Fri 9am–8pm · Sat 9am–7pm · Sun 12pm–5pm |
-| Service Area | All of Texas (Katy, Houston, Sugar Land, Cypress, Richmond, Brookshire) |
+| Address | 21555 Katy Fwy, Katy, TX 77450 |
+| Domain | https://www.drivewithnahom.com |
+| Dealership | Toyota of Katy (minimize mentions — personal brand) |
+| Serving | All of Texas |
 
 ---
 
-## 3. Design System
+## 4. File Map
 
-### Colors
 ```
-Toyota Red:   #EB0A1E  (--toyota-red)
-Red Dark:     #C00817
-Red Light:    #FF1F30
-Gold:         #C9A84C
-Background:   #050507
-Surface:      #0D0D12
-Surface+:     #141420
-Text Primary: #FFFFFF
-Text Sec:     #A0A0B4  (ink-secondary)
-Text Muted:   #5A5A72  (ink-muted)
-```
-
-### Key CSS Classes
-```
-.glass          — frosted glass card (rgba white/4%, blur 20px)
-.glass-strong   — stronger glass (rgba white/7%, blur 40px)
-.btn-primary    — Toyota red pill button with glow shadow
-.btn-secondary  — ghost glass pill button
-.label-tag      — small red pill label (section tags)
-.section-pad    — py-24 md:py-32
-.text-gradient-red   — red gradient text
-.text-gradient-gold  — gold gradient text
+Toyota-Marketing/
+├── app/
+│   ├── layout.tsx              # Metadata, fonts, JSON-LD schema, favicon
+│   ├── page.tsx                # Main page — all sections assembled
+│   ├── globals.css             # Design tokens, glass utilities, btn-primary, etc.
+│   ├── thank-you/page.tsx      # Post-form submission confirmation page
+│   └── api/
+│       ├── contact/route.ts    # Lead form email → Resend
+│       └── trade-in/route.ts   # Trade-in form email → Resend
+├── components/
+│   ├── layout/
+│   │   ├── Header.tsx          # Sticky nav with mobile drawer
+│   │   ├── Footer.tsx          # Brand column + links + warranty note + copyright
+│   │   └── FloatingActions.tsx # Fixed bottom CTA bar (mobile)
+│   └── sections/
+│       ├── Hero.tsx            # Full-screen hero, stats row, trust badges
+│       ├── TrustBar.tsx        # Horizontal scrolling trust stats bar
+│       ├── WhyChooseMe.tsx     # Nahom's 5 differentiators
+│       ├── Vehicles.tsx        # 16-vehicle grid, category filter, click → contact
+│       ├── LifetimeWarranty.tsx# Animated shield + coverage explanation
+│       ├── Testimonials.tsx    # Customer reviews
+│       ├── About.tsx           # Nahom bio + headshot
+│       ├── TradeIn.tsx         # Trade-in form
+│       ├── Contact.tsx         # Lead form (pre-fillable via custom event)
+│       ├── SpecialOffers.tsx   # (Hidden/unused — kept but not rendered)
+│       └── ExitIntentPopup.tsx # Exit intent modal
+├── public/
+│   ├── favicon.svg             # SVG favicon: dark bg, red "N"
+│   ├── headshot.jpg            # Nahom's photo
+│   └── vehicles/               # 16 transparent PNG vehicle images
+│       ├── rav4.png
+│       ├── highlander.png
+│       ├── grand-highlander.png
+│       ├── camry.png
+│       ├── corolla.png
+│       ├── prius.png
+│       ├── crown.png
+│       ├── crown-signia.png
+│       ├── bz4x.png
+│       ├── chr.png
+│       ├── 4runner.png
+│       ├── sequoia.png
+│       ├── sienna.png
+│       ├── tacoma.png
+│       ├── tundra.png
+│       └── land-cruiser.png
+├── tailwind.config.ts
+├── tsconfig.json
+├── package.json
+└── MASTER_BUILD_VAULT.md       # This file
 ```
 
 ---
 
-## 4. Page Structure & Section Order
-
-```
-Header (sticky nav)
-├── Hero
-├── TrustBar (animated ticker)
-├── WhyChooseMe
-├── Vehicles  ← qualifier grid, not a catalog
-├── LifetimeWarranty
-├── Testimonials
-├── TradeIn
-├── About
-└── Contact
-Footer
-FloatingActions (sticky call/text buttons)
-ExitIntentPopup (fires on mouse leave or after 45s)
-```
-
-> SpecialOffers section EXISTS in the codebase (`components/sections/SpecialOffers.tsx`) but is NOT imported or rendered — intentionally removed due to stale/expired incentive data.
-
----
-
-## 5. All Sections — What Each Does
+## 5. Section-by-Section Breakdown
 
 ### Header (`components/layout/Header.tsx`)
-- Sticky navigation with scroll-based background blur
-- Links: Why Me · Vehicles · Warranty · Reviews · Trade-In · About
-- CTA button: "Schedule Appointment" → scrolls to #contact
-- Phone number: (202) 553-1080
+- Sticky, transparent when at top → frosted glass when scrolled
+- Logo: red circle "T" + "Nahom Estifanos" / "Toyota Specialist · Katy, TX"
+- Nav links: Why Nahom, Vehicles, Testimonials, Trade-In, About, Contact
+- Desktop CTA: phone number + "Schedule Appointment" red button
+- Mobile: slide-in drawer from right with all links
 
 ### Hero (`components/sections/Hero.tsx`)
-- Full-viewport dark hero with animated headline
-- Primary CTA: "Schedule My Appointment" → #contact
-- Secondary CTA: "Get Trade-In Value" → #trade-in
-- Stat bar below headline
+- Full-screen dark background with grid + glow orbs
+- Label badge: "Toyota Product Specialist · Katy, Texas"
+- Headline: "Your Toyota Buying Experience Starts Here"
+- Subhead: Transparent pricing. Personalized service. Lifetime powertrain protection. Serving Houston and Katy, Texas.
+- Two CTAs: "Schedule My Appointment" (→ #contact) + "View Available Vehicles" (→ #vehicles)
+- Trust badges: Lifetime Powertrain Warranty, Complimentary Service Loaners, 5-Star Customer Experience
+- Stats row: 500+ Vehicles Sold · 5★ Google Rating · 100% Transparent Pricing · 0 Sales Pressure
 
-### TrustBar (`components/sections/TrustBar.tsx`)
-- Auto-scrolling horizontal ticker
-- Trust badges: Lifetime Warranty · Loaners · Fast Process · etc.
-- Duplicates items for seamless infinite loop
+### Vehicles (`components/sections/Vehicles.tsx`)
+- 16 vehicles split into Cars / SUVs / Trucks
+- No specs shown — just vehicle name and tagline
+- Category filter tabs: All / Cars / SUVs / Trucks / Not sure yet
+- Each vehicle card is a button — clicking dispatches `selectVehicle` custom event AND scrolls to #contact
+- Floating bob animation (each car has unique duration + delay for organic feel)
+- Animated ground shadow synced to bob
+- Red glow on hover, name turns red, "Inquire about this model →" appears
+- bZ4X and C-HR show blue ⚡ Electric badge
 
-### WhyChooseMe (`components/sections/WhyChooseMe.tsx`)
-- 4 value proposition cards (transparency, no pressure, etc.)
-- Personal differentiator section
+**Vehicle List:**
+| Model | Category | Note |
+|---|---|---|
+| Prius | Cars | |
+| Corolla | Cars | |
+| Camry | Cars | |
+| Crown | Cars | |
+| C-HR | SUVs | Electric ⚡ |
+| bZ4X | SUVs | Electric ⚡ |
+| RAV4 | SUVs | |
+| Crown Signia | SUVs | |
+| 4Runner | SUVs | |
+| Highlander | SUVs | |
+| Grand Highlander | SUVs | |
+| Sienna | SUVs | |
+| Sequoia | SUVs | |
+| Land Cruiser | SUVs | |
+| Tacoma | Trucks | |
+| Tundra | Trucks | |
 
-### Vehicles (`components/sections/Vehicles.tsx`) ← QUALIFIER
-- **Purpose:** Lead capture qualifier, NOT a brochure or catalog
-- Category filter tabs: All | Cars | SUVs | Trucks | Not sure yet
-- 16 vehicle cards with floating transparent PNG images + gentle bob animation
-- Each car click → pre-fills the contact form dropdown AND scrolls to #contact
-- EV models (bZ4X, C-HR) get a blue ⚡ Electric badge
-- No specs, no MPG, no passenger counts — just model name + tagline
-- "Ask me anyway →" fallback link at bottom
-
-**Vehicle roster by category:**
-```
-Cars:   Prius · Corolla · Camry · Crown
-SUVs:   C-HR · bZ4X · RAV4 · Crown Signia · 4Runner ·
-        Highlander · Grand Highlander · Sienna · Sequoia · Land Cruiser
-Trucks: Tacoma · Tundra
-```
-
-**Image files** (`public/vehicles/`):
-```
-prius.png · corolla.png · camry.png · crown.png
-chr.png · bz4x.png · rav4.png · crown-signia.png · 4runner.png
-highlander.png · grand-highlander.png · sienna.png · sequoia.png · land-cruiser.png
-tacoma.png · tundra.png
-```
-
-### LifetimeWarranty (`components/sections/LifetimeWarranty.tsx`)
-- Animated shield graphic with orbiting badges (No Mileage Limit · Transferable · All Dealers)
-- Coverage explained in ONE plain-English sentence:
-  > "Covers your engine and transmission, plus your front and back driving axle."
-- 4 trust bullets: no mileage limit, transferable, any Toyota dealer, no deductible
-- CTA → #contact
-
-### Testimonials (`components/sections/Testimonials.tsx`)
-- Customer review cards
-- Star ratings, customer names
-
-### TradeIn (`components/sections/TradeIn.tsx`)
-- Form: Name · Phone · Year · Make · Model · Mileage · Condition
-- Submits to `/api/trade-in` → Resend email → redirects to `/thank-you`
-- Benefit list + stats ($0 appraisal fee · 24hr response · Any make/model)
-
-### About (`components/sections/About.tsx`)
-- Nahom's headshot photo (`public/headshot.jpg`) — transparent background PNG
-- 4 value cards: People First · Purpose-Driven · Excellence Always · Community Rooted
-- Social links: LinkedIn · Instagram · Facebook (currently #placeholder)
-- Stats grid: Toyota · Katy TX · 100% · 5★
+### Lifetime Warranty (`components/sections/LifetimeWarranty.tsx`)
+- Left: animated rotating rings + center shield graphic + 3 orbiting badges
+- Orbiting badges: No Mileage Limit (Infinity icon), Exclusive Perk (Star icon), All Dealers (Wrench icon)
+- Trust bullets:
+  - No mileage limit — ever
+  - Exclusive to my customers only
+  - Valid at any Toyota dealership nationwide
+  - No deductible on covered repairs
+- Plain-language coverage box: "Covers your **engine and transmission**, plus your **front and back driving axle**."
+- CTA: "Ask Me About the Warranty" → scrolls to #contact
+- NOT transferable. NOT branded "Toyota of Katy" — personal brand only.
 
 ### Contact (`components/sections/Contact.tsx`)
-- 4 contact method cards: Call · Text · Email · Visit
-- Business hours card
-- **Form — 4 fields:**
-  1. Full Name *
-  2. Phone Number *
-  3. "What can I help you with?" * (dropdown — see below)
-  4. Tell Me More (optional textarea)
-- Submits to `/api/contact` → Resend email → redirects to `/thank-you`
-- **Auto-fills from vehicle click** via `selectVehicle` custom event
+**Left column:** 4 contact method cards (Call, Text, Email, Visit) + Business Hours card
 
-**Contact form dropdown options:**
+**Hours:**
+- Monday–Friday: 9:00 AM – 8:00 PM
+- Saturday: 9:00 AM – 7:00 PM
+- Sunday: Closed
+
+**Form (right column):** 4 fields
+1. Full Name (required)
+2. Phone Number (required)
+3. "What can I help you with?" — dropdown with 16 Toyota models + 4 general options, grouped with `<optgroup>`
+4. Tell Me More — optional textarea
+
+Response promise: "I'll reach out within **30 minutes**."
+
+**Pre-fill system:** When a visitor clicks a vehicle card in the Vehicles section:
+```js
+window.dispatchEvent(new CustomEvent("selectVehicle", { detail: model }));
 ```
-── Toyota Models ──
-Toyota RAV4, Highlander, Grand Highlander, Camry, Corolla, Prius,
-Crown, Crown Signia, bZ4X, C-HR, 4Runner, Sequoia, Sienna,
-Tacoma, Tundra, Land Cruiser
-
-── General ──
-Not sure yet — need guidance
-Trade-In Appraisal
-Financing / Leasing Help
-General Question
+Contact.tsx listens via `useEffect`:
+```js
+window.addEventListener("selectVehicle", handler);
 ```
+The handler finds the matching option in `interestOptions` and sets it in form state.
 
-### Footer (`components/layout/Footer.tsx`)
-- Quick Links · Toyota Models · Areas Served
-- Contact info, social icons
-- "Serving Texas families" language
-- Address: 21555 Katy Fwy, Katy, TX 77450
+### TradeIn (`components/sections/TradeIn.tsx`)
+- 7-field form: Name, Phone, Year, Make, Model, Mileage (optional), Condition (optional select)
+- Sends to `nahom.estifanos@drivetoyotaofkaty.com` via Resend
+- On success → redirects to `/thank-you`
 
-### FloatingActions (`components/layout/FloatingActions.tsx`)
-- Sticky bottom-right buttons: Call · Text
-- Visible on all pages
+### About (`components/sections/About.tsx`)
+- Nahom's bio, headshot (`/public/headshot.jpg`), social links
+- Social hrefs are currently `"#"` placeholder — update with real URLs when ready
 
-### ExitIntentPopup (`components/ExitIntentPopup.tsx`)
-- Fires when mouse leaves viewport (top) OR after 45 seconds
-- Email capture form + Schedule Now + Call Me buttons
-- One-time per session (dismissed state)
+### Thank You Page (`app/thank-you/page.tsx`)
+- "You're All Set!" with green checkmark
+- "I'll reach out within **30 minutes**"
+- Call / Text links for faster contact
+- Back to Home button
 
 ---
 
-## 6. API Routes
+## 6. Email / Forms
 
-### `/api/contact` — `app/api/contact/route.ts`
-```
-POST payload: { name, phone, interest, message? }
-Validates: name + phone + interest required
-Sends to: nahom.estifanos@drivetoyotaofkaty.com
-Subject: "New Lead – [Name] ([Interest])"
-Requires: RESEND_API_KEY env var
-```
+### API Routes
+Both routes use the same pattern — Resend is **lazy-initialized inside the POST handler** (not at module level, to avoid build errors).
 
-### `/api/trade-in` — `app/api/trade-in/route.ts`
-```
-POST payload: { name, phone, year, make, model, mileage?, condition? }
-Validates: name + phone + year + make + model required
-Sends to: nahom.estifanos@drivetoyotaofkaty.com
-Subject: "Trade-In Request – [Year] [Make] [Model]"
-Requires: RESEND_API_KEY env var
-```
+**Contact form → `/api/contact/route.ts`**
+- Accepts: `{ name, phone, interest, message }`
+- Required: name, phone, interest
+- Subject: `New Lead – [name] ([interest])`
+- Sends to: `nahom.estifanos@drivetoyotaofkaty.com`
 
-### `/thank-you` — `app/thank-you/page.tsx`
-- Success page both forms redirect to after submission
-- Links to call/text (202) 553-1080
-- "Back to Home" button
+**Trade-in form → `/api/trade-in/route.ts`**
+- Accepts: `{ name, phone, year, make, model, mileage, condition }`
+- Required: name, phone, year, make, model
+- Subject: `Trade-In Request – [year] [make] [model]`
+- Sends to: `nahom.estifanos@drivetoyotaofkaty.com`
+
+### Resend Setup (Required for emails to work)
+1. Go to [resend.com](https://resend.com) → create account
+2. API Keys → Create API Key → copy it
+3. Go to Vercel → your project → Settings → Environment Variables
+4. Add: `RESEND_API_KEY` = your key (all environments)
+5. Redeploy (Vercel dashboard → Deployments → Redeploy)
+
+The `from` address is currently `onboarding@resend.dev` (Resend's free sandbox domain). To send from a custom address like `hello@drivewithnahom.com`, add the domain in Resend → Domains and update the `from` field in both route files.
 
 ---
 
-## 7. Environment Variables
+## 7. Design System
 
-| Variable | Where to set | Value |
+### Colors
+| Token | Value | Use |
 |---|---|---|
-| `RESEND_API_KEY` | Vercel → Project Settings → Environment Variables | Get from resend.com |
+| `toyota-red` | `#EB0A1E` | Primary CTAs, accents |
+| `toyota-red-dark` | `#C00817` | Hover state |
+| `toyota-red-light` | `#FF1F30` | Active state |
+| `gold` | `#C9A84C` | Warm accents |
+| `ink-secondary` | `#A0A0B4` | Body text |
+| `ink-muted` | `#5A5A72` | Placeholder, captions |
+| Background | `#050507` | Page background |
+| Surface | `#0D0D12` | Cards |
 
-**To get RESEND_API_KEY:**
-1. Sign up at resend.com (free)
-2. Go to API Keys → Create API Key
-3. Copy the `re_...` key (shown only once)
-4. Paste into Vercel env vars → Save → Redeploy
+### Key CSS Classes (globals.css)
+- `.glass` — semi-transparent frosted card
+- `.glass-strong` — stronger glass for form containers
+- `.glass-dark` — dark frosted glass for header
+- `.btn-primary` — red pill button with glow + scale hover
+- `.btn-secondary` — ghost pill button
+- `.label-tag` — small red uppercase badge
+- `.section-pad` — `py-24 md:py-32` section spacing
+- `.text-gradient-red` — red gradient text fill
+- `.grid-bg` — subtle grid line background
 
----
+### Typography
+- **Display font:** DM Serif Display (headings, stats)
+- **Body font:** Inter (all other text)
 
-## 8. Deployment (Vercel)
-
-- **Auto-deploys** every time `main` branch is pushed
-- Build command: `npm run build` (Next.js)
-- Framework detected automatically by Vercel
-- Node version: 20+
-- Must add `RESEND_API_KEY` env var manually in Vercel dashboard
-
-**To trigger a redeploy manually:**
-Vercel Dashboard → Deployments → ••• → Redeploy
-
----
-
-## 9. Git Commit History (newest first)
-
-```
-74a42a1  Add Tell Me More textarea to contact form
-41fb74f  P2-P4: Vehicles qualifier, warranty simplification, 3-field contact form
-f44cb6f  Mark bZ4X and C-HR as electric vehicles with distinct EV styling
-d7f0ec6  Add Sequoia vehicle photo
-dfe7c6c  Add vehicle photos to public/vehicles/ (15 images)
-9898163  Add bZ4X, Crown Signia, Prius, C-HR, 4Runner + Cars/SUVs/Trucks sections
-79b872a  Redesign Vehicles section with floating car images
-5cf1f5e  Fix input text visibility, address, serving area, contact form email
-a418d81  Wire forms to Resend, update 2026-2027 lineup, fix contact info
-e922d84  Downgrade to Next.js 15.5.19 for Vercel compatibility
-0225c67  Wire up headshot photo in About section
-7065270  Add Nahom headshot photo
-48920e6  Initial build — world-class Toyota personal brand website
-```
+### Mobile Fixes Applied
+- `input, textarea, select { color-scheme: dark; color: white; }` — fixes invisible typed text on iOS/Android
+- `html { overflow-x: hidden; max-width: 100%; }` — fixes horizontal drag-to-black on mobile
 
 ---
 
-## 10. Known Pending Items
+## 8. Branding Rules
 
-| Item | Status | Notes |
-|---|---|---|
-| `RESEND_API_KEY` in Vercel | ⚠️ Action required | Forms won't send email without this |
-| Contact form delivery test | ⚠️ Verify | Submit the form and confirm email arrives |
-| Real domain | ⚠️ Pending | Replace `YOUR-DOMAIN-HERE.com` in `app/layout.tsx` line 19 |
-| Social media URLs | ⚠️ Pending | `About.tsx` line 96–98 has `href: "#"` placeholders for LinkedIn/Instagram/Facebook |
-| Google Search Console | ⚠️ Pending | Uncomment verification in `app/layout.tsx` line 78 |
-| Calendly booking link | Optional | Add a "Book a Time" button to contact section once you have a Calendly URL |
-| reCAPTCHA spam protection | Optional | Needs Google site key from console.google.com |
-| Lighthouse audit | Optional | Run in Chrome DevTools → check Performance + Accessibility scores |
-
----
-
-## 11. Files That Should NOT Be Touched
-
-| File | Reason |
+| Surface | What to say |
 |---|---|
-| `components/sections/SpecialOffers.tsx` | Kept but not rendered — leave as-is |
-| `public/headshot.jpg` | Nahom's photo — do not overwrite |
-| `public/vehicles/*.png` | 16 transparent vehicle PNGs |
-| `package-lock.json` | Auto-managed by npm |
+| Header subtitle | "Toyota Specialist · Katy, TX" |
+| Hero badge | "Toyota Product Specialist · Katy, Texas" |
+| Footer subtitle | "Toyota Specialist · Katy, TX" |
+| Footer warranty blurb | "through me includes an exclusive lifetime powertrain warranty" |
+| Footer copyright | "Nahom Estifanos · Toyota Product Specialist · Katy, TX" |
+| Warranty section | No mention of Toyota of Katy. "Exclusive to my customers only." |
+| Contact card | "Visit the Dealership · Toyota of Katy · Katy, TX" (only place dealership name appears) |
 
 ---
 
-## 12. How to Add/Change Things Later
+## 9. SEO & Metadata (`app/layout.tsx`)
 
-### Change a vehicle photo
-Replace the file in `public/vehicles/` with the same filename → push to main → Vercel redeploys.
+- **Tab title:** "Drive With Nahom" (template: `%s | Drive With Nahom`)
+- **Meta description:** Transparent pricing, lifetime powertrain warranty, pressure-free experience
+- **Keywords:** Toyota Katy TX, Toyota Houston, Nahom Estifanos Toyota, etc.
+- **Open Graph:** Full og-image config pointing to `/og-image.jpg`
+- **Twitter Card:** `summary_large_image`
+- **Canonical:** `https://www.drivewithnahom.com`
+- **JSON-LD schema:** Person schema — name, jobTitle, worksFor (AutoDealer), telephone, email, areaServed (Katy, Houston, Sugar Land, Cypress)
 
-### Add a new vehicle
-1. Add PNG to `public/vehicles/newmodel.png`
-2. Add entry to the `vehicles` array in `components/sections/Vehicles.tsx`
-3. Add `"Toyota NewModel"` to `interestOptions` in `components/sections/Contact.tsx`
-
-### Change contact info (phone/email/address)
-Search the whole project for the old value and replace:
-- Phone: `(202) 553-1080` / `+12025531080`
-- Email: `nahom.estifanos@drivetoyotaofkaty.com`
-- Address: `21555 Katy Fwy, Katy, TX 77450`
-
-### Update business hours
-Edit `components/sections/Contact.tsx` (hours card) and `components/layout/Footer.tsx`.
-
-### Add a testimonial
-Edit the testimonials array in `components/sections/Testimonials.tsx`.
-
-### Set the real domain
-1. Open `app/layout.tsx`
-2. Line 19: change `YOUR-DOMAIN-HERE.com` to your real domain
-3. Also update the `canonical` URL and JSON-LD schema
+**TODO before launch:**
+- Add Google Search Console verification code (line 77 in layout.tsx, commented out)
+- Create `/public/og-image.jpg` — 1200×630px social preview image
 
 ---
 
-*Last updated: June 27, 2026*
+## 10. Favicon (`public/favicon.svg`)
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#050507"/>
+  <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle"
+        font-family="Georgia, serif" font-size="20" font-weight="700"
+        fill="#EB0A1E" letter-spacing="-1">N</text>
+</svg>
+```
+Referenced in `layout.tsx` as:
+```tsx
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="alternate icon" href="/favicon.ico" />
+```
+
+---
+
+## 11. Git Workflow
+
+Every push goes to BOTH branches:
+```bash
+git push origin claude/install-uiux-pro-max-skill-2afxpk
+git push origin claude/install-uiux-pro-max-skill-2afxpk:main
+```
+Vercel is connected to `main` → auto-deploys on every push.
+
+---
+
+## 12. Remaining To-Dos
+
+| Item | Priority | Notes |
+|---|---|---|
+| Set `RESEND_API_KEY` in Vercel | **Critical** | Without this, no lead emails arrive |
+| Add `drivewithnahom.com` domain in Vercel | High | Vercel → Settings → Domains |
+| Create `/public/og-image.jpg` | Medium | 1200×630px, for social sharing preview |
+| Update social media URLs in About.tsx | Medium | LinkedIn, Instagram, Facebook (currently `"#"`) |
+| Google Search Console verification | Low | Uncomment line 77 in layout.tsx |
+| Custom Resend from-address | Low | Add domain in Resend to send from `@drivewithnahom.com` |
+| Calendly / booking link (optional) | Optional | If you want direct calendar scheduling |
+| reCAPTCHA spam protection (optional) | Optional | Needs Google site key |
+
+---
+
+## 13. Known Bug Fixes Applied
+
+| Bug | Root Cause | Fix |
+|---|---|---|
+| Build error: `Cannot find name 'submitted'` | Old ternary in TradeIn.tsx used `submitted` after it was renamed to `submitting` | Removed the ternary wrapper entirely |
+| Resend build error | `new Resend(key)` at module level called before env vars were available | Moved instantiation inside the POST handler |
+| Contact form emails not sending | `replyTo: email` in the contact route caused Resend to silently error | Removed `replyTo` field entirely |
+| Invisible typed text in mobile forms | Browser CSS override on dark-bg inputs | `input, textarea, select { color-scheme: dark; color: white; }` |
+| Mobile horizontal scroll / black area on drag | `overflow-x: hidden` on `body` only — mobile scrolls `html` element | Added `overflow-x: hidden; max-width: 100%` to `html` in globals.css |
