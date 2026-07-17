@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
             </div>
 
             <p style="text-align:center;font-size:12px;color:#8A8A8A;margin-top:20px">
-              Questions? hello@houstonskateproject.org
+              Questions? info@houstonskateproject.com
             </p>
           </div>
         `,

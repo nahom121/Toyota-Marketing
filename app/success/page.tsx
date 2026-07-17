@@ -118,7 +118,7 @@ function SuccessContent() {
 
         <p className="text-ink-muted text-xs mt-6">
           A confirmation email has been sent to your inbox.
-          Questions? hello@houstonskateproject.org
+          Questions? info@houstonskateproject.com
         </p>
       </motion.div>
     </main>
