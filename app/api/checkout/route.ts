@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 
 export async function POST(request: NextRequest) {
   try {

@@ -21,7 +21,7 @@ const dancingScript = Dancing_Script({
   display: "swap",
 });
 
-const SITE_URL = "https://www.houstonskateproject.com";
+const SITE_URL = "https://www.houstonskateproject.org";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
