@@ -231,7 +231,7 @@ export default function Registration() {
       const { url } = await res.json();
       window.location.href = url;
     } catch {
-      setError("Something went wrong. Please try again or email info@houstonskateproject.com");
+      setError("Something went wrong. Please try again or email info@houstonskateproject.org");
       setLoading(false);
     }
   };

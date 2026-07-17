@@ -27,7 +27,7 @@ const faqs = [
   },
   {
     q: "What is the refund policy?",
-    a: "Tickets are generally non-refundable, but if the event is cancelled or rescheduled, you will receive a full refund or the option to transfer your ticket to the new date. Reach out to info@houstonskateproject.com with any questions.",
+    a: "Tickets are generally non-refundable, but if the event is cancelled or rescheduled, you will receive a full refund or the option to transfer your ticket to the new date. Reach out to info@houstonskateproject.org with any questions.",
   },
   {
     q: "When will the location be announced?",
@@ -112,8 +112,8 @@ export default function FAQ() {
           className="text-center text-ink-muted text-sm mt-8"
         >
           Still have questions?{" "}
-          <a href="mailto:info@houstonskateproject.com" className="text-crimson hover:underline">
-            info@houstonskateproject.com
+          <a href="mailto:info@houstonskateproject.org" className="text-crimson hover:underline">
+            info@houstonskateproject.org
           </a>
         </motion.p>
       </div>
