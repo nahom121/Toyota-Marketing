@@ -25,9 +25,9 @@ const config: Config = {
           muted: "#4A4A4A",
         },
         crimson: {
-          DEFAULT: "#C41E3A",
-          dark: "#A01830",
-          light: "#E03050",
+          DEFAULT: "#8B5E3C",
+          dark: "#6B4528",
+          light: "#A67448",
         },
         forest: "#2D5A3D",
         ink: {
@@ -43,8 +43,8 @@ const config: Config = {
         script: ["var(--font-script)", "cursive"],
       },
       boxShadow: {
-        "crimson-glow": "0 0 30px rgba(196,30,58,0.35)",
-        "crimson-glow-lg": "0 0 60px rgba(196,30,58,0.25)",
+        "crimson-glow": "0 0 30px rgba(139,94,60,0.40)",
+        "crimson-glow-lg": "0 0 60px rgba(139,94,60,0.30)",
         "sand-glow": "0 0 40px rgba(212,168,106,0.3)",
         warm: "0 4px 24px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08)",
         "warm-lg": "0 12px 48px rgba(0,0,0,0.16), 0 4px 12px rgba(0,0,0,0.1)",

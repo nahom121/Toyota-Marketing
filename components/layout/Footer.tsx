@@ -1,6 +1,6 @@
 "use client";
 
-import { Instagram, Music2 } from "lucide-react";
+import { Music2 } from "lucide-react";
 
 export default function Footer() {
   const scrollTo = (href: string) => {
@@ -52,17 +52,6 @@ export default function Footer() {
           {/* Social */}
           <div className="flex flex-col items-center md:items-start gap-3">
             <p className="text-white/40 text-xs uppercase tracking-widest">Follow Along</p>
-            <a
-              href="https://www.instagram.com/houstonskateproject"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2.5 text-white/70 hover:text-white transition-colors group"
-            >
-              <div className="w-9 h-9 rounded-xl bg-white/10 group-hover:bg-crimson flex items-center justify-center transition-colors">
-                <Instagram className="w-4 h-4" />
-              </div>
-              <span className="text-sm font-medium">@HoustonSkateProject</span>
-            </a>
             <a
               href="https://www.tiktok.com/@houstonskateproject"
               target="_blank"

@@ -65,7 +65,7 @@ export default function Hero() {
             transition={{ delay: 0.1 }}
             className="mb-6"
           >
-            <span className="label-tag-dark">Pop-Up Workshop · July 26th, 2026</span>
+            <span className="label-tag-dark">Next Pop-Up Workshop · July 26th, 2026</span>
           </motion.div>
 
           {/* Headline */}
