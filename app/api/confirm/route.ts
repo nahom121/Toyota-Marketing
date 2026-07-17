@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     if (email) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: "Houston Skate Project <onboarding@resend.dev>",
+        from: "Houston Skate Project <info@houstonskateproject.com>",
         to: email,
         subject: "You're in! Houston Skate Project — July 26, 2026 🛼",
         html: `
