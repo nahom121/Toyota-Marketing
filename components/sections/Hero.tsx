@@ -1,23 +1,37 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calendar, Play, Shield, Truck, Star, ChevronDown, MapPin } from "lucide-react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { ChevronDown } from "lucide-react";
 
-const trustBadges = [
-  { icon: Shield, label: "Lifetime Powertrain Warranty", color: "text-gold" },
-  { icon: Truck, label: "Complimentary Service Loaners", color: "text-blue-400" },
-  { icon: Star, label: "5-Star Customer Experience", color: "text-yellow-400" },
-];
+function useCountdown(targetDate: Date) {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-const stats = [
-  { value: "500+", label: "Vehicles Sold" },
-  { value: "5★", label: "Google Rating" },
-  { value: "100%", label: "Transparent Pricing" },
-  { value: "0", label: "Sales Pressure" },
-];
+  useEffect(() => {
+    const calc = () => {
+      const diff = targetDate.getTime() - Date.now();
+      if (diff <= 0) return setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      setTimeLeft({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    };
+    calc();
+    const id = setInterval(calc, 1000);
+    return () => clearInterval(id);
+  }, [targetDate]);
+
+  return timeLeft;
+}
 
 export default function Hero() {
-  const handleScroll = (href: string) => {
+  const eventDate = new Date("2026-07-26T10:00:00");
+  const { days, hours, minutes, seconds } = useCountdown(eventDate);
+
+  const scrollTo = (href: string) => {
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
@@ -25,162 +39,169 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#050507]"
+      className="relative min-h-screen flex flex-col overflow-hidden bg-charcoal"
     >
-      {/* Background elements */}
-      <div className="absolute inset-0 grid-bg opacity-50" />
+      {/* Background texture */}
+      <div
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage: `repeating-linear-gradient(0deg, #D4A86A 0px, #D4A86A 1px, transparent 1px, transparent 60px),
+                            repeating-linear-gradient(90deg, #D4A86A 0px, #D4A86A 1px, transparent 1px, transparent 60px)`,
+        }}
+      />
 
-      {/* Red glow orb - top right */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-toyota-red/8 blur-[120px] pointer-events-none" />
-      {/* Purple glow orb - bottom left */}
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-purple-900/15 blur-[100px] pointer-events-none" />
-      {/* Center subtle glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-toyota-red/5 blur-[150px] pointer-events-none" />
+      {/* Sand glow */}
+      <div className="absolute top-0 right-0 w-[700px] h-[700px] rounded-full bg-sand/10 blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-crimson/8 blur-[120px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16 flex flex-col items-center text-center">
+      <div className="relative z-10 flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-12 grid lg:grid-cols-2 gap-12 items-center">
 
-        {/* Location badge */}
+        {/* Left: Text */}
+        <div>
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-6"
+          >
+            <span className="label-tag-dark">Pop-Up Workshop · July 26th, 2026</span>
+          </motion.div>
+
+          {/* Headline */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+          >
+            <h1 className="font-display text-white leading-[1.0] tracking-tight mb-2">
+              <span className="block text-5xl sm:text-6xl lg:text-7xl">Built by a</span>
+              <span className="block text-5xl sm:text-6xl lg:text-7xl">champion.</span>
+              <span className="block text-5xl sm:text-6xl lg:text-7xl mt-2">
+                Open to{" "}
+                <span className="font-script text-sand" style={{ fontSize: "1.1em" }}>
+                  everyone.
+                </span>
+              </span>
+            </h1>
+          </motion.div>
+
+          {/* Subhead */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="text-white/70 text-lg leading-relaxed mt-6 mb-8 max-w-lg"
+          >
+            Michaela has spent 7 years competing and winning on skates at the national level.
+            Now she&apos;s bringing that energy straight to Houston — a pop-up skating experience
+            built for{" "}
+            <span className="text-white font-medium">everyone</span>.
+            First-timers. Pros. Kids. Come roll, express yourself, and have the time of your life.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="flex flex-col sm:flex-row gap-4 mb-12"
+          >
+            <button onClick={() => scrollTo("#tickets")} className="btn-primary text-base px-8 py-4">
+              Get Your Tickets — $25
+            </button>
+            <button onClick={() => scrollTo("#about")} className="btn-outline-white text-base px-8 py-4">
+              Meet Michaela
+            </button>
+          </motion.div>
+
+          {/* Countdown */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.65 }}
+          >
+            <p className="text-white/40 text-xs uppercase tracking-widest mb-3">Event starts in</p>
+            <div className="grid grid-cols-4 gap-3 max-w-xs">
+              {[
+                { value: days, label: "Days" },
+                { value: hours, label: "Hrs" },
+                { value: minutes, label: "Min" },
+                { value: seconds, label: "Sec" },
+              ].map(({ value, label }) => (
+                <div key={label} className="bg-white/8 rounded-xl p-3 text-center border border-white/10">
+                  <div className="font-display text-2xl text-white leading-none">
+                    {String(value).padStart(2, "0")}
+                  </div>
+                  <div className="text-white/40 text-[10px] uppercase tracking-wider mt-1">{label}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Right: Photo */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex items-center gap-2 mb-8"
+          initial={{ opacity: 0, x: 60 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+          className="relative hidden lg:block"
         >
-          <div className="label-tag">
-            <MapPin className="w-3 h-3" />
-            Toyota Product Specialist · Katy, Texas
+          {/* Red border frame (poster-inspired) */}
+          <div className="absolute -inset-3 border-2 border-crimson/40 rounded-3xl" />
+
+          {/* Sand poster bg */}
+          <div className="relative rounded-2xl overflow-hidden bg-sand/20 aspect-[3/4]">
+            <Image
+              src="/michaela-skate.jpg"
+              alt="Michaela skating — Houston Skate Project"
+              fill
+              className="object-cover object-top"
+              priority
+            />
+            {/* Overlay gradient at bottom */}
+            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent" />
+
+            {/* Poster-style text overlay */}
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              <div className="font-script text-sand text-5xl leading-none mb-1">Skate</div>
+              <div className="font-display text-white text-lg tracking-wider uppercase">Houston · 2026</div>
+            </div>
           </div>
-        </motion.div>
 
-        {/* Main headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] leading-[1.05] tracking-tight mb-6 max-w-5xl"
-        >
-          Your Toyota{" "}
-          <span className="relative">
-            <span className="text-gradient-red">Buying Experience</span>
-            <motion.svg
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 1, delay: 0.8 }}
-              className="absolute -bottom-2 left-0 w-full"
-              viewBox="0 0 400 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M 0 8 Q 100 2 200 8 Q 300 14 400 8"
-                stroke="#EB0A1E"
-                strokeWidth="2"
-                strokeLinecap="round"
-                fill="none"
-                opacity="0.6"
-              />
-            </motion.svg>
-          </span>{" "}
-          <br />Starts Here
-        </motion.h1>
-
-        {/* Subheadline */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.35 }}
-          className="text-lg md:text-xl text-ink-secondary max-w-2xl mb-10 leading-relaxed"
-        >
-          Transparent pricing. Personalized service. Lifetime powertrain protection.{" "}
-          <span className="text-white font-medium">Serving Houston and Katy, Texas.</span>
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.45 }}
-          className="flex flex-col sm:flex-row items-center gap-4 mb-14"
-        >
-          <button
-            onClick={() => handleScroll("#contact")}
-            className="btn-primary text-base px-8 py-4 min-w-[220px] group"
+          {/* Floating badge */}
+          <motion.div
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-4 -left-4 bg-sand text-charcoal rounded-2xl px-4 py-3 shadow-warm-lg"
           >
-            <Calendar className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            Schedule My Appointment
-          </button>
-          <button
-            onClick={() => handleScroll("#vehicles")}
-            className="btn-secondary text-base px-8 py-4 min-w-[220px] group"
+            <div className="font-display text-2xl leading-none">7+</div>
+            <div className="text-xs font-bold uppercase tracking-wide leading-none mt-0.5">Years</div>
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            className="absolute -bottom-4 -right-4 bg-crimson text-white rounded-2xl px-4 py-3 shadow-crimson-glow"
           >
-            <Play className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            View Available Vehicles
-          </button>
-        </motion.div>
-
-        {/* Trust badges */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.55 }}
-          className="flex flex-wrap justify-center gap-3 mb-16"
-        >
-          {trustBadges.map((badge, i) => {
-            const Icon = badge.icon;
-            return (
-              <motion.div
-                key={badge.label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6 + i * 0.08 }}
-                className="flex items-center gap-2 glass rounded-full px-4 py-2 text-sm font-medium"
-              >
-                <Icon className={`w-4 h-4 ${badge.color}`} />
-                <span className="text-ink-secondary">{badge.label}</span>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-
-        {/* Stats row */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.7 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/08 rounded-2xl overflow-hidden w-full max-w-3xl glass"
-        >
-          {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 + i * 0.1 }}
-              className="flex flex-col items-center py-5 px-4 bg-white/[0.02] hover:bg-white/[0.05] transition-colors"
-            >
-              <span className="font-display text-3xl md:text-4xl text-white mb-1">
-                {stat.value}
-              </span>
-              <span className="text-ink-secondary text-xs font-medium tracking-wide uppercase">
-                {stat.label}
-              </span>
-            </motion.div>
-          ))}
+            <div className="font-display text-2xl leading-none">Natl.</div>
+            <div className="text-xs font-bold uppercase tracking-wide leading-none mt-0.5">Champion</div>
+          </motion.div>
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll cue */}
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.4 }}
-        onClick={() => handleScroll("#trust-bar")}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-ink-muted hover:text-ink-secondary transition-colors group"
-        aria-label="Scroll down"
+        transition={{ delay: 1.5 }}
+        onClick={() => scrollTo("#about")}
+        className="relative z-10 mx-auto mb-8 flex flex-col items-center gap-2 text-white/40 hover:text-white/70 transition-colors"
       >
-        <span className="text-xs tracking-widest uppercase font-medium">Scroll</span>
+        <span className="text-[10px] uppercase tracking-widest">Scroll</span>
         <motion.div
           animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 1.5, repeat: Infinity }}
         >
           <ChevronDown className="w-5 h-5" />
         </motion.div>
