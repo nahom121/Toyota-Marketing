@@ -69,6 +69,29 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    // Notify organizer
+    const organizerEmail = process.env.ORGANIZER_EMAIL;
+    if (organizerEmail) {
+      const resend2 = new Resend(process.env.RESEND_API_KEY);
+      await resend2.emails.send({
+        from: "Houston Skate Project <info@houstonskateproject.org>",
+        to: organizerEmail,
+        subject: `New booking: ${name} — ${ticketCount} ticket${Number(ticketCount) > 1 ? "s" : ""}`,
+        html: `
+          <div style="font-family:sans-serif;max-width:400px;margin:0 auto;padding:24px">
+            <h2 style="color:#1C1C1C;margin:0 0 16px">New Registration 🛼</h2>
+            <table style="width:100%;font-size:14px;color:#1C1C1C;border-collapse:collapse">
+              <tr><td style="padding:6px 0;color:#8A8A8A">Name</td><td style="padding:6px 0;font-weight:600;text-align:right">${name}</td></tr>
+              <tr><td style="padding:6px 0;color:#8A8A8A">Email</td><td style="padding:6px 0;text-align:right">${email}</td></tr>
+              <tr><td style="padding:6px 0;color:#8A8A8A">Tickets</td><td style="padding:6px 0;font-weight:600;text-align:right">${ticketCount}</td></tr>
+              ${Number(rentalCount) > 0 ? `<tr><td style="padding:6px 0;color:#8A8A8A">Rentals</td><td style="padding:6px 0;font-weight:600;text-align:right">${rentalCount}</td></tr>` : ""}
+              <tr style="border-top:1px solid #eee"><td style="padding:10px 0 0;font-weight:bold">Paid</td><td style="padding:10px 0 0;text-align:right;font-weight:bold;color:#8B5E3C;font-size:18px">$${amountPaid}</td></tr>
+            </table>
+          </div>
+        `,
+      });
+    }
+
     return NextResponse.json({
       success: true,
       name,

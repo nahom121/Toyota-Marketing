@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
+const MAX_CAPACITY = 30;
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,6 +14,30 @@ export async function POST(request: NextRequest) {
     }
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+    // Capacity check — count all paid tickets before creating session
+    const allSessions: Stripe.Checkout.Session[] = [];
+    let hasMore = true;
+    let startingAfter: string | undefined;
+    while (hasMore) {
+      const page = await stripe.checkout.sessions.list({
+        limit: 100,
+        ...(startingAfter ? { starting_after: startingAfter } : {}),
+      });
+      allSessions.push(...page.data);
+      hasMore = page.has_more;
+      if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
+    }
+    const sold = allSessions
+      .filter((s) => s.payment_status === "paid")
+      .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
+    const remaining = Math.max(0, MAX_CAPACITY - sold);
+    if (ticketCount > remaining) {
+      return NextResponse.json(
+        { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left.` },
+        { status: 409 }
+      );
+    }
 
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
       {

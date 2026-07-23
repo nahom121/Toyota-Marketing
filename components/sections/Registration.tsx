@@ -6,6 +6,7 @@ import { Check, ChevronDown, Minus, Plus, ShoppingCart, User, Phone, Mail } from
 
 const TICKET_PRICE = 25;
 const RENTAL_PRICE = 5;
+const MAX_CAPACITY = 30;
 
 const skateSizes = [
   { label: "Women's Sizes", options: ["Women's 5", "Women's 6", "Women's 7", "Women's 8", "Women's 9", "Women's 10", "Women's 11", "Women's 12"] },
@@ -182,6 +183,20 @@ export default function Registration() {
   const [waiverAccepted, setWaiverAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [spotsLeft, setSpotsLeft] = useState<number | null>(null);
+  const [isSoldOut, setIsSoldOut] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/capacity")
+      .then((r) => r.json())
+      .then((d) => {
+        setSpotsLeft(d.remaining);
+        setIsSoldOut(d.isSoldOut);
+      })
+      .catch(() => setSpotsLeft(MAX_CAPACITY));
+  }, []);
+
+  const maxTickets = spotsLeft !== null ? Math.min(10, spotsLeft) : 10;
 
   // Sync ticket array length to count
   useEffect(() => {
@@ -199,7 +214,7 @@ export default function Registration() {
   const updateTicket = (i: number, t: TicketInfo) =>
     setTickets((prev) => { const next = [...prev]; next[i] = t; return next; });
 
-  const step1Valid = ticketCount >= 1 && ticketCount <= 10;
+  const step1Valid = ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut;
   const step2Valid = tickets.every((t, i) => {
     if (!t.name.trim()) return false;
     if (i === 0 && (!t.email || t.email === "N/A" || !t.phone || t.phone === "N/A")) return false;
@@ -261,6 +276,18 @@ export default function Registration() {
             General Admission: <span className="font-semibold text-charcoal">$25</span> ·
             Skate Rental add-on: <span className="font-semibold text-charcoal">$5</span>
           </p>
+          {spotsLeft !== null && (
+            <div className={`inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full text-sm font-semibold ${
+              isSoldOut
+                ? "bg-charcoal/10 text-ink-muted"
+                : spotsLeft <= 5
+                ? "bg-crimson/10 text-crimson border border-crimson/20"
+                : "bg-sand/20 text-charcoal border border-sand/40"
+            }`}>
+              <span className={`w-2 h-2 rounded-full ${isSoldOut ? "bg-ink-muted" : spotsLeft <= 5 ? "bg-crimson animate-pulse" : "bg-forest"}`} />
+              {isSoldOut ? "Sold Out" : `${spotsLeft} of ${MAX_CAPACITY} spots remaining`}
+            </div>
+          )}
         </motion.div>
 
         <StepIndicator current={step} />
@@ -280,41 +307,51 @@ export default function Registration() {
                 <h3 className="font-display text-2xl text-charcoal mb-2">How many tickets?</h3>
                 <p className="text-ink-secondary text-sm mb-8">Each ticket admits one person. You can add rentals per person in the next step.</p>
 
-                <div className="flex items-center justify-center gap-6 mb-10">
-                  <button
-                    onClick={() => setTicketCount(Math.max(1, ticketCount - 1))}
-                    className="w-12 h-12 rounded-full border-2 border-charcoal/20 flex items-center justify-center hover:border-crimson hover:text-crimson transition-colors"
-                  >
-                    <Minus className="w-5 h-5" />
-                  </button>
-                  <div className="text-center">
-                    <div className="font-display text-6xl text-charcoal">{ticketCount}</div>
-                    <div className="text-ink-muted text-sm">{ticketCount === 1 ? "ticket" : "tickets"}</div>
+                {isSoldOut ? (
+                  <div className="text-center py-10">
+                    <p className="font-display text-2xl text-charcoal mb-2">This class is sold out.</p>
+                    <p className="text-ink-secondary text-sm">Follow <strong>@HoustonSkateProject</strong> for future event announcements.</p>
                   </div>
-                  <button
-                    onClick={() => setTicketCount(Math.min(10, ticketCount + 1))}
-                    className="w-12 h-12 rounded-full border-2 border-charcoal/20 flex items-center justify-center hover:border-crimson hover:text-crimson transition-colors"
-                  >
-                    <Plus className="w-5 h-5" />
-                  </button>
-                </div>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-center gap-6 mb-10">
+                      <button
+                        onClick={() => setTicketCount(Math.max(1, ticketCount - 1))}
+                        className="w-12 h-12 rounded-full border-2 border-charcoal/20 flex items-center justify-center hover:border-crimson hover:text-crimson transition-colors"
+                      >
+                        <Minus className="w-5 h-5" />
+                      </button>
+                      <div className="text-center">
+                        <div className="font-display text-6xl text-charcoal">{ticketCount}</div>
+                        <div className="text-ink-muted text-sm">{ticketCount === 1 ? "ticket" : "tickets"}</div>
+                      </div>
+                      <button
+                        onClick={() => setTicketCount(Math.min(maxTickets, ticketCount + 1))}
+                        disabled={ticketCount >= maxTickets}
+                        className="w-12 h-12 rounded-full border-2 border-charcoal/20 flex items-center justify-center hover:border-crimson hover:text-crimson transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      >
+                        <Plus className="w-5 h-5" />
+                      </button>
+                    </div>
 
-                {/* Quick selectors */}
-                <div className="flex justify-center gap-2 mb-10 flex-wrap">
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <button
-                      key={n}
-                      onClick={() => setTicketCount(n)}
-                      className={`w-10 h-10 rounded-xl text-sm font-semibold border-2 transition-all ${
-                        ticketCount === n
-                          ? "bg-crimson border-crimson text-white"
-                          : "border-charcoal/20 text-ink-secondary hover:border-sand"
-                      }`}
-                    >
-                      {n}
-                    </button>
-                  ))}
-                </div>
+                    {/* Quick selectors */}
+                    <div className="flex justify-center gap-2 mb-10 flex-wrap">
+                      {[1, 2, 3, 4, 5].filter((n) => n <= maxTickets).map((n) => (
+                        <button
+                          key={n}
+                          onClick={() => setTicketCount(n)}
+                          className={`w-10 h-10 rounded-xl text-sm font-semibold border-2 transition-all ${
+                            ticketCount === n
+                              ? "bg-crimson border-crimson text-white"
+                              : "border-charcoal/20 text-ink-secondary hover:border-sand"
+                          }`}
+                        >
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
 
                 {/* Price preview */}
                 <div className="bg-sand/20 border border-sand/40 rounded-2xl p-4 text-center mb-6">
@@ -326,13 +363,15 @@ export default function Registration() {
                   </p>
                 </div>
 
-                <button
-                  onClick={() => setStep(2)}
-                  disabled={!step1Valid}
-                  className="btn-primary w-full py-4 text-base disabled:opacity-50"
-                >
-                  Continue — Enter Attendee Info
-                </button>
+                {!isSoldOut && (
+                  <button
+                    onClick={() => setStep(2)}
+                    disabled={!step1Valid}
+                    className="btn-primary w-full py-4 text-base disabled:opacity-50"
+                  >
+                    Continue — Enter Attendee Info
+                  </button>
+                )}
               </motion.div>
             )}
 

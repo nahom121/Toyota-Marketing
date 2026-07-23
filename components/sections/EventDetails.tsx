@@ -14,8 +14,8 @@ const details = [
   {
     icon: Clock,
     label: "Time",
-    value: "TBA",
-    sub: "Follow @HoustonSkateProject for announcement",
+    value: "7:00 PM – 11:00 PM",
+    sub: "Doors open at 7 · Session runs until 11",
     color: "bg-sand/30 text-sand-dark",
   },
   {
