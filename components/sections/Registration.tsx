@@ -269,7 +269,7 @@ export default function Registration() {
             Secure your spot.
             <br />
             <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-              July 26th.
+              August 9th.
             </span>
           </h2>
           <p className="text-ink-secondary mt-3 text-base">

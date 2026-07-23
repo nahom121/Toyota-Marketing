@@ -45,7 +45,7 @@ function SuccessContent() {
         </h1>
         <p className="text-ink-secondary text-lg leading-relaxed mb-8">
           Your registration for the Houston Skate Project is confirmed.
-          We can&apos;t wait to see you on July 26th!
+          We can&apos;t wait to see you on August 9th!
         </p>
 
         {/* Order summary */}
@@ -77,7 +77,7 @@ function SuccessContent() {
         {/* Event reminder */}
         <div className="bg-charcoal text-white rounded-2xl p-5 mb-6">
           <Calendar className="w-6 h-6 text-sand mx-auto mb-3" />
-          <p className="font-display text-xl mb-1">July 26th, 2026</p>
+          <p className="font-display text-xl mb-1">August 9th, 2026</p>
           <p className="text-white/60 text-sm">Sky Lab · 4112 Washington Ave, Houston, TX 77007</p>
           <p className="text-white/50 text-xs mt-2">
             Doors open at 7:00 PM · See you on the floor!

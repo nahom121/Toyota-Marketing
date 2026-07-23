@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
           currency: "usd",
           product_data: {
             name: "Houston Skate Project — General Admission",
-            description: "Pop-Up Workshop · July 26th, 2026 · Houston, TX",
+            description: "Pop-Up Workshop · August 9th, 2026 · Houston, TX",
           },
           unit_amount: 2500,
         },
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
       customer_email: primaryEmail,
       metadata: {
         event: "Houston Skate Project",
-        date: "July 26, 2026",
+        date: "August 9, 2026",
         primary_name: primaryName,
         ticket_count: String(ticketCount),
         rental_count: String(rentalCount),
