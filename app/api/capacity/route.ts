@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-
-const MAX_CAPACITY = 30;
+import { SLOTS, SLOT_CAPACITY } from "@/lib/slots";
+import type { Slot } from "@/lib/slots";
 
 function isRefunded(s: Stripe.Checkout.Session): boolean {
   const pi = s.payment_intent as Stripe.PaymentIntent | null;
@@ -28,25 +28,23 @@ export async function GET() {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
-    const sold = sessions
-      .filter((s) => s.payment_status === "paid" && !isRefunded(s))
-      .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
+    const valid = sessions.filter((s) => s.payment_status === "paid" && !isRefunded(s));
 
-    const remaining = Math.max(0, MAX_CAPACITY - sold);
+    const slots = Object.fromEntries(
+      SLOTS.map((slot) => {
+        const sold = valid
+          .filter((s) => s.metadata?.time_slot === slot)
+          .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
+        return [slot, { sold, remaining: Math.max(0, SLOT_CAPACITY - sold), isFull: sold >= SLOT_CAPACITY }];
+      })
+    ) as Record<Slot, { sold: number; remaining: number; isFull: boolean }>;
 
-    return NextResponse.json({
-      sold,
-      remaining,
-      capacity: MAX_CAPACITY,
-      isSoldOut: remaining === 0,
-    });
+    return NextResponse.json({ slots, slotCapacity: SLOT_CAPACITY });
   } catch (error) {
     console.error("Capacity error:", error);
-    return NextResponse.json({
-      sold: 0,
-      remaining: MAX_CAPACITY,
-      capacity: MAX_CAPACITY,
-      isSoldOut: false,
-    });
+    const fallback = Object.fromEntries(
+      SLOTS.map((slot) => [slot, { sold: 0, remaining: SLOT_CAPACITY, isFull: false }])
+    );
+    return NextResponse.json({ slots: fallback, slotCapacity: SLOT_CAPACITY });
   }
 }

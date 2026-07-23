@@ -18,9 +18,9 @@ export async function GET(request: NextRequest) {
     const name = meta.primary_name || "Guest";
     const email = session.customer_email || "";
     const ticketCount = meta.ticket_count || "1";
+    const timeSlot = meta.time_slot || "";
     const amountPaid = ((session.amount_total || 0) / 100).toFixed(2);
 
-    // Send confirmation email
     if (email) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
@@ -30,8 +30,8 @@ export async function GET(request: NextRequest) {
         html: `
           <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#F5EDD9;padding:32px;border-radius:16px">
             <div style="text-align:center;margin-bottom:24px">
-              <div style="display:inline-block;background:#C41E3A;color:white;font-size:32px;width:56px;height:56px;border-radius:50%;line-height:56px;text-align:center;margin-bottom:12px">🛼</div>
-              <h1 style="font-size:28px;color:#1C1C1C;margin:0">You&apos;re registered!</h1>
+              <div style="display:inline-block;background:#8B5E3C;color:white;font-size:32px;width:56px;height:56px;border-radius:50%;line-height:56px;text-align:center;margin-bottom:12px">🛼</div>
+              <h1 style="font-size:28px;color:#1C1C1C;margin:0">You're registered!</h1>
               <p style="color:#4A4A4A;margin-top:8px">Houston Skate Project · Pop-Up Workshop</p>
             </div>
 
@@ -39,10 +39,11 @@ export async function GET(request: NextRequest) {
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Your Order</h2>
               <table style="width:100%;font-size:14px;color:#1C1C1C;border-collapse:collapse">
                 <tr><td style="padding:6px 0">Hi, ${name}!</td></tr>
+                <tr><td style="padding:6px 0">Session</td><td style="padding:6px 0;text-align:right;font-weight:600">${timeSlot}</td></tr>
                 <tr><td style="padding:6px 0">Tickets</td><td style="padding:6px 0;text-align:right;font-weight:600">${ticketCount}</td></tr>
                 <tr style="border-top:1px solid rgba(28,28,28,0.1)">
                   <td style="padding:10px 0 0;font-weight:bold">Total Paid</td>
-                  <td style="padding:10px 0 0;text-align:right;font-weight:bold;color:#C41E3A;font-size:18px">$${amountPaid}</td>
+                  <td style="padding:10px 0 0;text-align:right;font-weight:bold;color:#8B5E3C;font-size:18px">$${amountPaid}</td>
                 </tr>
               </table>
             </div>
@@ -50,10 +51,11 @@ export async function GET(request: NextRequest) {
             <div style="background:white;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid rgba(28,28,28,0.1)">
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Event Details</h2>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📅 <strong>Date:</strong> August 9th, 2026</p>
+              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>Your session:</strong> ${timeSlot}</p>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> Sky Lab · 4112 Washington Ave, Houston, TX 77007</p>
             </div>
 
-            <div style="text-align:center;padding:16px;background:#C41E3A;border-radius:12px;color:white">
+            <div style="text-align:center;padding:16px;background:#8B5E3C;border-radius:12px;color:white">
               <p style="margin:0;font-size:16px;font-weight:bold">See you on the floor! 🎶</p>
               <p style="margin:6px 0 0;font-size:13px;opacity:0.85">Roll how you want. Express who you are.</p>
             </div>
@@ -73,13 +75,14 @@ export async function GET(request: NextRequest) {
       await resend2.emails.send({
         from: "Houston Skate Project <info@houstonskateproject.org>",
         to: organizerEmail,
-        subject: `New booking: ${name} — ${ticketCount} ticket${Number(ticketCount) > 1 ? "s" : ""}`,
+        subject: `New booking: ${name} — ${timeSlot} · ${ticketCount} ticket${Number(ticketCount) > 1 ? "s" : ""}`,
         html: `
           <div style="font-family:sans-serif;max-width:400px;margin:0 auto;padding:24px">
             <h2 style="color:#1C1C1C;margin:0 0 16px">New Registration 🛼</h2>
             <table style="width:100%;font-size:14px;color:#1C1C1C;border-collapse:collapse">
               <tr><td style="padding:6px 0;color:#8A8A8A">Name</td><td style="padding:6px 0;font-weight:600;text-align:right">${name}</td></tr>
               <tr><td style="padding:6px 0;color:#8A8A8A">Email</td><td style="padding:6px 0;text-align:right">${email}</td></tr>
+              <tr><td style="padding:6px 0;color:#8A8A8A">Session</td><td style="padding:6px 0;font-weight:600;text-align:right">${timeSlot}</td></tr>
               <tr><td style="padding:6px 0;color:#8A8A8A">Tickets</td><td style="padding:6px 0;font-weight:600;text-align:right">${ticketCount}</td></tr>
               <tr style="border-top:1px solid #eee"><td style="padding:10px 0 0;font-weight:bold">Paid</td><td style="padding:10px 0 0;text-align:right;font-weight:bold;color:#8B5E3C;font-size:18px">$${amountPaid}</td></tr>
             </table>
@@ -93,6 +96,7 @@ export async function GET(request: NextRequest) {
       name,
       email,
       ticketCount,
+      timeSlot,
       amountPaid,
     });
   } catch (error) {

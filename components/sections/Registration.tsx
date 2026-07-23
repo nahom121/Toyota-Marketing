@@ -5,7 +5,10 @@ import { useState, useEffect } from "react";
 import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-react";
 
 const TICKET_PRICE = 25;
-const MAX_CAPACITY = 30;
+const SLOT_CAPACITY = 30;
+const SLOTS = ["7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM"] as const;
+type Slot = typeof SLOTS[number];
+type SlotData = { sold: number; remaining: number; isFull: boolean };
 
 type TicketInfo = {
   name: string;
@@ -121,20 +124,21 @@ export default function Registration() {
   const [waiverAccepted, setWaiverAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [spotsLeft, setSpotsLeft] = useState<number | null>(null);
-  const [isSoldOut, setIsSoldOut] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [slotData, setSlotData] = useState<Record<string, SlotData> | null>(null);
 
   useEffect(() => {
     fetch("/api/capacity")
       .then((r) => r.json())
-      .then((d) => {
-        setSpotsLeft(d.remaining);
-        setIsSoldOut(d.isSoldOut);
-      })
-      .catch(() => setSpotsLeft(MAX_CAPACITY));
+      .then((d) => setSlotData(d.slots))
+      .catch(() => {
+        const fallback = Object.fromEntries(SLOTS.map((s) => [s, { sold: 0, remaining: SLOT_CAPACITY, isFull: false }]));
+        setSlotData(fallback);
+      });
   }, []);
 
-  const maxTickets = spotsLeft !== null ? Math.min(10, spotsLeft) : 10;
+  const spotsLeft = selectedSlot && slotData ? slotData[selectedSlot]?.remaining ?? SLOT_CAPACITY : SLOT_CAPACITY;
+  const maxTickets = Math.min(10, spotsLeft);
 
   // Sync ticket array length to count
   useEffect(() => {
@@ -151,7 +155,8 @@ export default function Registration() {
   const updateTicket = (i: number, t: TicketInfo) =>
     setTickets((prev) => { const next = [...prev]; next[i] = t; return next; });
 
-  const step1Valid = ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut;
+  const isSoldOut = selectedSlot ? slotData?.[selectedSlot]?.isFull ?? false : false;
+  const step1Valid = !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut;
   const step2Valid = tickets.every((t, i) => {
     if (!t.name.trim()) return false;
     if (i === 0 && (!t.email || t.email === "N/A" || !t.phone || t.phone === "N/A")) return false;
@@ -167,6 +172,7 @@ export default function Registration() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ticketCount,
+          timeSlot: selectedSlot,
           primaryEmail: tickets[0].email,
           primaryName: tickets[0].name,
           primaryPhone: tickets[0].phone,
@@ -209,17 +215,8 @@ export default function Registration() {
           <p className="text-ink-secondary mt-3 text-base">
             General Admission: <span className="font-semibold text-charcoal">$25</span> per person
           </p>
-          {spotsLeft !== null && (
-            <div className={`inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full text-sm font-semibold ${
-              isSoldOut
-                ? "bg-charcoal/10 text-ink-muted"
-                : spotsLeft <= 5
-                ? "bg-crimson/10 text-crimson border border-crimson/20"
-                : "bg-sand/20 text-charcoal border border-sand/40"
-            }`}>
-              <span className={`w-2 h-2 rounded-full ${isSoldOut ? "bg-ink-muted" : spotsLeft <= 5 ? "bg-crimson animate-pulse" : "bg-forest"}`} />
-              {isSoldOut ? "Sold Out" : `${spotsLeft} of ${MAX_CAPACITY} spots remaining`}
-            </div>
+          {slotData && (
+            <p className="text-ink-muted text-xs mt-3">Select a session below to see availability</p>
           )}
         </motion.div>
 
@@ -237,17 +234,48 @@ export default function Registration() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <h3 className="font-display text-2xl text-charcoal mb-2">How many tickets?</h3>
-                <p className="text-ink-secondary text-sm mb-8">Each ticket admits one person. You can add rentals per person in the next step.</p>
+                <h3 className="font-display text-2xl text-charcoal mb-2">Pick your session</h3>
+                <p className="text-ink-secondary text-sm mb-6">Each session is 1 hour · 30 spots per session · August 9th, 2026</p>
 
-                {isSoldOut ? (
-                  <div className="text-center py-10">
-                    <p className="font-display text-2xl text-charcoal mb-2">This class is sold out.</p>
-                    <p className="text-ink-secondary text-sm">Follow <strong>@HoustonSkateProject</strong> for future event announcements.</p>
-                  </div>
-                ) : (
+                {/* Slot selector */}
+                <div className="grid grid-cols-2 gap-3 mb-8">
+                  {SLOTS.map((slot) => {
+                    const info = slotData?.[slot];
+                    const full = info?.isFull ?? false;
+                    const left = info?.remaining ?? SLOT_CAPACITY;
+                    const selected = selectedSlot === slot;
+                    return (
+                      <button
+                        key={slot}
+                        onClick={() => { if (!full) { setSelectedSlot(slot); setTicketCount(1); } }}
+                        disabled={full}
+                        className={`rounded-2xl p-4 text-left border-2 transition-all ${
+                          full
+                            ? "border-charcoal/10 bg-charcoal/5 opacity-50 cursor-not-allowed"
+                            : selected
+                            ? "border-crimson bg-crimson/5"
+                            : "border-charcoal/15 hover:border-sand bg-white"
+                        }`}
+                      >
+                        <p className={`font-display text-xl mb-1 ${selected ? "text-crimson" : "text-charcoal"}`}>{slot}</p>
+                        {full ? (
+                          <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide">Sold Out</p>
+                        ) : (
+                          <p className={`text-xs font-semibold ${left <= 5 ? "text-crimson" : "text-ink-muted"}`}>
+                            {left <= 5 && <span className="inline-block w-1.5 h-1.5 bg-crimson rounded-full mr-1 animate-pulse align-middle" />}
+                            {left} spot{left !== 1 ? "s" : ""} left
+                          </p>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Ticket count — only show after slot selected */}
+                {selectedSlot && !isSoldOut && (
                   <>
-                    <div className="flex items-center justify-center gap-6 mb-10">
+                    <p className="text-ink-secondary text-sm font-medium mb-4">How many tickets for the <strong>{selectedSlot}</strong> session?</p>
+                    <div className="flex items-center justify-center gap-6 mb-6">
                       <button
                         onClick={() => setTicketCount(Math.max(1, ticketCount - 1))}
                         className="w-12 h-12 rounded-full border-2 border-charcoal/20 flex items-center justify-center hover:border-crimson hover:text-crimson transition-colors"
@@ -266,9 +294,7 @@ export default function Registration() {
                         <Plus className="w-5 h-5" />
                       </button>
                     </div>
-
-                    {/* Quick selectors */}
-                    <div className="flex justify-center gap-2 mb-10 flex-wrap">
+                    <div className="flex justify-center gap-2 mb-6 flex-wrap">
                       {[1, 2, 3, 4, 5].filter((n) => n <= maxTickets).map((n) => (
                         <button
                           key={n}
@@ -424,6 +450,12 @@ export default function Registration() {
                     <p className="font-semibold text-charcoal text-sm">Order Summary</p>
                   </div>
                   <div className="p-4 space-y-3">
+                    {selectedSlot && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-ink-secondary">Session</span>
+                        <span className="font-semibold text-charcoal">{selectedSlot} · Aug 9</span>
+                      </div>
+                    )}
                     <div className="flex justify-between text-sm">
                       <span className="text-ink-secondary">General Admission × {ticketCount}</span>
                       <span className="font-medium text-charcoal">${ticketCount * TICKET_PRICE}</span>

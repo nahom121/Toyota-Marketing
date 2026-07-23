@@ -9,6 +9,7 @@ import { Suspense } from "react";
 type ConfirmData = {
   name: string;
   ticketCount: string;
+  timeSlot: string;
   amountPaid: string;
 };
 
@@ -56,6 +57,12 @@ function SuccessContent() {
             className="bg-cream-light border border-charcoal/10 rounded-2xl p-5 mb-6 text-left space-y-2"
           >
             <p className="font-semibold text-charcoal text-sm mb-3">Order Confirmed</p>
+            {data.timeSlot && (
+              <div className="flex justify-between text-sm">
+                <span className="text-ink-secondary">Session</span>
+                <span className="font-medium text-charcoal">{data.timeSlot}</span>
+              </div>
+            )}
             <div className="flex justify-between text-sm">
               <span className="text-ink-secondary">Tickets</span>
               <span className="font-medium text-charcoal">{data.ticketCount}</span>

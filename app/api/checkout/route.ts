@@ -2,20 +2,26 @@ import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
-const MAX_CAPACITY = 30;
+const SLOT_CAPACITY = 30;
+
+function isRefunded(s: Stripe.Checkout.Session): boolean {
+  const pi = s.payment_intent as Stripe.PaymentIntent | null;
+  const charge = pi?.latest_charge as Stripe.Charge | null;
+  return charge?.refunded === true;
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { ticketCount, primaryEmail, primaryName, primaryPhone, registrants } =
+    const { ticketCount, timeSlot, primaryEmail, primaryName, primaryPhone, registrants } =
       await request.json();
 
-    if (!ticketCount || !primaryEmail || !primaryName) {
+    if (!ticketCount || !timeSlot || !primaryEmail || !primaryName) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-    // Capacity check — count all paid tickets before creating session
+    // Per-slot capacity check
     const allSessions: Stripe.Checkout.Session[] = [];
     let hasMore = true;
     let startingAfter: string | undefined;
@@ -29,19 +35,13 @@ export async function POST(request: NextRequest) {
       hasMore = page.has_more;
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
-    const sold = allSessions
-      .filter((s) => {
-        if (s.payment_status !== "paid") return false;
-        const pi = s.payment_intent as Stripe.PaymentIntent | null;
-        const charge = pi?.latest_charge as Stripe.Charge | null;
-        if (charge?.refunded) return false;
-        return true;
-      })
+    const slotSold = allSessions
+      .filter((s) => s.payment_status === "paid" && !isRefunded(s) && s.metadata?.time_slot === timeSlot)
       .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
-    const remaining = Math.max(0, MAX_CAPACITY - sold);
+    const remaining = Math.max(0, SLOT_CAPACITY - slotSold);
     if (ticketCount > remaining) {
       return NextResponse.json(
-        { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left.` },
+        { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left for the ${timeSlot} session.` },
         { status: 409 }
       );
     }
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
           currency: "usd",
           product_data: {
             name: "Houston Skate Project — General Admission",
-            description: "Pop-Up Workshop · August 9th, 2026 · Houston, TX",
+            description: `Pop-Up Workshop · August 9th, 2026 · ${timeSlot} session · Houston, TX`,
           },
           unit_amount: 2500,
         },
@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         event: "Houston Skate Project",
         date: "August 9, 2026",
+        time_slot: timeSlot,
         primary_name: primaryName,
         primary_phone: primaryPhone || "",
         ticket_count: String(ticketCount),
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
       success_url: `${SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/#tickets`,
       payment_intent_data: {
-        description: `Houston Skate Project — ${ticketCount} ticket(s) · ${primaryName}`,
+        description: `Houston Skate Project — ${timeSlot} · ${ticketCount} ticket(s) · ${primaryName}`,
       },
     });
 

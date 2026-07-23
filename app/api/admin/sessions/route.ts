@@ -48,6 +48,7 @@ export async function GET(request: NextRequest) {
         name: meta.primary_name || "—",
         email: s.customer_email || "—",
         phone: phone || "—",
+        timeSlot: meta.time_slot || "—",
         tickets: Number(meta.ticket_count || 1),
         amountPaid: ((s.amount_total || 0) / 100).toFixed(2),
         sessionId: s.id,
