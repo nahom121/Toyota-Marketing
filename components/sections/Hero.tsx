@@ -41,15 +41,6 @@ export default function Hero() {
       id="hero"
       className="relative min-h-screen flex flex-col overflow-hidden bg-charcoal"
     >
-      {/* Background texture */}
-      <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage: `repeating-linear-gradient(0deg, #D4A86A 0px, #D4A86A 1px, transparent 1px, transparent 60px),
-                            repeating-linear-gradient(90deg, #D4A86A 0px, #D4A86A 1px, transparent 1px, transparent 60px)`,
-        }}
-      />
-
       {/* Sand glow */}
       <div className="absolute top-0 right-0 w-[700px] h-[700px] rounded-full bg-sand/10 blur-[160px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-crimson/8 blur-[120px] pointer-events-none" />
