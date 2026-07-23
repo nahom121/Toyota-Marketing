@@ -9,7 +9,6 @@ import { Suspense } from "react";
 type ConfirmData = {
   name: string;
   ticketCount: string;
-  rentalCount: string;
   amountPaid: string;
 };
 
@@ -61,12 +60,6 @@ function SuccessContent() {
               <span className="text-ink-secondary">Tickets</span>
               <span className="font-medium text-charcoal">{data.ticketCount}</span>
             </div>
-            {Number(data.rentalCount) > 0 && (
-              <div className="flex justify-between text-sm">
-                <span className="text-ink-secondary">Skate Rentals</span>
-                <span className="font-medium text-charcoal">{data.rentalCount}</span>
-              </div>
-            )}
             <div className="flex justify-between text-sm pt-2 border-t border-charcoal/10">
               <span className="font-bold text-charcoal">Total Paid</span>
               <span className="font-bold text-crimson">${data.amountPaid}</span>

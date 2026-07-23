@@ -7,7 +7,7 @@ import { ChevronDown } from "lucide-react";
 const faqs = [
   {
     q: "Can I bring my own skates?",
-    a: "Absolutely! If you have your own skates, bring them. If not, you can add a rental right at checkout for just $5 per person.",
+    a: "Absolutely! If you have your own skates, bring them. Please make sure they are in good condition and safe to use.",
   },
   {
     q: "What skill level is this for?",
@@ -34,8 +34,8 @@ const faqs = [
     a: "The event is at Sky Lab, located at 4112 Washington Ave, Houston, TX 77007. Doors open at 7:00 PM.",
   },
   {
-    q: "How do I add a skate rental?",
-    a: "During registration, you'll see an option to add a rental for each ticket. Toggle it on, select your size, and the $5 rental fee will be added to your order at checkout.",
+    q: "What if I don't have skates?",
+    a: "We recommend bringing your own skates. Skate rentals are not available at this event, so please plan to bring a pair or borrow one from a friend.",
   },
 ];
 

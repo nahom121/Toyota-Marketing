@@ -18,7 +18,6 @@ export async function GET(request: NextRequest) {
     const name = meta.primary_name || "Guest";
     const email = session.customer_email || "";
     const ticketCount = meta.ticket_count || "1";
-    const rentalCount = meta.rental_count || "0";
     const amountPaid = ((session.amount_total || 0) / 100).toFixed(2);
 
     // Send confirmation email
@@ -41,7 +40,6 @@ export async function GET(request: NextRequest) {
               <table style="width:100%;font-size:14px;color:#1C1C1C;border-collapse:collapse">
                 <tr><td style="padding:6px 0">Hi, ${name}!</td></tr>
                 <tr><td style="padding:6px 0">Tickets</td><td style="padding:6px 0;text-align:right;font-weight:600">${ticketCount}</td></tr>
-                ${Number(rentalCount) > 0 ? `<tr><td style="padding:6px 0">Skate Rentals</td><td style="padding:6px 0;text-align:right;font-weight:600">${rentalCount}</td></tr>` : ""}
                 <tr style="border-top:1px solid rgba(28,28,28,0.1)">
                   <td style="padding:10px 0 0;font-weight:bold">Total Paid</td>
                   <td style="padding:10px 0 0;text-align:right;font-weight:bold;color:#C41E3A;font-size:18px">$${amountPaid}</td>
@@ -83,7 +81,6 @@ export async function GET(request: NextRequest) {
               <tr><td style="padding:6px 0;color:#8A8A8A">Name</td><td style="padding:6px 0;font-weight:600;text-align:right">${name}</td></tr>
               <tr><td style="padding:6px 0;color:#8A8A8A">Email</td><td style="padding:6px 0;text-align:right">${email}</td></tr>
               <tr><td style="padding:6px 0;color:#8A8A8A">Tickets</td><td style="padding:6px 0;font-weight:600;text-align:right">${ticketCount}</td></tr>
-              ${Number(rentalCount) > 0 ? `<tr><td style="padding:6px 0;color:#8A8A8A">Rentals</td><td style="padding:6px 0;font-weight:600;text-align:right">${rentalCount}</td></tr>` : ""}
               <tr style="border-top:1px solid #eee"><td style="padding:10px 0 0;font-weight:bold">Paid</td><td style="padding:10px 0 0;text-align:right;font-weight:bold;color:#8B5E3C;font-size:18px">$${amountPaid}</td></tr>
             </table>
           </div>
@@ -96,7 +93,6 @@ export async function GET(request: NextRequest) {
       name,
       email,
       ticketCount,
-      rentalCount,
       amountPaid,
     });
   } catch (error) {

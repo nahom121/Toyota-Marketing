@@ -2,27 +2,19 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Check, ChevronDown, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-react";
+import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-react";
 
 const TICKET_PRICE = 25;
-const RENTAL_PRICE = 5;
 const MAX_CAPACITY = 30;
-
-const skateSizes = [
-  { label: "Women's Sizes", options: ["Women's 5", "Women's 6", "Women's 7", "Women's 8", "Women's 9", "Women's 10", "Women's 11", "Women's 12"] },
-  { label: "Men's Sizes", options: ["Men's 5", "Men's 6", "Men's 7", "Men's 8", "Men's 9", "Men's 10", "Men's 11", "Men's 12", "Men's 13", "Men's 14", "Men's 15"] },
-];
 
 type TicketInfo = {
   name: string;
   email: string;
   phone: string;
-  rental: boolean;
-  skateSize: string;
 };
 
 function defaultTicket(isPrimary = false): TicketInfo {
-  return { name: "", email: isPrimary ? "" : "N/A", phone: isPrimary ? "" : "N/A", rental: false, skateSize: "" };
+  return { name: "", email: isPrimary ? "" : "N/A", phone: isPrimary ? "" : "N/A" };
 }
 
 function StepIndicator({ current }: { current: number }) {
@@ -56,7 +48,7 @@ function TicketCard({
 }: {
   ticket: TicketInfo; index: number; isPrimary: boolean; onChange: (t: TicketInfo) => void;
 }) {
-  const set = (field: keyof TicketInfo, val: string | boolean) =>
+  const set = (field: keyof TicketInfo, val: string) =>
     onChange({ ...ticket, [field]: val });
 
   return (
@@ -75,7 +67,6 @@ function TicketCard({
         )}
       </div>
 
-      {/* Name */}
       <div>
         <label className="block text-xs font-medium text-ink-secondary mb-1.5">Full Name *</label>
         <input
@@ -87,7 +78,6 @@ function TicketCard({
         />
       </div>
 
-      {/* Email + Phone — primary only */}
       {isPrimary && (
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
@@ -120,58 +110,6 @@ function TicketCard({
           </div>
         </div>
       )}
-
-      {/* Rental toggle */}
-      <div className="flex items-center justify-between p-3 bg-sand/10 rounded-xl border border-sand/30">
-        <div>
-          <p className="text-sm font-semibold text-charcoal">Add Skate Rental</p>
-          <p className="text-xs text-ink-muted">+ $5 · White quad skates</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => set("rental", !ticket.rental)}
-          className={`w-11 h-6 rounded-full transition-all duration-300 relative ${
-            ticket.rental ? "bg-crimson" : "bg-charcoal/20"
-          }`}
-        >
-          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all duration-300 ${
-            ticket.rental ? "left-6" : "left-1"
-          }`} />
-        </button>
-      </div>
-
-      {/* Skate size */}
-      <AnimatePresence>
-        {ticket.rental && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="overflow-hidden"
-          >
-            <label className="block text-xs font-medium text-ink-secondary mb-1.5">Skate Size *</label>
-            <div className="relative">
-              <select
-                value={ticket.skateSize}
-                onChange={(e) => set("skateSize", e.target.value)}
-                required={ticket.rental}
-                className="form-select pr-10"
-              >
-                <option value="">Select your size…</option>
-                {skateSizes.map(({ label, options }) => (
-                  <optgroup key={label} label={label}>
-                    {options.map((o) => (
-                      <option key={o} value={o}>{o}</option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-ink-muted pointer-events-none" />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
@@ -208,8 +146,7 @@ export default function Registration() {
     });
   }, [ticketCount]);
 
-  const rentalCount = tickets.filter((t) => t.rental).length;
-  const total = ticketCount * TICKET_PRICE + rentalCount * RENTAL_PRICE;
+  const total = ticketCount * TICKET_PRICE;
 
   const updateTicket = (i: number, t: TicketInfo) =>
     setTickets((prev) => { const next = [...prev]; next[i] = t; return next; });
@@ -218,7 +155,6 @@ export default function Registration() {
   const step2Valid = tickets.every((t, i) => {
     if (!t.name.trim()) return false;
     if (i === 0 && (!t.email || t.email === "N/A" || !t.phone || t.phone === "N/A")) return false;
-    if (t.rental && !t.skateSize) return false;
     return true;
   });
 
@@ -231,13 +167,10 @@ export default function Registration() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ticketCount,
-          rentalCount,
           primaryEmail: tickets[0].email,
           primaryName: tickets[0].name,
           registrants: tickets.map((t, i) => ({
             name: t.name,
-            rental: t.rental,
-            skateSize: t.skateSize || null,
             ...(i === 0 ? { email: t.email, phone: t.phone } : {}),
           })),
         }),
@@ -273,8 +206,7 @@ export default function Registration() {
             </span>
           </h2>
           <p className="text-ink-secondary mt-3 text-base">
-            General Admission: <span className="font-semibold text-charcoal">$25</span> ·
-            Skate Rental add-on: <span className="font-semibold text-charcoal">$5</span>
+            General Admission: <span className="font-semibold text-charcoal">$25</span> per person
           </p>
           {spotsLeft !== null && (
             <div className={`inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full text-sm font-semibold ${
@@ -359,7 +291,6 @@ export default function Registration() {
                     {ticketCount} ticket{ticketCount > 1 ? "s" : ""} × $25
                     {" = "}
                     <span className="font-display text-2xl text-charcoal">${ticketCount * 25}</span>
-                    <span className="text-xs text-ink-muted ml-1">(before rentals)</span>
                   </p>
                 </div>
 
@@ -496,12 +427,6 @@ export default function Registration() {
                       <span className="text-ink-secondary">General Admission × {ticketCount}</span>
                       <span className="font-medium text-charcoal">${ticketCount * TICKET_PRICE}</span>
                     </div>
-                    {rentalCount > 0 && (
-                      <div className="flex justify-between text-sm">
-                        <span className="text-ink-secondary">Skate Rental × {rentalCount}</span>
-                        <span className="font-medium text-charcoal">${rentalCount * RENTAL_PRICE}</span>
-                      </div>
-                    )}
                     <div className="pt-3 border-t border-charcoal/10 flex justify-between">
                       <span className="font-bold text-charcoal">Total</span>
                       <span className="font-display text-2xl text-charcoal">${total}</span>
@@ -521,13 +446,7 @@ export default function Registration() {
                           <p className="text-sm font-medium text-charcoal">{t.name}</p>
                           {i === 0 && <p className="text-xs text-ink-muted">{t.email}</p>}
                         </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          {t.rental && (
-                            <span className="text-[10px] font-bold bg-sand/20 text-charcoal px-2 py-0.5 rounded-full">
-                              Rental · {t.skateSize}
-                            </span>
-                          )}
-                        </div>
+                        <div className="flex items-center gap-2 flex-shrink-0" />
                       </div>
                     ))}
                   </div>

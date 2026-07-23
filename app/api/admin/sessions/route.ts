@@ -28,24 +28,12 @@ export async function GET(request: NextRequest) {
 
     const attendees = paid.map((s) => {
       const meta = s.metadata || {};
-      let registrants: Array<{ name: string; rental: boolean; skateSize: string }> = [];
-      try {
-        if (meta.registrants) registrants = JSON.parse(meta.registrants);
-      } catch {}
-
-      const skateSizes = registrants
-        .filter((r) => r.rental && r.skateSize)
-        .map((r) => r.skateSize)
-        .join(", ");
-
       return {
         date: new Date((s.created) * 1000).toISOString(),
         name: meta.primary_name || "—",
         email: s.customer_email || "—",
         phone: meta.primary_phone || "—",
         tickets: Number(meta.ticket_count || 1),
-        rentals: Number(meta.rental_count || 0),
-        skateSizes: skateSizes || "—",
         amountPaid: ((s.amount_total || 0) / 100).toFixed(2),
         sessionId: s.id,
       };

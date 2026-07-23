@@ -6,7 +6,7 @@ const MAX_CAPACITY = 30;
 
 export async function POST(request: NextRequest) {
   try {
-    const { ticketCount, rentalCount, primaryEmail, primaryName, registrants } =
+    const { ticketCount, primaryEmail, primaryName, registrants } =
       await request.json();
 
     if (!ticketCount || !primaryEmail || !primaryName) {
@@ -53,20 +53,6 @@ export async function POST(request: NextRequest) {
       },
     ];
 
-    if (rentalCount > 0) {
-      line_items.push({
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: "Skate Rental",
-            description: "White quad roller skates — size selected during registration",
-          },
-          unit_amount: 500,
-        },
-        quantity: rentalCount,
-      });
-    }
-
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items,
@@ -76,7 +62,6 @@ export async function POST(request: NextRequest) {
         date: "August 9, 2026",
         primary_name: primaryName,
         ticket_count: String(ticketCount),
-        rental_count: String(rentalCount),
         registrants: JSON.stringify(registrants).slice(0, 490),
       },
       success_url: `${SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,

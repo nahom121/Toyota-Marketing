@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Download, RefreshCw, Lock, Users, Ticket, Footprints, DollarSign } from "lucide-react";
+import { Download, RefreshCw, Lock, Users, Ticket, DollarSign } from "lucide-react";
 
 type Attendee = {
   date: string;
@@ -9,8 +9,6 @@ type Attendee = {
   email: string;
   phone: string;
   tickets: number;
-  rentals: number;
-  skateSizes: string;
   amountPaid: string;
   sessionId: string;
 };
@@ -18,7 +16,6 @@ type Attendee = {
 type Stats = {
   totalAttendees: number;
   totalTickets: number;
-  totalRentals: number;
   totalRevenue: number;
 };
 
@@ -26,21 +23,18 @@ function computeStats(attendees: Attendee[]): Stats {
   return {
     totalAttendees: attendees.length,
     totalTickets: attendees.reduce((s, a) => s + a.tickets, 0),
-    totalRentals: attendees.reduce((s, a) => s + a.rentals, 0),
     totalRevenue: attendees.reduce((s, a) => s + parseFloat(a.amountPaid), 0),
   };
 }
 
 function exportCSV(attendees: Attendee[]) {
-  const headers = ["Date", "Name", "Email", "Phone", "Tickets", "Rentals", "Skate Sizes", "Amount Paid", "Session ID"];
+  const headers = ["Date", "Name", "Email", "Phone", "Tickets", "Amount Paid", "Session ID"];
   const rows = attendees.map((a) => [
     new Date(a.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }),
     a.name,
     a.email,
     a.phone,
     a.tickets,
-    a.rentals,
-    a.skateSizes,
     `$${a.amountPaid}`,
     a.sessionId,
   ]);
@@ -158,7 +152,6 @@ export default function AdminPage() {
             {[
               { label: "Orders", value: stats.totalAttendees, icon: Users, color: "text-charcoal" },
               { label: "Tickets", value: stats.totalTickets, icon: Ticket, color: "text-charcoal" },
-              { label: "Rentals", value: stats.totalRentals, icon: Footprints, color: "text-charcoal" },
               { label: "Revenue", value: `$${stats.totalRevenue.toFixed(2)}`, icon: DollarSign, color: "text-crimson" },
             ].map(({ label, value, icon: Icon, color }) => (
               <div key={label} className="bg-cream-light border border-charcoal/10 rounded-2xl p-5">
@@ -181,7 +174,7 @@ export default function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-charcoal/10 bg-charcoal/5">
-                    {["Date", "Name", "Email", "Phone", "Tickets", "Rentals", "Skate Sizes", "Paid"].map((h) => (
+                    {["Date", "Name", "Email", "Phone", "Tickets", "Paid"].map((h) => (
                       <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">
                         {h}
                       </th>
@@ -201,8 +194,6 @@ export default function AdminPage() {
                       <td className="px-4 py-3 text-ink-secondary">{a.email}</td>
                       <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{a.phone}</td>
                       <td className="px-4 py-3 text-center font-semibold text-charcoal">{a.tickets}</td>
-                      <td className="px-4 py-3 text-center font-semibold text-charcoal">{a.rentals}</td>
-                      <td className="px-4 py-3 text-ink-secondary text-xs">{a.skateSizes}</td>
                       <td className="px-4 py-3 font-bold text-crimson whitespace-nowrap">${a.amountPaid}</td>
                     </tr>
                   ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Clock, Ticket, Footprints } from "lucide-react";
+import { Calendar, MapPin, Clock, Ticket } from "lucide-react";
 
 const details = [
   {
@@ -82,35 +82,7 @@ export default function EventDetails() {
           ))}
         </div>
 
-        {/* Rental add-on highlight */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-sand/15 border border-sand/30 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center gap-5"
-        >
-          <div className="w-12 h-12 rounded-full bg-sand/30 flex items-center justify-center flex-shrink-0">
-            <Footprints className="w-6 h-6 text-sand" />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-semibold text-white text-lg mb-1">Don&apos;t have skates? No problem.</h3>
-            <p className="text-white/60 text-sm leading-relaxed">
-              Add a skate rental when you register for just <span className="text-sand font-semibold">$5</span>.
-              Select your size at checkout — we&apos;ll have them ready for you.
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              const el = document.querySelector("#tickets");
-              if (el) el.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="btn-primary text-sm px-6 py-2.5 whitespace-nowrap"
-          >
-            Register + Add Rental
-          </button>
-        </motion.div>
-
-        {/* Location TBD notice */}
+        {/* Location notice */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
