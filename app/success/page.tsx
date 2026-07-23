@@ -78,7 +78,7 @@ function SuccessContent() {
         <div className="bg-charcoal text-white rounded-2xl p-5 mb-6">
           <Calendar className="w-6 h-6 text-sand mx-auto mb-3" />
           <p className="font-display text-xl mb-1">July 26th, 2026</p>
-          <p className="text-white/60 text-sm">Houston, TX · Venue TBA</p>
+          <p className="text-white/60 text-sm">Sky Labs · 4112 Washington Ave, Houston, TX 77007</p>
           <p className="text-white/50 text-xs mt-2">
             Follow us for the venue announcement!
           </p>

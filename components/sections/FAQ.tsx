@@ -30,8 +30,8 @@ const faqs = [
     a: "Tickets are generally non-refundable, but if the event is cancelled or rescheduled, you will receive a full refund or the option to transfer your ticket to the new date. Reach out to info@houstonskateproject.org with any questions.",
   },
   {
-    q: "When will the location be announced?",
-    a: "The venue will be announced closer to the event date. Follow @HoustonSkateProject on Instagram and TikTok to be the first to know. Your registration confirmation will also be updated with the venue details.",
+    q: "Where is the event located?",
+    a: "The event is at Sky Labs, located at 4112 Washington Ave, Houston, TX 77007. Doors open at 7:00 PM.",
   },
   {
     q: "How do I add a skate rental?",

@@ -21,8 +21,8 @@ const details = [
   {
     icon: MapPin,
     label: "Location",
-    value: "Houston, TX",
-    sub: "Exact venue to be announced — follow us for the drop",
+    value: "Sky Labs",
+    sub: "Sky Labs · 4112 Washington Ave, Houston, TX 77007",
     color: "bg-forest/10 text-forest",
   },
   {
@@ -118,16 +118,15 @@ export default function EventDetails() {
           className="mt-6 text-center"
         >
           <p className="text-white/40 text-sm">
-            📍 Exact venue dropping soon —{" "}
+            📍 Sky Labs · 4112 Washington Ave, Houston, TX 77007 —{" "}
             <a
-              href="https://www.instagram.com/houstonskateproject"
+              href="https://maps.google.com/?q=4112+Washington+Ave+Houston+TX+77007"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sand hover:text-sand-light underline transition-colors"
             >
-              follow @HoustonSkateProject
-            </a>{" "}
-            to be the first to know.
+              Get directions
+            </a>
           </p>
         </motion.div>
       </div>

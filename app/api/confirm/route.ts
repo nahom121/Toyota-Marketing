@@ -52,8 +52,7 @@ export async function GET(request: NextRequest) {
             <div style="background:white;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid rgba(28,28,28,0.1)">
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Event Details</h2>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📅 <strong>Date:</strong> July 26th, 2026</p>
-              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> Houston, TX — venue TBA</p>
-              <p style="margin:8px 0 0;font-size:13px;color:#8A8A8A">Follow <strong>@HoustonSkateProject</strong> on Instagram and TikTok for the venue announcement!</p>
+              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> Sky Labs · 4112 Washington Ave, Houston, TX 77007</p>
             </div>
 
             <div style="text-align:center;padding:16px;background:#C41E3A;border-radius:12px;color:white">
