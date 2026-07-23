@@ -35,11 +35,19 @@ export async function GET(request: NextRequest) {
 
     const attendees = paid.map((s) => {
       const meta = s.metadata || {};
+      // Parse phone from dedicated field first, fall back to registrants JSON
+      let phone = meta.primary_phone || "";
+      if (!phone && meta.registrants) {
+        try {
+          const regs = JSON.parse(meta.registrants);
+          phone = regs[0]?.phone || "";
+        } catch {}
+      }
       return {
         date: new Date((s.created) * 1000).toISOString(),
         name: meta.primary_name || "—",
         email: s.customer_email || "—",
-        phone: meta.primary_phone || "—",
+        phone: phone || "—",
         tickets: Number(meta.ticket_count || 1),
         amountPaid: ((s.amount_total || 0) / 100).toFixed(2),
         sessionId: s.id,

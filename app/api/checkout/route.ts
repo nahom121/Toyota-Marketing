@@ -6,7 +6,7 @@ const MAX_CAPACITY = 30;
 
 export async function POST(request: NextRequest) {
   try {
-    const { ticketCount, primaryEmail, primaryName, registrants } =
+    const { ticketCount, primaryEmail, primaryName, primaryPhone, registrants } =
       await request.json();
 
     if (!ticketCount || !primaryEmail || !primaryName) {
@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
         event: "Houston Skate Project",
         date: "August 9, 2026",
         primary_name: primaryName,
+        primary_phone: primaryPhone || "",
         ticket_count: String(ticketCount),
         registrants: JSON.stringify(registrants).slice(0, 490),
       },

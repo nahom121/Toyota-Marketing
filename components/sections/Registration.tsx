@@ -169,6 +169,7 @@ export default function Registration() {
           ticketCount,
           primaryEmail: tickets[0].email,
           primaryName: tickets[0].name,
+          primaryPhone: tickets[0].phone,
           registrants: tickets.map((t, i) => ({
             name: t.name,
             ...(i === 0 ? { email: t.email, phone: t.phone } : {}),
