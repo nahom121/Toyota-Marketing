@@ -21,8 +21,8 @@ const details = [
   {
     icon: MapPin,
     label: "Location",
-    value: "Sky Labs",
-    sub: "Sky Labs · 4112 Washington Ave, Houston, TX 77007",
+    value: "Sky Lab",
+    sub: "Sky Lab · 4112 Washington Ave, Houston, TX 77007",
     color: "bg-forest/10 text-forest",
   },
   {
@@ -118,7 +118,7 @@ export default function EventDetails() {
           className="mt-6 text-center"
         >
           <p className="text-white/40 text-sm">
-            📍 Sky Labs · 4112 Washington Ave, Houston, TX 77007 —{" "}
+            📍 Sky Lab · 4112 Washington Ave, Houston, TX 77007 —{" "}
             <a
               href="https://maps.google.com/?q=4112+Washington+Ave+Houston+TX+77007"
               target="_blank"

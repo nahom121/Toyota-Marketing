@@ -78,15 +78,15 @@ function SuccessContent() {
         <div className="bg-charcoal text-white rounded-2xl p-5 mb-6">
           <Calendar className="w-6 h-6 text-sand mx-auto mb-3" />
           <p className="font-display text-xl mb-1">July 26th, 2026</p>
-          <p className="text-white/60 text-sm">Sky Labs · 4112 Washington Ave, Houston, TX 77007</p>
+          <p className="text-white/60 text-sm">Sky Lab · 4112 Washington Ave, Houston, TX 77007</p>
           <p className="text-white/50 text-xs mt-2">
-            Follow us for the venue announcement!
+            Doors open at 7:00 PM · See you on the floor!
           </p>
         </div>
 
         {/* Social follow */}
         <p className="text-ink-secondary text-sm mb-4">
-          Follow along for venue details and updates:
+          Follow along for updates and highlights:
         </p>
         <div className="flex gap-3 justify-center mb-8">
           <a

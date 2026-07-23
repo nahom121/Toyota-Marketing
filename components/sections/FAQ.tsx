@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     q: "Where is the event located?",
-    a: "The event is at Sky Labs, located at 4112 Washington Ave, Houston, TX 77007. Doors open at 7:00 PM.",
+    a: "The event is at Sky Lab, located at 4112 Washington Ave, Houston, TX 77007. Doors open at 7:00 PM.",
   },
   {
     q: "How do I add a skate rental?",
