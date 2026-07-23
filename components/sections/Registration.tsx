@@ -316,7 +316,7 @@ export default function Registration() {
                 transition={{ duration: 0.3 }}
               >
                 <h3 className="font-display text-2xl text-charcoal mb-2">Attendee details</h3>
-                <p className="text-ink-secondary text-sm mb-6">Fill in the info for each person. Toggle rentals on per person.</p>
+                <p className="text-ink-secondary text-sm mb-6">Fill in the info for each person attending.</p>
 
                 <div className="space-y-4 mb-6">
                   {tickets.map((ticket, i) => (
