@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
     while (hasMore) {
       const page = await stripe.checkout.sessions.list({
         limit: 100,
+        expand: ["data.payment_intent.latest_charge"],
         ...(startingAfter ? { starting_after: startingAfter } : {}),
       });
       allSessions.push(...page.data);
@@ -29,7 +30,13 @@ export async function POST(request: NextRequest) {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
     const sold = allSessions
-      .filter((s) => s.payment_status === "paid")
+      .filter((s) => {
+        if (s.payment_status !== "paid") return false;
+        const pi = s.payment_intent as Stripe.PaymentIntent | null;
+        const charge = pi?.latest_charge as Stripe.Charge | null;
+        if (charge?.refunded) return false;
+        return true;
+      })
       .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
     const remaining = Math.max(0, MAX_CAPACITY - sold);
     if (ticketCount > remaining) {

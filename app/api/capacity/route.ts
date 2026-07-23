@@ -3,6 +3,12 @@ import { NextResponse } from "next/server";
 
 const MAX_CAPACITY = 30;
 
+function isRefunded(s: Stripe.Checkout.Session): boolean {
+  const pi = s.payment_intent as Stripe.PaymentIntent | null;
+  const charge = pi?.latest_charge as Stripe.Charge | null;
+  return charge?.refunded === true;
+}
+
 export async function GET() {
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -14,6 +20,7 @@ export async function GET() {
     while (hasMore) {
       const page = await stripe.checkout.sessions.list({
         limit: 100,
+        expand: ["data.payment_intent.latest_charge"],
         ...(startingAfter ? { starting_after: startingAfter } : {}),
       });
       sessions.push(...page.data);
@@ -22,7 +29,7 @@ export async function GET() {
     }
 
     const sold = sessions
-      .filter((s) => s.payment_status === "paid")
+      .filter((s) => s.payment_status === "paid" && !isRefunded(s))
       .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
 
     const remaining = Math.max(0, MAX_CAPACITY - sold);
@@ -35,7 +42,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Capacity error:", error);
-    // On error, don't block registration — return permissive defaults
     return NextResponse.json({
       sold: 0,
       remaining: MAX_CAPACITY,
