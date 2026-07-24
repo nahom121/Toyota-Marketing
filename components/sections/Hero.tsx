@@ -147,6 +147,7 @@ export default function Hero() {
               fill
               className="object-cover object-top"
               priority
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
             {/* Overlay gradient at bottom */}
             <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent" />

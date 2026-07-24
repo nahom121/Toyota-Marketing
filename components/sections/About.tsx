@@ -62,6 +62,7 @@ export default function About() {
                 alt="Michaela lacing up her skates"
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
             {/* Floating secondary photo */}
@@ -75,6 +76,7 @@ export default function About() {
                 alt="Michaela smiling"
                 fill
                 className="object-cover object-top"
+                sizes="208px"
               />
             </motion.div>
 
