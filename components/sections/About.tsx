@@ -97,11 +97,10 @@ export default function About() {
             <div className="divider-sand mb-6" />
 
             <p className="text-ink-secondary text-lg leading-relaxed mb-8">
-              Yes, there were medals. There were championships. But skating was never just about winning.
-              It was therapy. It was freedom. On the days when life felt heavy, the floor was where I
-              could breathe again, move without judgment, and express everything words couldn&apos;t hold.
-              Skating gave me a place to be fully myself, and I want to create that same space for
-              everyone in this city. Houston Skate Project is that place. Come as you are. Move how you feel.
+              Skating gave me more than medals and wins. It gave me a way to forget the things that
+              were hard to forget. On the floor, nothing else existed. Houston Skate Project is about
+              giving that to others, teaching you to move with confidence so you can skate freely,
+              express yourself, and actually know what you&apos;re doing while you do it.
             </p>
 
             {/* Quote block */}
