@@ -131,8 +131,6 @@ export default function Contact() {
     <section id="contact" className="section-pad relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-b from-[#050507] via-[#08050C] to-[#050507]" />
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-toyota-red/6 blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-blue-900/8 blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto container-pad relative z-10">
         {/* Header */}

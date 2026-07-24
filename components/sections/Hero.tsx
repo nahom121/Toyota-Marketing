@@ -40,9 +40,6 @@ export default function Hero() {
       id="hero"
       className="relative min-h-screen flex flex-col overflow-hidden bg-charcoal"
     >
-      {/* Sand glow */}
-      <div className="absolute top-0 right-0 w-[700px] h-[700px] rounded-full bg-sand/10 blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-crimson/8 blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-12 grid lg:grid-cols-2 gap-12 items-center">
 

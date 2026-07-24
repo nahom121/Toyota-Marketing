@@ -208,7 +208,6 @@ export default function Registration() {
   return (
     <section id="tickets" ref={sectionRef} className="section-pad bg-cream relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sand to-transparent" />
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-sand/20 blur-[80px] pointer-events-none" />
 
       <div className="max-w-3xl mx-auto container-pad relative z-10">
         {/* Header */}

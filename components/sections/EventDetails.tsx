@@ -38,7 +38,6 @@ export default function EventDetails() {
   return (
     <section id="details" className="section-pad bg-charcoal relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sand/40 to-transparent" />
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-sand/6 blur-[140px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto container-pad relative z-10">
         {/* Header */}
