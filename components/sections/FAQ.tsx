@@ -19,7 +19,7 @@ const faqs = [
   },
   {
     q: "What should I wear?",
-    a: "Wear comfortable clothes you can move in — athletic wear, leggings, joggers, whatever feels good. Avoid loose laces or anything that could get caught in skate wheels. Bring water and wear layers if the venue is outdoors.",
+    a: "Wear comfortable clothes you can move in — athletic wear, leggings, joggers, whatever feels good.",
   },
   {
     q: "Will there be music?",
