@@ -122,6 +122,7 @@ export default function Registration() {
   const [ticketCount, setTicketCount] = useState(1);
   const [tickets, setTickets] = useState<TicketInfo[]>([defaultTicket(true)]);
   const [waiverAccepted, setWaiverAccepted] = useState(false);
+  const [byosAcknowledged, setByosAcknowledged] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
@@ -156,7 +157,7 @@ export default function Registration() {
     setTickets((prev) => { const next = [...prev]; next[i] = t; return next; });
 
   const isSoldOut = selectedSlot ? slotData?.[selectedSlot]?.isFull ?? false : false;
-  const step1Valid = !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut;
+  const step1Valid = !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut && byosAcknowledged;
   const step2Valid = tickets.every((t, i) => {
     if (!t.name.trim()) return false;
     if (i === 0 && (!t.email || t.email === "N/A" || !t.phone || t.phone === "N/A")) return false;
@@ -320,6 +321,21 @@ export default function Registration() {
                     <span className="font-display text-2xl text-charcoal">${ticketCount * 25}</span>
                   </p>
                 </div>
+
+                {/* BYOS acknowledgment */}
+                <label className="flex items-start gap-3 cursor-pointer mb-5 group">
+                  <div
+                    onClick={() => setByosAcknowledged(!byosAcknowledged)}
+                    className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border-2 flex-shrink-0 transition-all ${
+                      byosAcknowledged ? "bg-crimson border-crimson" : "border-charcoal/30 group-hover:border-crimson"
+                    }`}
+                  >
+                    {byosAcknowledged && <Check className="w-3 h-3 text-white" />}
+                  </div>
+                  <span className="text-sm text-ink-secondary leading-relaxed">
+                    <span className="font-semibold text-charcoal">BYOS — Bring Your Own Skates!</span> I understand that skate rentals are not available for this first pop-up and I will bring my own skates.
+                  </span>
+                </label>
 
                 {!isSoldOut && (
                   <button
