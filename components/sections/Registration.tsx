@@ -236,7 +236,15 @@ export default function Registration() {
                 transition={{ duration: 0.3 }}
               >
                 <h3 className="font-display text-2xl text-charcoal mb-2">Pick your session</h3>
-                <p className="text-ink-secondary text-sm mb-6">Each session is 1 hour · 30 spots per session · August 9th, 2026</p>
+                <p className="text-ink-secondary text-sm mb-4">Each session is 1 hour · 30 spots per session · August 9th, 2026</p>
+
+                {/* Prep time notice */}
+                <div className="flex items-start gap-3 bg-sand/20 border border-sand/50 rounded-2xl p-4 mb-6">
+                  <span className="text-lg leading-none mt-0.5">⏱️</span>
+                  <p className="text-sm text-ink-secondary leading-relaxed">
+                    <span className="font-semibold text-charcoal">Please note:</span> Class begins 15 minutes after your booked session time. The first 15 minutes are prep time to get laced up and ready on the floor.
+                  </p>
+                </div>
 
                 {/* Slot selector */}
                 <div className="grid grid-cols-2 gap-3 mb-8">
