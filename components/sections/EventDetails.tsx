@@ -8,7 +8,7 @@ const details = [
     icon: Calendar,
     label: "Date",
     value: "August 9th, 2026",
-    sub: "Saturday",
+    sub: "Sunday",
     color: "bg-crimson/10 text-crimson",
   },
   {
