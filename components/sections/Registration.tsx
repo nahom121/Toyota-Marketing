@@ -242,7 +242,7 @@ export default function Registration() {
                 <div className="flex items-start gap-3 bg-sand/20 border border-sand/50 rounded-2xl p-4 mb-6">
                   <span className="text-lg leading-none mt-0.5">⏱️</span>
                   <p className="text-sm text-ink-secondary leading-relaxed">
-                    <span className="font-semibold text-charcoal">Please note:</span> Class begins 15 minutes after your booked session time. The first 15 minutes are prep time to get laced up and ready on the floor.
+                    <span className="font-semibold text-charcoal">Please note:</span> Arrive at your booked session time. Class begins 15 minutes after, so the first 15 minutes are prep time to get laced up and ready on the floor.
                   </p>
                 </div>
 
