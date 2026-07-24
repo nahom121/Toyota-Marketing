@@ -41,7 +41,7 @@ export default function Hero() {
       className="relative min-h-screen flex flex-col overflow-hidden bg-charcoal"
     >
 
-      <div className="relative z-10 flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-12 grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-32 pb-12 grid lg:grid-cols-2 gap-12 items-center">
 
         {/* Left: Text */}
         <div>

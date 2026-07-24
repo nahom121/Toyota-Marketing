@@ -29,11 +29,18 @@ export default function Header() {
 
   return (
     <>
+      {/* Top bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-charcoal text-white text-center py-1.5">
+        <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-white/70">
+          EST.{" "}<span className="text-sand font-bold">2026</span>
+        </span>
+      </div>
+
       <motion.header
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-[30px] left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
             ? "bg-cream/95 backdrop-blur-md shadow-warm border-b border-charcoal/10"
             : "bg-transparent"
@@ -43,10 +50,7 @@ export default function Header() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <button onClick={() => scrollTo("#hero")} className="flex items-center gap-2.5 group">
-              <div>
-                <div className="text-charcoal font-bold text-sm leading-none">Houston Skate Project</div>
-                <div className="text-charcoal/40 text-[10px] leading-none mt-0.5 uppercase tracking-wider">EST. 2026</div>
-              </div>
+              <div className="text-charcoal font-bold text-sm leading-none">Houston Skate Project</div>
             </button>
 
             {/* Desktop Nav */}
