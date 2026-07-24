@@ -35,7 +35,7 @@ const faqs = [
   },
   {
     q: "What if I don't have skates?",
-    a: "We recommend bringing your own skates. Skate rentals are not available at this event, so please plan to bring a pair or borrow one from a friend.",
+    a: "BYOS (Bring Your Own Skates!) Skate rentals are not available at this event, so please plan to bring a pair or borrow one from a friend.",
   },
 ];
 
