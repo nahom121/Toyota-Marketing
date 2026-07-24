@@ -43,12 +43,7 @@ export default function Header() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <button onClick={() => scrollTo("#hero")} className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-full bg-crimson flex items-center justify-center shadow-crimson-glow group-hover:shadow-crimson-glow-lg transition-all">
-                <span className="font-script text-white text-lg leading-none">S</span>
-              </div>
-              <div className="text-left">
-                <div className="text-charcoal font-bold text-sm leading-none">Houston Skate Project</div>
-              </div>
+              <div className="text-charcoal font-bold text-sm leading-none">Houston Skate Project</div>
             </button>
 
             {/* Desktop Nav */}
