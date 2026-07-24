@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     q: "Where is the event located?",
-    a: "The event is at Sky Lab, located at 4112 Washington Ave, Houston, TX 77007. Doors open at 7:00 PM.",
+    a: "The event is at KGSP, located at 2633 N Mason Rd, Katy, TX 77449. Doors open at 10:00 AM.",
   },
   {
     q: "What if I don't have skates?",

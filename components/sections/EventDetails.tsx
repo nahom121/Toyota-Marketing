@@ -15,14 +15,14 @@ const details = [
     icon: Clock,
     label: "Time",
     value: "4 Sessions",
-    sub: "7 PM · 8 PM · 9 PM · 10 PM — 30 spots each",
+    sub: "10 AM · 11 AM · 12 PM · 1 PM — 30 spots each",
     color: "bg-sand/30 text-sand-dark",
   },
   {
     icon: MapPin,
     label: "Location",
-    value: "Sky Lab",
-    sub: "Sky Lab · 4112 Washington Ave, Houston, TX 77007",
+    value: "KGSP",
+    sub: "KGSP · 2633 N Mason Rd, Katy, TX 77449",
     color: "bg-forest/10 text-forest",
   },
   {
@@ -90,9 +90,9 @@ export default function EventDetails() {
           className="mt-6 text-center"
         >
           <p className="text-white/40 text-sm">
-            📍 Sky Lab · 4112 Washington Ave, Houston, TX 77007 —{" "}
+            📍 KGSP · 2633 N Mason Rd, Katy, TX 77449 —{" "}
             <a
-              href="https://maps.google.com/?q=4112+Washington+Ave+Houston+TX+77007"
+              href="https://maps.google.com/?q=2633+N+Mason+Rd+Katy+TX+77449"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sand hover:text-sand-light underline transition-colors"

@@ -6,7 +6,7 @@ import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-reac
 
 const TICKET_PRICE = 25;
 const SLOT_CAPACITY = 30;
-const SLOTS = ["7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM"] as const;
+const SLOTS = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"] as const;
 type Slot = typeof SLOTS[number];
 type SlotData = { sold: number; remaining: number; isFull: boolean };
 
