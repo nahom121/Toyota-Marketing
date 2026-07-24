@@ -96,20 +96,11 @@ export default function About() {
           >
             <div className="divider-sand mb-6" />
 
-            <p className="text-ink-secondary text-lg leading-relaxed mb-6">
-              I&apos;ve been skating since I was young. I&apos;ve competed, I&apos;ve won, and I&apos;ve pushed
-              myself harder than I ever thought possible on a pair of skates. But the thing that
-              keeps me going isn&apos;t the medals, it&apos;s the feeling you get when you find your flow
-              on the floor.
-            </p>
-            <p className="text-ink-secondary text-lg leading-relaxed mb-6">
-              That moment where it&apos;s just you, the music, and the movement.
-            </p>
             <p className="text-ink-secondary text-lg leading-relaxed mb-8">
-              I created Houston Skate Project because I want everyone in this city to feel that.
-              Skating has given me so much: confidence, community, creativity, joy, and I want
-              to share all of it. Whether you&apos;ve never worn skates before or you&apos;ve been rolling
-              your whole life, there is a place for you here.
+              I&apos;ve been skating my whole life, competing, winning, and pushing myself to my limits.
+              But what keeps me going isn&apos;t the medals, it&apos;s that feeling when it&apos;s just you, the music,
+              and the movement. I started Houston Skate Project to bring that feeling to this city.
+              Whether you&apos;ve never worn skates or you&apos;ve been rolling for years, there is a place for you here.
             </p>
 
             {/* Quote block */}
