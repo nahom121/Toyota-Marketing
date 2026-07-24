@@ -29,7 +29,7 @@ const details = [
     icon: Ticket,
     label: "General Admission",
     value: "$25",
-    sub: "Per person · All skill levels welcome",
+    sub: "Per person · All beginner skaters welcome",
     color: "bg-crimson/10 text-crimson",
   },
 ];
@@ -56,7 +56,7 @@ export default function EventDetails() {
             </span>
           </h2>
           <p className="text-white/60 text-lg mt-4 max-w-lg mx-auto">
-            One day. One rink. The whole city invited.
+            Learn balance, get rolling, and build real confidence on wheels.
           </p>
         </motion.div>
 
