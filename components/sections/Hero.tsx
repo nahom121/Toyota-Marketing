@@ -85,7 +85,7 @@ export default function Hero() {
             className="text-white/70 text-lg leading-relaxed mt-6 mb-8 max-w-lg"
           >
             Michaela has spent 7 years competing and winning on skates at the national level.
-            Now she&apos;s bringing that energy straight to Houston — a pop-up skating experience
+            Now she&apos;s bringing that energy straight to Houston a pop-up skating experience
             built for{" "}
             <span className="text-white font-medium">everyone</span>.
             First-timers. Pros. Kids. Come roll, express yourself, and have the time of your life.
