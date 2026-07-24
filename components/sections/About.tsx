@@ -97,10 +97,11 @@ export default function About() {
             <div className="divider-sand mb-6" />
 
             <p className="text-ink-secondary text-lg leading-relaxed mb-8">
-              I&apos;ve been skating my whole life, competing, winning, and pushing myself to my limits.
-              But what keeps me going isn&apos;t the medals, it&apos;s that feeling when it&apos;s just you, the music,
-              and the movement. I started Houston Skate Project to bring that feeling to this city.
-              Whether you&apos;ve never worn skates or you&apos;ve been rolling for years, there is a place for you here.
+              Skating saved me. On the hardest days, when everything felt like too much,
+              the floor was the one place where my mind went quiet. Just me, the music, and the movement.
+              That kind of healing is real, and I believe everyone deserves access to it.
+              Houston Skate Project exists to give this city that outlet, a space to let go,
+              feel free, and find yourself on eight wheels. No experience needed. Just show up.
             </p>
 
             {/* Quote block */}
