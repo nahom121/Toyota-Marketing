@@ -55,6 +55,42 @@ body {
   color: #1C1C1C;
 }
 
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(48px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes floatUp {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes floatDown {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(8px); }
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(6px); }
+}
+
+.hero-badge    { animation: fadeUp 0.5s ease-out 0.1s both; }
+.hero-headline { animation: fadeUp 0.7s ease-out 0.2s both; }
+.hero-sub      { animation: fadeUp 0.5s ease-out 0.4s both; }
+.hero-ctas     { animation: fadeUp 0.5s ease-out 0.5s both; }
+.hero-countdown{ animation: fadeUp 0.5s ease-out 0.65s both; }
+.hero-image    { animation: slideRight 0.9s ease-out 0.3s both; }
+.hero-scroll   { animation: fadeIn 0.5s ease-out 1.5s both; }
+.float-up      { animation: floatUp 3s ease-in-out infinite; }
+.float-down    { animation: floatDown 3.5s ease-in-out 0.5s infinite; }
+.bounce-slow   { animation: bounce 1.5s ease-in-out infinite; }
+
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-8 py-4

@@ -58,11 +58,11 @@ export default function About() {
             {/* Main photo */}
             <div className="relative rounded-2xl overflow-hidden aspect-[4/5] shadow-warm-lg border border-charcoal/10">
               <Image
-                src="/michaela-lace.jpg"
+                src="/michaela-lace.webp"
                 alt="Michaela lacing up her skates"
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                unoptimized
               />
             </div>
             {/* Floating secondary photo */}
@@ -72,11 +72,11 @@ export default function About() {
               className="absolute -bottom-6 -right-4 md:-right-8 w-40 md:w-52 aspect-[3/4] rounded-xl overflow-hidden shadow-warm-lg border-2 border-cream"
             >
               <Image
-                src="/michaela-joy.jpg"
+                src="/michaela-joy.webp"
                 alt="Michaela smiling"
                 fill
                 className="object-cover object-top"
-                sizes="208px"
+                unoptimized
               />
             </motion.div>
 

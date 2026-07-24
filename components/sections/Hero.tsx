@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
@@ -50,21 +49,12 @@ export default function Hero() {
         {/* Left: Text */}
         <div>
           {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mb-6"
-          >
+          <div className="hero-badge mb-6">
             <span className="label-tag-dark">Next Pop-Up Workshop · August 9th, 2026</span>
-          </motion.div>
+          </div>
 
           {/* Headline */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          >
+          <div className="hero-headline">
             <h1 className="font-display text-white leading-[1.0] tracking-tight mb-2">
               <span className="block text-5xl sm:text-6xl lg:text-7xl">Built by a</span>
               <span className="block text-5xl sm:text-6xl lg:text-7xl">champion.</span>
@@ -75,41 +65,27 @@ export default function Hero() {
                 </span>
               </span>
             </h1>
-          </motion.div>
+          </div>
 
           {/* Subhead */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="text-white/70 text-lg leading-relaxed mt-6 mb-8 max-w-lg"
-          >
+          <p className="hero-sub text-white/70 text-lg leading-relaxed mt-6 mb-8 max-w-lg">
             Every style. Every story. Every level. This is one floor where{" "}
             <span className="text-white font-medium">everybody belongs</span>{" "}
             and nobody gets left behind.
-          </motion.p>
+          </p>
 
           {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 mb-12"
-          >
+          <div className="hero-ctas flex flex-col sm:flex-row gap-4 mb-12">
             <button onClick={() => scrollTo("#tickets")} className="btn-primary text-base px-8 py-4">
               Get Your Tickets — $25
             </button>
             <button onClick={() => scrollTo("#about")} className="btn-outline-white text-base px-8 py-4">
               Meet Michaela
             </button>
-          </motion.div>
+          </div>
 
           {/* Countdown */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.65 }}
-          >
+          <div className="hero-countdown">
             <p className="text-white/40 text-xs uppercase tracking-widest mb-3">Event starts in</p>
             <div className="grid grid-cols-4 gap-3 max-w-xs">
               {[
@@ -126,76 +102,50 @@ export default function Hero() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Right: Photo */}
-        <motion.div
-          initial={{ opacity: 0, x: 60 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
-          className="relative hidden lg:block"
-        >
-          {/* Red border frame (poster-inspired) */}
+        <div className="hero-image relative hidden lg:block">
           <div className="absolute -inset-3 border-2 border-crimson/40 rounded-3xl" />
 
-          {/* Sand poster bg */}
           <div className="relative rounded-2xl overflow-hidden bg-sand/20 aspect-[3/4]">
             <Image
-              src="/michaela-skate.jpg"
-              alt="Michaela skating — Houston Skate Project"
+              src="/michaela-skate.webp"
+              alt="Michaela skating, Houston Skate Project"
               fill
               className="object-cover object-top"
               priority
-              sizes="(max-width: 768px) 100vw, 50vw"
+              unoptimized
             />
-            {/* Overlay gradient at bottom */}
             <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent" />
 
-            {/* Poster-style text overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-6">
               <div className="font-script text-sand text-5xl leading-none mb-1">Skate</div>
               <div className="font-display text-white text-lg tracking-wider uppercase">Houston · 2026</div>
             </div>
           </div>
 
-          {/* Floating badge */}
-          <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-4 -left-4 bg-sand text-charcoal rounded-2xl px-4 py-3 shadow-warm-lg"
-          >
+          <div className="float-up absolute -top-4 -left-4 bg-sand text-charcoal rounded-2xl px-4 py-3 shadow-warm-lg">
             <div className="font-display text-2xl leading-none">7+</div>
             <div className="text-xs font-bold uppercase tracking-wide leading-none mt-0.5">Years</div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="absolute -bottom-4 -right-4 bg-crimson text-white rounded-2xl px-4 py-3 shadow-crimson-glow"
-          >
+          <div className="float-down absolute -bottom-4 -right-4 bg-crimson text-white rounded-2xl px-4 py-3 shadow-crimson-glow">
             <div className="font-display text-2xl leading-none">Natl.</div>
             <div className="text-xs font-bold uppercase tracking-wide leading-none mt-0.5">Champion</div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
       {/* Scroll cue */}
-      <motion.button
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
+      <button
         onClick={() => scrollTo("#about")}
-        className="relative z-10 mx-auto mb-8 flex flex-col items-center gap-2 text-white/40 hover:text-white/70 transition-colors"
+        className="hero-scroll relative z-10 mx-auto mb-8 flex flex-col items-center gap-2 text-white/40 hover:text-white/70 transition-colors"
       >
         <span className="text-[10px] uppercase tracking-widest">Scroll</span>
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
-          <ChevronDown className="w-5 h-5" />
-        </motion.div>
-      </motion.button>
+        <ChevronDown className="w-5 h-5 bounce-slow" />
+      </button>
     </section>
   );
 }
