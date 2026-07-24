@@ -15,7 +15,7 @@ const faqs = [
   },
   {
     q: "Is there an age limit?",
-    a: "Houston Skate Project is a family-friendly event. Kids are welcome! Children under 12 should be accompanied by a parent or guardian. Exact age guidelines will be confirmed closer to the event date.",
+    a: "Houston Skate Project is a family-friendly event. Kids are welcome! Children under 12 should be accompanied by a parent or guardian.",
   },
   {
     q: "What should I wear?",
