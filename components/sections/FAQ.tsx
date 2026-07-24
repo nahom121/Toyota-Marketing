@@ -6,12 +6,12 @@ import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
-    q: "Can I bring my own skates?",
+    q: "Do I bring my own skates?",
     a: "Absolutely! If you have your own skates, bring them. Please make sure your wheels are clean.",
   },
   {
     q: "What skill level is this for?",
-    a: "All levels are welcome — and we mean it. Whether you've never touched a pair of skates in your life or you've been rolling for years, this event is built for you. Michaela's whole mission is to make skating accessible and fun for everyone.",
+    a: "All levels are welcome, and we mean it. Whether you've never touched a pair of skates in your life or you've been rolling for years, this event is built for you. Michaela's whole mission is to make skating accessible and fun for everyone.",
   },
   {
     q: "Is there an age limit?",
@@ -19,7 +19,7 @@ const faqs = [
   },
   {
     q: "What should I wear?",
-    a: "Wear comfortable clothes you can move in — athletic wear, leggings, joggers, whatever feels good.",
+    a: "Wear comfortable clothes you can move in, athletic wear, leggings, joggers, whatever feels good.",
   },
   {
     q: "Will there be music?",

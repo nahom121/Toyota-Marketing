@@ -48,7 +48,6 @@ export default function Header() {
               </div>
               <div className="text-left">
                 <div className="text-charcoal font-bold text-sm leading-none">Houston Skate Project</div>
-                <div className="text-ink-muted text-[10px] leading-none mt-0.5 uppercase tracking-wider">EST. 2026</div>
               </div>
             </button>
 

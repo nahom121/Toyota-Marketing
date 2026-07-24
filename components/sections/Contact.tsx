@@ -31,7 +31,7 @@ const contactMethods = [
     label: "Text Nahom",
     value: "(202) 553-1080",
     href: "sms:+12025531080",
-    description: "Fastest response — usually within minutes",
+    description: "Fastest response, usually within minutes",
     color: "bg-blue-600 hover:bg-blue-500",
     textColor: "text-blue-400",
     borderColor: "hover:border-blue-500/30",
@@ -78,7 +78,7 @@ const interestOptions = [
   "Toyota Tacoma",
   "Toyota Tundra",
   "Toyota Land Cruiser",
-  "Not sure yet — need guidance",
+  "Not sure yet, need guidance",
   "Trade-In Appraisal",
   "Financing / Leasing Help",
   "General Question",
@@ -154,7 +154,7 @@ export default function Contact() {
           </h2>
           <p className="text-ink-secondary text-lg max-w-2xl mx-auto leading-relaxed">
             Reach out any way you prefer. I respond quickly and I&apos;m here
-            to answer every question — no pressure, no rush.
+            to answer every question, no pressure, no rush.
           </p>
         </motion.div>
 

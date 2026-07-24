@@ -15,7 +15,7 @@ const details = [
     icon: Clock,
     label: "Time",
     value: "4 Sessions",
-    sub: "10 AM · 11 AM · 12 PM · 1 PM — 30 spots each",
+    sub: "10 AM · 11 AM · 12 PM · 1 PM, 30 spots each",
     color: "bg-sand/30 text-sand-dark",
   },
   {
@@ -90,7 +90,7 @@ export default function EventDetails() {
           className="mt-6 text-center"
         >
           <p className="text-white/40 text-sm">
-            📍 KGSP · 2633 N Mason Rd, Katy, TX 77449 —{" "}
+            📍 KGSP · 2633 N Mason Rd, Katy, TX 77449,{" "}
             <a
               href="https://maps.google.com/?q=2633+N+Mason+Rd+Katy+TX+77449"
               target="_blank"
