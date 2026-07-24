@@ -97,8 +97,7 @@ export default function About() {
             <div className="divider-sand mb-6" />
 
             <p className="text-ink-secondary text-lg leading-relaxed mb-8">
-              Skating gave me more than medals and wins. It gave me a way to forget the things that
-              were hard to forget. On the floor, nothing else existed. Houston Skate Project is about
+              Skating gave me more than medals and wins. It gave me a way to forget the rocky moments. On the floor, nothing else existed. Houston Skate Project is about
               giving that to others, teaching you to move with confidence so you can skate freely,
               express yourself, and actually know what you&apos;re doing while you do it.
             </p>
