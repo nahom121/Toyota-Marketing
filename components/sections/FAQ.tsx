@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     q: "Where is the event located?",
-    a: "The event is at KGSP, located at 2633 N Mason Rd, Katy, TX 77449. Doors open at 10:00 AM.",
+    a: "The first pop up is at Katy Gymnastics &amp; Sports Performance, located at 2633 N Mason Rd, Katy, TX 77449. Doors open at 10:00 AM.",
   },
   {
     q: "What if I don't have skates?",
