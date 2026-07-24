@@ -15,7 +15,7 @@ const faqs = [
   },
   {
     q: "What skill level is this for?",
-    a: "All levels are welcome, and we mean it. Whether you've never touched a pair of skates in your life or you've been rolling for years, this event is built for you. Michaela's whole mission is to make skating accessible and fun for everyone.",
+    a: "All levels are welcome, and we mean it. Whether you've never touched a pair of skates in your life or you've been rolling for years, this pop-up is built for you. Michaela's whole mission is to make skating accessible and fun for everyone.",
   },
   {
     q: "Is there an age limit?",
@@ -31,15 +31,15 @@ const faqs = [
   },
   {
     q: "What is the refund policy?",
-    a: "Tickets are generally non-refundable, but if the event is cancelled or rescheduled, you will receive a full refund or the option to transfer your ticket to the new date. Reach out to info@houstonskateproject.org with any questions.",
+    a: "Tickets are generally non-refundable, but if the pop-up is cancelled or rescheduled, you will receive a full refund or the option to transfer your ticket to the new date. Reach out to info@houstonskateproject.org with any questions.",
   },
   {
-    q: "Where is the event located?",
+    q: "Where is the pop-up located?",
     a: "The first pop up is at Katy Gymnastics &amp; Sports Performance, located at 2633 N Mason Rd, Katy, TX 77449. Doors open at 10:00 AM.",
   },
   {
     q: "What if I don't have skates?",
-    a: "BYOS (Bring Your Own Skates!) Skate rentals are not available at this event, so please plan to bring a pair or borrow one from a friend.",
+    a: "BYOS (Bring Your Own Skates!) Skate rentals are not available at this pop-up, so please plan to bring a pair or borrow one from a friend.",
   },
 ];
 

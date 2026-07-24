@@ -426,7 +426,7 @@ export default function Registration() {
                   </p>
                   <p>
                     I confirm that all information provided during registration is accurate, and I agree to follow all
-                    event rules and safety guidelines provided on the day.
+                    pop-up rules and safety guidelines provided on the day.
                   </p>
                 </div>
 

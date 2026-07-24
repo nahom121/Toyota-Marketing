@@ -35,7 +35,7 @@ export default function Footer() {
             <p className="text-white/40 text-xs uppercase tracking-widest mb-1">Quick Links</p>
             {[
               { label: "About Michaela", href: "#about" },
-              { label: "Event Details", href: "#details" },
+              { label: "Pop-Up Details", href: "#details" },
               { label: "Get Tickets", href: "#tickets" },
               { label: "FAQ", href: "#faq" },
             ].map((l) => (

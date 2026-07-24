@@ -34,10 +34,10 @@ export const metadata: Metadata = {
   keywords: [
     "Houston Skate Project",
     "roller skating Houston",
-    "pop-up skate event Houston",
+    "pop-up skate Houston",
     "roller skate workshop Houston TX",
     "Michaela skater Houston",
-    "skating event Houston 2026",
+    "skating pop-up Houston 2026",
     "roller skating class Houston",
   ],
   authors: [{ name: "Michaela" }],

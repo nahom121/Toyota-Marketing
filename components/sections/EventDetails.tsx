@@ -47,7 +47,7 @@ export default function EventDetails() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <div className="label-tag-dark mx-auto mb-5">Event Details</div>
+          <div className="label-tag-dark mx-auto mb-5">Pop-Up Details</div>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white leading-tight">
             Mark your calendar.
             <br />
