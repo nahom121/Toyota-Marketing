@@ -97,7 +97,7 @@ export default function About() {
             <p className="text-ink-secondary text-lg leading-relaxed mb-6">
               I&apos;ve been skating since I was young. I&apos;ve competed, I&apos;ve won, and I&apos;ve pushed
               myself harder than I ever thought possible on a pair of skates. But the thing that
-              keeps me going isn&apos;t the medals — it&apos;s the feeling you get when you find your flow
+              keeps me going isn&apos;t the medals, it&apos;s the feeling you get when you find your flow
               on the floor.
             </p>
             <p className="text-ink-secondary text-lg leading-relaxed mb-6">
@@ -105,7 +105,7 @@ export default function About() {
             </p>
             <p className="text-ink-secondary text-lg leading-relaxed mb-8">
               I created Houston Skate Project because I want everyone in this city to feel that.
-              Skating has given me so much — confidence, community, creativity, joy — and I want
+              Skating has given me so much: confidence, community, creativity, joy, and I want
               to share all of it. Whether you&apos;ve never worn skates before or you&apos;ve been rolling
               your whole life, there is a place for you here.
             </p>
