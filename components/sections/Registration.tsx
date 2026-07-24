@@ -248,7 +248,6 @@ export default function Registration() {
                 transition={{ duration: 0.3 }}
               >
                 <h3 className="font-display text-2xl text-charcoal mb-1">Pick your session</h3>
-                <p className="text-ink-muted text-xs mb-4">30 spots per session · August 9th, 2026</p>
 
                 {/* Slot selector */}
                 <div className="grid grid-cols-2 gap-3 mb-8">
