@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-react";
 
 const TICKET_PRICE = 25;
@@ -127,15 +127,28 @@ export default function Registration() {
   const [error, setError] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [slotData, setSlotData] = useState<Record<string, SlotData> | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    fetch("/api/capacity")
-      .then((r) => r.json())
-      .then((d) => setSlotData(d.slots))
-      .catch(() => {
-        const fallback = Object.fromEntries(SLOTS.map((s) => [s, { sold: 0, remaining: SLOT_CAPACITY, isFull: false }]));
-        setSlotData(fallback);
-      });
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          observer.disconnect();
+          fetch("/api/capacity")
+            .then((r) => r.json())
+            .then((d) => setSlotData(d.slots))
+            .catch(() => {
+              const fallback = Object.fromEntries(SLOTS.map((s) => [s, { sold: 0, remaining: SLOT_CAPACITY, isFull: false }]));
+              setSlotData(fallback);
+            });
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   const spotsLeft = selectedSlot && slotData ? slotData[selectedSlot]?.remaining ?? SLOT_CAPACITY : SLOT_CAPACITY;
@@ -193,7 +206,7 @@ export default function Registration() {
   };
 
   return (
-    <section id="tickets" className="section-pad bg-cream relative overflow-hidden">
+    <section id="tickets" ref={sectionRef} className="section-pad bg-cream relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sand to-transparent" />
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-sand/20 blur-[80px] pointer-events-none" />
 
