@@ -50,13 +50,13 @@ export const metadata: Metadata = {
     description:
       "National champion skater Michaela brings a pop-up roller skating workshop to Houston. All skill levels welcome. Register now.",
     siteName: "Houston Skate Project",
-    images: [{ url: "/poster.png", width: 930, height: 1240, alt: "Houston Skate Project Poster" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 1200, alt: "Houston Skate Project Logo" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Houston Skate Project — Pop-Up Workshop · August 9",
     description: "Roll how you want. Express who you are. Houston, TX · August 9, 2026.",
-    images: ["/poster.png"],
+    images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
   alternates: { canonical: SITE_URL },
