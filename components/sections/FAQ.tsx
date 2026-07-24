@@ -7,7 +7,7 @@ import { ChevronDown } from "lucide-react";
 const faqs = [
   {
     q: "Can I bring my own skates?",
-    a: "Absolutely! If you have your own skates, bring them. Please make sure they are in good condition and safe to use.",
+    a: "Absolutely! If you have your own skates, bring them. Please make sure your wheels are clean.",
   },
   {
     q: "What skill level is this for?",
