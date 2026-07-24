@@ -84,11 +84,9 @@ export default function Hero() {
             transition={{ delay: 0.4 }}
             className="text-white/70 text-lg leading-relaxed mt-6 mb-8 max-w-lg"
           >
-            Michaela has spent 7 years competing and winning on skates at the national level.
-            Now she&apos;s bringing that energy straight to Houston a pop-up skating experience
-            built for{" "}
-            <span className="text-white font-medium">everyone</span>.
-            First-timers. Pros. Kids. Come roll, express yourself, and have the time of your life.
+            Every style. Every story. Every level. This is one floor where{" "}
+            <span className="text-white font-medium">everybody belongs</span>{" "}
+            and nobody gets left behind. Come as you are and leave knowing how to roll.
           </motion.p>
 
           {/* CTAs */}
