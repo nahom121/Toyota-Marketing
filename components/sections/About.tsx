@@ -8,7 +8,7 @@ const pillars = [
   {
     icon: Trophy,
     title: "National Champion",
-    desc: "7+ years of competing and winning at the highest levels of roller skating.",
+    desc: "Professional roller skate coach with 7+ years of skating experience and a National Championship title.",
   },
   {
     icon: Heart,
