@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       await resend.emails.send({
         from: "Houston Skate Project <info@houstonskateproject.org>",
         to: email,
-        subject: "You're in! Houston Skate Project — August 9, 2026 🛼",
+        subject: "You're in! Houston Skate Project · August 9, 2026 🛼",
         html: `
           <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#F5EDD9;padding:32px;border-radius:16px">
             <div style="text-align:center;margin-bottom:24px">
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
       await resend2.emails.send({
         from: "Houston Skate Project <info@houstonskateproject.org>",
         to: organizerEmail,
-        subject: `New booking: ${name} — ${timeSlot} · ${ticketCount} ticket${Number(ticketCount) > 1 ? "s" : ""}`,
+        subject: `New booking: ${name} · ${timeSlot} · ${ticketCount} ticket${Number(ticketCount) > 1 ? "s" : ""}`,
         html: `
           <div style="font-family:sans-serif;max-width:400px;margin:0 auto;padding:24px">
             <h2 style="color:#1C1C1C;margin:0 0 16px">New Registration 🛼</h2>

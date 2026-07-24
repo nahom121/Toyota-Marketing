@@ -71,7 +71,7 @@ export default function AdminPage() {
         setAuthed(true);
       }
     } catch {
-      setError("Network error — try again.");
+      setError("Network error. Try again.");
     } finally {
       setLoading(false);
     }

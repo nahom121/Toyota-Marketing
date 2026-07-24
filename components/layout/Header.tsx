@@ -61,7 +61,7 @@ export default function Header() {
 
             <div className="hidden md:block">
               <button onClick={() => scrollTo("#tickets")} className="btn-primary text-sm px-6 py-2.5">
-                Get Tickets — $25
+                Get Tickets · $25
               </button>
             </div>
 
@@ -107,7 +107,7 @@ export default function Header() {
               ))}
               <div className="mt-8">
                 <button onClick={() => scrollTo("#tickets")} className="btn-primary w-full text-center">
-                  Get Tickets — $25
+                  Get Tickets · $25
                 </button>
               </div>
             </motion.div>

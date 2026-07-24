@@ -111,7 +111,7 @@ export default function About() {
                 <br />
                 Let&apos;s skate.&rdquo;
               </p>
-              <p className="text-ink-muted text-sm mt-3 font-medium">— Michaela</p>
+              <p className="text-ink-muted text-sm mt-3 font-medium">Michaela</p>
             </div>
           </motion.div>
         </div>

@@ -247,8 +247,8 @@ export default function Registration() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <h3 className="font-display text-2xl text-charcoal mb-2">Pick your session</h3>
-                <p className="text-ink-secondary text-sm mb-4">30 spots per session · August 9th, 2026</p>
+                <h3 className="font-display text-2xl text-charcoal mb-1">Pick your session</h3>
+                <p className="text-ink-muted text-xs mb-4">30 spots per session · August 9th, 2026</p>
 
                 {/* Slot selector */}
                 <div className="grid grid-cols-2 gap-3 mb-8">
@@ -345,7 +345,7 @@ export default function Registration() {
                     {byosAcknowledged && <Check className="w-3 h-3 text-white" />}
                   </div>
                   <span className="text-sm text-ink-secondary leading-relaxed">
-                    <span className="font-semibold text-charcoal">BYOS — Bring Your Own Skates!</span> I understand that skate rentals are not available for this first pop-up and I will bring my own skates.
+                    <span className="font-semibold text-charcoal">BYOS: Bring Your Own Skates!</span> I understand that skate rentals are not available for this first pop-up and I will bring my own skates.
                   </span>
                 </label>
 
@@ -355,7 +355,7 @@ export default function Registration() {
                     disabled={!step1Valid}
                     className="btn-primary w-full py-4 text-base disabled:opacity-50"
                   >
-                    Continue — Enter Attendee Info
+                    Continue to Attendee Info
                   </button>
                 )}
               </motion.div>
@@ -394,7 +394,7 @@ export default function Registration() {
                     disabled={!step2Valid}
                     className="btn-primary flex-1 py-3 text-sm disabled:opacity-50"
                   >
-                    Continue — Waiver
+                    Continue to Waiver
                   </button>
                 </div>
               </motion.div>
@@ -454,7 +454,7 @@ export default function Registration() {
                     disabled={!waiverAccepted}
                     className="btn-primary flex-1 py-3 text-sm disabled:opacity-50"
                   >
-                    Continue — Review Order
+                    Continue to Review
                   </button>
                 </div>
               </motion.div>

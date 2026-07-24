@@ -45,10 +45,10 @@ export async function GET(request: NextRequest) {
       }
       return {
         date: new Date((s.created) * 1000).toISOString(),
-        name: meta.primary_name || "—",
-        email: s.customer_email || "—",
-        phone: phone || "—",
-        timeSlot: meta.time_slot || "—",
+        name: meta.primary_name || "N/A",
+        email: s.customer_email || "N/A",
+        phone: phone || "N/A",
+        timeSlot: meta.time_slot || "N/A",
         tickets: Number(meta.ticket_count || 1),
         amountPaid: ((s.amount_total || 0) / 100).toFixed(2),
         sessionId: s.id,

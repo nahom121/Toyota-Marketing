@@ -310,7 +310,7 @@ export default function Contact() {
                   value={form.message}
                   onChange={(e) => setForm((prev) => ({ ...prev, message: e.target.value }))}
                   rows={3}
-                  placeholder="Any details that would help — color preference, trade-in, timeline, questions…"
+                  placeholder="Any details that would help: color preference, trade-in, timeline, questions…"
                   className="w-full bg-white/05 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-ink-muted
                              focus:outline-none focus:border-toyota-red/50 focus:bg-white/08 transition-all resize-none"
                 />

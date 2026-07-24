@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         price_data: {
           currency: "usd",
           product_data: {
-            name: "Houston Skate Project — General Admission",
+            name: "Houston Skate Project · General Admission",
             description: `Pop-Up Workshop · August 9th, 2026 · ${timeSlot} session · Houston, TX`,
           },
           unit_amount: 2500,
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       success_url: `${SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/#tickets`,
       payment_intent_data: {
-        description: `Houston Skate Project — ${timeSlot} · ${ticketCount} ticket(s) · ${primaryName}`,
+        description: `Houston Skate Project · ${timeSlot} · ${ticketCount} ticket(s) · ${primaryName}`,
       },
     });
 

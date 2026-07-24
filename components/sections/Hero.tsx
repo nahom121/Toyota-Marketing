@@ -74,7 +74,7 @@ export default function Hero() {
           {/* CTAs */}
           <div className="hero-ctas flex flex-col sm:flex-row gap-4 mb-12">
             <button onClick={() => scrollTo("#tickets")} className="btn-primary text-base px-8 py-4">
-              Get Your Tickets — $25
+              Get Your Tickets · $25
             </button>
             <button onClick={() => scrollTo("#about")} className="btn-outline-white text-base px-8 py-4">
               Meet Michaela

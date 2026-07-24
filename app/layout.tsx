@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: "%s | Houston Skate Project",
   },
   description:
-    "A pop-up roller skating workshop in Houston, TX — hosted by national champion skater Michaela. August 9th, 2026. All skill levels welcome. Register now.",
+    "A pop-up roller skating workshop in Houston, TX hosted by national champion skater Michaela. August 9th, 2026. All skill levels welcome. Register now.",
   keywords: [
     "Houston Skate Project",
     "roller skating Houston",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    title: "Houston Skate Project — Pop-Up Workshop · August 9, 2026",
+    title: "Houston Skate Project · Pop-Up Workshop · August 9, 2026",
     description:
       "National champion skater Michaela brings a pop-up roller skating workshop to Houston. All skill levels welcome. Register now.",
     siteName: "Houston Skate Project",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Houston Skate Project — Pop-Up Workshop · August 9",
+    title: "Houston Skate Project · Pop-Up Workshop · August 9",
     description: "Roll how you want. Express who you are. Houston, TX · August 9, 2026.",
     images: ["/og-image.png"],
   },
@@ -65,13 +65,13 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Event",
-  name: "Houston Skate Project — Pop-Up Workshop",
+  name: "Houston Skate Project · Pop-Up Workshop",
   startDate: "2026-08-09",
   eventStatus: "https://schema.org/EventScheduled",
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   location: {
     "@type": "Place",
-    name: "Location TBA — Houston, TX",
+    name: "Location TBA · Houston, TX",
     address: { "@type": "PostalAddress", addressLocality: "Houston", addressRegion: "TX", addressCountry: "US" },
   },
   organizer: { "@type": "Person", name: "Michaela" },
