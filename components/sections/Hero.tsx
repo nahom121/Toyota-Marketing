@@ -86,7 +86,7 @@ export default function Hero() {
           >
             Every style. Every story. Every level. This is one floor where{" "}
             <span className="text-white font-medium">everybody belongs</span>{" "}
-            and nobody gets left behind. Come as you are and leave knowing how to roll.
+            and nobody gets left behind.
           </motion.p>
 
           {/* CTAs */}
