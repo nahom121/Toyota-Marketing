@@ -15,7 +15,7 @@ const details = [
     icon: Clock,
     label: "Time",
     value: "4 Sessions",
-    sub: "10 AM · 11 AM · 12 PM · 1 PM, 30 spots each",
+    sub: "10 AM · 11 AM · 12 PM · 1 PM",
     color: "bg-sand/30 text-sand-dark",
   },
   {
