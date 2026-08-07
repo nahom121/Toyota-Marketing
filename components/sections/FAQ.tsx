@@ -109,21 +109,6 @@ export default function FAQ() {
           ))}
         </div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-center text-ink-muted text-sm mt-8"
-        >
-          Still have questions? Call or text us at{" "}
-          <a href="tel:+12815474601" className="text-crimson hover:underline">
-            (281) 547-4601
-          </a>
-          {" "}or email{" "}
-          <a href="mailto:info@houstonskateproject.org" className="text-crimson hover:underline">
-            info@houstonskateproject.org
-          </a>
-        </motion.p>
       </div>
     </section>
   );
