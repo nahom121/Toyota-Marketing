@@ -9,6 +9,7 @@ const navLinks = [
   { label: "Pop-Up Details", href: "#details" },
   { label: "Tickets", href: "#tickets" },
   { label: "FAQ", href: "#faq" },
+  { label: "Contact Us", href: "#contact" },
 ];
 
 export default function Header() {
