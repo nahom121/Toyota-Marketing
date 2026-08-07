@@ -72,7 +72,9 @@ export default function Footer() {
             © {new Date().getFullYear()} Houston Skate Project · All rights reserved.
           </p>
           <p className="text-white/40 text-xs">
-            For questions: <a href="mailto:info@houstonskateproject.org" className="hover:text-white transition-colors">info@houstonskateproject.org</a>
+            <a href="tel:+12815474601" className="hover:text-white transition-colors">(281) 547-4601</a>
+            {" · "}
+            <a href="mailto:info@houstonskateproject.org" className="hover:text-white transition-colors">info@houstonskateproject.org</a>
           </p>
         </div>
       </div>
