@@ -21,8 +21,8 @@ const details = [
   {
     icon: MapPin,
     label: "Location",
-    value: "KGSP",
-    sub: "KGSP · 2633 N Mason Rd, Katy, TX 77449",
+    value: "Katy, TX",
+    sub: "Full address revealed after registration",
     color: "bg-forest/10 text-forest",
   },
   {
@@ -89,15 +89,7 @@ export default function EventDetails() {
           className="mt-6 text-center"
         >
           <p className="text-white/40 text-sm">
-            📍 KGSP · 2633 N Mason Rd, Katy, TX 77449,{" "}
-            <a
-              href="https://maps.google.com/?q=2633+N+Mason+Rd+Katy+TX+77449"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sand hover:text-sand-light underline transition-colors"
-            >
-              Get directions
-            </a>
+            📍 Katy, TX · Exact address sent to your email after registration
           </p>
         </motion.div>
       </div>

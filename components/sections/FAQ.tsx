@@ -35,7 +35,7 @@ const faqs = [
   },
   {
     q: "Where is the pop-up located?",
-    a: "The first pop up is at Katy Gymnastics and Sports Performance, located at 2633 N Mason Rd, Katy, TX 77449. Doors open at 10:00 AM.",
+    a: "The pop-up is in Katy, TX. The exact address will be sent to your email after you register. Doors open at your booked session time.",
   },
   {
     q: "What if I don't have skates?",
