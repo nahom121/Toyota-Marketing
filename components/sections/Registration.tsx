@@ -533,6 +533,9 @@ export default function Registration() {
                 <p className="text-center text-ink-muted text-xs mt-4">
                   🔒 Secure payment powered by Stripe. You will be redirected to complete payment.
                 </p>
+                <p className="text-center text-xs mt-3 text-crimson font-medium">
+                  All sales are final. No refunds except if HSP cancels or reschedules.
+                </p>
               </motion.div>
             )}
 
