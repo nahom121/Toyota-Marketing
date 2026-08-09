@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     q: "What is the refund policy?",
-    a: "Tickets are non-refundable. If Houston Skate Project cancels or reschedules the pop-up, you will receive a full refund or the option to transfer your ticket to the new date.",
+    a: "Tickets are non-refundable. If Houston Skate Project cancels or reschedules the pop-up, you will receive a refund or the option to transfer your ticket to the new date.",
   },
   {
     q: "Where is the pop-up located?",
