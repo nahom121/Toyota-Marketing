@@ -31,11 +31,9 @@ export default function Header() {
   return (
     <>
       {/* Top bar */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-crimson text-white text-center py-2 px-4">
-        <span className="text-[11px] uppercase tracking-[0.15em] font-semibold">
-          Registration for today&apos;s pop-up is closed
-          <span className="mx-2 opacity-50">·</span>
-          <span className="text-white/80 font-normal normal-case tracking-normal">Registration for the next workshop opening soon</span>
+      <div className="fixed top-0 left-0 right-0 z-50 bg-charcoal text-white text-center py-1.5">
+        <span className="text-[11px] uppercase tracking-[0.2em] font-medium text-white/70">
+          EST.{" "}<span className="text-sand font-bold">2026</span>
         </span>
       </div>
 

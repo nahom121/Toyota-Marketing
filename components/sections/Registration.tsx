@@ -8,6 +8,14 @@ const TICKET_PRICE = 25;
 const SLOT_CAPACITY = 30;
 const SLOTS = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"] as const;
 type Slot = typeof SLOTS[number];
+
+// Slots close 15 min after start time on Aug 9, 2026
+const SLOT_CUTOFFS: Record<Slot, Date> = {
+  "10:00 AM": new Date("2026-08-09T10:15:00"),
+  "11:00 AM": new Date("2026-08-09T11:15:00"),
+  "12:00 PM": new Date("2026-08-09T12:15:00"),
+  "1:00 PM":  new Date("2026-08-09T13:15:00"),
+};
 type SlotData = { sold: number; remaining: number; isFull: boolean };
 
 type TicketInfo = {
@@ -127,7 +135,20 @@ export default function Registration() {
   const [error, setError] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [slotData, setSlotData] = useState<Record<string, SlotData> | null>(null);
+  const [timeClosedSlots, setTimeClosedSlots] = useState<Set<Slot>>(() => {
+    const now = new Date();
+    return new Set(SLOTS.filter((s) => now >= SLOT_CUTOFFS[s]));
+  });
   const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const check = () => {
+      const now = new Date();
+      setTimeClosedSlots(new Set(SLOTS.filter((s) => now >= SLOT_CUTOFFS[s])));
+    };
+    const id = setInterval(check, 30000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -217,31 +238,23 @@ export default function Registration() {
           viewport={{ once: true }}
           className="text-center mb-10"
         >
-          <div className="label-tag mx-auto mb-5">Registration Closed</div>
+          <div className="label-tag mx-auto mb-5">Register Now</div>
           <h2 className="font-display text-4xl md:text-5xl text-charcoal leading-tight">
-            Thank you, Houston.
+            Secure your spot.
             <br />
             <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-              See you on the floor.
+              August 9th.
             </span>
           </h2>
-          <p className="text-ink-secondary mt-4 text-base max-w-md mx-auto">
-            Registration for the August 9th pop-up is now closed. Stay tuned — the next workshop is coming soon.
+          <p className="text-ink-secondary mt-3 text-base">
+            General Admission: <span className="font-semibold text-charcoal">$25</span> per person
           </p>
+          {slotData && (
+            <p className="text-ink-muted text-xs mt-3">Select a session below to see availability</p>
+          )}
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-white border border-charcoal/10 rounded-2xl p-8 text-center shadow-warm"
-        >
-          <div className="text-4xl mb-4">🛼</div>
-          <p className="font-display text-2xl text-charcoal mb-2">Registration for next workshop opening soon</p>
-          <p className="text-ink-muted text-sm">Follow us on TikTok and Instagram <span className="font-medium text-charcoal">@HoustonSkateProject</span> to be the first to know.</p>
-        </motion.div>
-
-        {false && (<>
+        <>
 
         <StepIndicator current={step} />
 
@@ -263,7 +276,8 @@ export default function Registration() {
                 <div className="grid grid-cols-2 gap-3 mb-8">
                   {SLOTS.map((slot) => {
                     const info = slotData?.[slot];
-                    const full = info?.isFull ?? false;
+                    const timeClosed = timeClosedSlots.has(slot);
+                    const full = (info?.isFull ?? false) || timeClosed;
                     const left = info?.remaining ?? SLOT_CAPACITY;
                     const selected = selectedSlot === slot;
                     return (
@@ -280,7 +294,9 @@ export default function Registration() {
                         }`}
                       >
                         <p className={`font-display text-xl mb-1 ${selected ? "text-crimson" : "text-charcoal"}`}>{slot}</p>
-                        {full ? (
+                        {timeClosed ? (
+                          <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide">Closed</p>
+                        ) : full ? (
                           <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide">Sold Out</p>
                         ) : (
                           <p className={`text-xs font-semibold ${left <= 5 ? "text-crimson" : "text-ink-muted"}`}>
@@ -551,7 +567,7 @@ export default function Registration() {
 
           </AnimatePresence>
         </div>
-        </>)}
+        </>
       </div>
     </section>
   );
