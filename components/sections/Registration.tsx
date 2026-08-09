@@ -217,21 +217,31 @@ export default function Registration() {
           viewport={{ once: true }}
           className="text-center mb-10"
         >
-          <div className="label-tag mx-auto mb-5">Register Now</div>
+          <div className="label-tag mx-auto mb-5">Registration Closed</div>
           <h2 className="font-display text-4xl md:text-5xl text-charcoal leading-tight">
-            Secure your spot.
+            Thank you, Houston.
             <br />
             <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-              August 9th.
+              See you on the floor.
             </span>
           </h2>
-          <p className="text-ink-secondary mt-3 text-base">
-            General Admission: <span className="font-semibold text-charcoal">$25</span> per person
+          <p className="text-ink-secondary mt-4 text-base max-w-md mx-auto">
+            Registration for the August 9th pop-up is now closed. Stay tuned — the next workshop is coming soon.
           </p>
-          {slotData && (
-            <p className="text-ink-muted text-xs mt-3">Select a session below to see availability</p>
-          )}
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="bg-white border border-charcoal/10 rounded-2xl p-8 text-center shadow-warm"
+        >
+          <div className="text-4xl mb-4">🛼</div>
+          <p className="font-display text-2xl text-charcoal mb-2">Registration for next workshop opening soon</p>
+          <p className="text-ink-muted text-sm">Follow us on TikTok and Instagram <span className="font-medium text-charcoal">@HoustonSkateProject</span> to be the first to know.</p>
+        </motion.div>
+
+        {false && (<>
 
         <StepIndicator current={step} />
 
@@ -541,6 +551,7 @@ export default function Registration() {
 
           </AnimatePresence>
         </div>
+        </>)}
       </div>
     </section>
   );
