@@ -27,7 +27,7 @@ function useCountdown(targetDate: Date) {
 }
 
 export default function Hero() {
-  const eventDate = new Date("2026-08-09T10:00:00");
+  const eventDate = new Date("2026-08-30T09:30:00");
   const { days, hours, minutes, seconds } = useCountdown(eventDate);
 
   const scrollTo = (href: string) => {
@@ -47,7 +47,7 @@ export default function Hero() {
         <div>
           {/* Badge */}
           <div className="hero-badge mb-6">
-            <span className="label-tag-dark">Next Pop-Up Workshop · August 9th, 2026</span>
+            <span className="label-tag-dark">Next Pop-Up Workshop · August 30th, 2026</span>
           </div>
 
           {/* Headline */}

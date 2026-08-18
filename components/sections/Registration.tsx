@@ -6,15 +6,58 @@ import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-reac
 
 const TICKET_PRICE = 25;
 const SLOT_CAPACITY = 30;
-const SLOTS = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"] as const;
+const SLOTS = ["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"] as const;
 type Slot = typeof SLOTS[number];
 
-// Slots close 15 min after start time on Aug 9, 2026
+// Slots close 15 min after start time on Aug 30, 2026
 const SLOT_CUTOFFS: Record<Slot, Date> = {
-  "10:00 AM": new Date("2026-08-09T10:15:00"),
-  "11:00 AM": new Date("2026-08-09T11:15:00"),
-  "12:00 PM": new Date("2026-08-09T12:15:00"),
-  "1:00 PM":  new Date("2026-08-09T13:15:00"),
+  "9:30 AM":  new Date("2026-08-30T09:45:00"),
+  "10:30 AM": new Date("2026-08-30T10:45:00"),
+  "11:30 AM": new Date("2026-08-30T11:45:00"),
+  "12:30 PM": new Date("2026-08-30T12:45:00"),
+};
+
+const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
+  "9:30 AM": {
+    title: "Pre-Beginner",
+    bullets: [
+      "Have never skated or have very limited experience",
+      "Rely on the wall or another person for support",
+      "Have difficulty balancing or rolling independently",
+      "Use the wall to slow down or stop",
+      "Are unsure how to safely fall and get back up",
+    ],
+  },
+  "10:30 AM": {
+    title: "Beginner",
+    bullets: [
+      "Have skated before but may be returning after a long break",
+      "Can roll forward independently without holding the wall",
+      "Can get around the rink but still feel unsteady",
+      "Need more confidence with stopping and turning",
+      "Want better balance, control, and comfort on skates",
+    ],
+  },
+  "11:30 AM": {
+    title: "Backward Beginner",
+    bullets: [
+      "Can skate forward confidently and with control",
+      "Have little to no backward skating experience",
+      "Can skate backward slightly but want stronger fundamentals",
+      "Want to learn how to transition from forward to backward",
+      "Are ready to build confidence skating backward independently",
+    ],
+  },
+  "12:30 PM": {
+    title: "Backward Intermediate",
+    bullets: [
+      "Can already skate backward independently",
+      "Can maintain continuous backward movement",
+      "Feel comfortable balancing while skating backward",
+      "Are ready to improve weight shifts, edges, and control",
+      "Want to learn backward footwork, transitions, and tricks",
+    ],
+  },
 };
 type SlotData = { sold: number; remaining: number; isFull: boolean };
 
@@ -243,7 +286,7 @@ export default function Registration() {
             Secure your spot.
             <br />
             <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-              August 9th.
+              August 30th.
             </span>
           </h2>
           <p className="text-ink-secondary mt-3 text-base">
@@ -308,6 +351,30 @@ export default function Registration() {
                     );
                   })}
                 </div>
+
+                {/* Level description — shown when a slot is selected */}
+                {selectedSlot && !timeClosedSlots.has(selectedSlot) && (() => {
+                  const level = SLOT_LEVELS[selectedSlot];
+                  return (
+                    <div className="bg-charcoal/4 border border-charcoal/10 rounded-2xl p-5 mb-6">
+                      <p className="font-semibold text-charcoal text-sm mb-1">
+                        🛼 {level.title} — {selectedSlot}
+                      </p>
+                      <p className="text-ink-muted text-xs mb-3">This session is for you if you:</p>
+                      <ul className="space-y-1.5">
+                        {level.bullets.map((b) => (
+                          <li key={b} className="flex items-start gap-2 text-xs text-ink-secondary">
+                            <span className="mt-0.5 w-1.5 h-1.5 rounded-full bg-crimson shrink-0" />
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="text-xs text-ink-muted mt-4 border-t border-charcoal/10 pt-3">
+                        📌 Please arrive at <strong>{selectedSlot}</strong>. Your class will begin 15 minutes after your arrival time.
+                      </p>
+                    </div>
+                  );
+                })()}
 
                 {/* Ticket count — only show after slot selected */}
                 {selectedSlot && !isSoldOut && (
@@ -506,7 +573,7 @@ export default function Registration() {
                     {selectedSlot && (
                       <div className="flex justify-between text-sm">
                         <span className="text-ink-secondary">Session</span>
-                        <span className="font-semibold text-charcoal">{selectedSlot} · Aug 9</span>
+                        <span className="font-semibold text-charcoal">{selectedSlot} · Aug 30</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm">

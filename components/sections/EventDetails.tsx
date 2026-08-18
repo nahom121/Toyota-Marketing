@@ -7,7 +7,7 @@ const details = [
   {
     icon: Calendar,
     label: "Date",
-    value: "August 9th, 2026",
+    value: "August 30th, 2026",
     sub: "Sunday",
     color: "bg-crimson/10 text-crimson",
   },
@@ -15,7 +15,7 @@ const details = [
     icon: Clock,
     label: "Time",
     value: "4 Sessions",
-    sub: "10 AM · 11 AM · 12 PM · 1 PM",
+    sub: "9:30 AM · 10:30 AM · 11:30 AM · 12:30 PM",
     color: "bg-sand/30 text-sand-dark",
   },
   {
@@ -52,7 +52,7 @@ export default function EventDetails() {
             Mark your calendar.
             <br />
             <span className="font-script text-sand" style={{ fontSize: "1.05em" }}>
-              August 9th.
+              August 30th.
             </span>
           </h2>
           <p className="text-white/60 text-lg mt-4 max-w-lg mx-auto">

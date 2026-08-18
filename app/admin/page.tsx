@@ -125,7 +125,7 @@ export default function AdminPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="font-display text-3xl text-charcoal">Registrations</h1>
-            <p className="text-ink-secondary text-sm mt-0.5">Houston Skate Project · August 9, 2026</p>
+            <p className="text-ink-secondary text-sm mt-0.5">Houston Skate Project · August 30, 2026</p>
           </div>
           <div className="flex gap-3">
             <button
