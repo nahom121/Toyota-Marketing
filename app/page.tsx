@@ -7,7 +7,6 @@ const About = dynamic(() => import("@/components/sections/About"));
 const EventDetails = dynamic(() => import("@/components/sections/EventDetails"));
 const Registration = dynamic(() => import("@/components/sections/Registration"));
 const FAQ = dynamic(() => import("@/components/sections/FAQ"));
-const Gallery = dynamic(() => import("@/components/sections/Gallery"));
 const ContactStrip = dynamic(() => import("@/components/sections/ContactStrip"));
 
 export default function Home() {
@@ -20,7 +19,6 @@ export default function Home() {
         <EventDetails />
         <Registration />
         <FAQ />
-        <Gallery />
         <ContactStrip />
       </main>
       <Footer />
