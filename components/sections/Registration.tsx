@@ -173,6 +173,7 @@ export default function Registration() {
   const [ticketCount, setTicketCount] = useState(1);
   const [tickets, setTickets] = useState<TicketInfo[]>([defaultTicket(true)]);
   const [waiverAccepted, setWaiverAccepted] = useState(false);
+  const [signature, setSignature] = useState("");
   const [byosAcknowledged, setByosAcknowledged] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -516,13 +517,20 @@ export default function Registration() {
                     and hold harmless Houston Skate Project, its organizers, staff, and volunteers from any and all
                     liability, claims, demands, or causes of action arising from participation in this event.
                   </p>
-                  <p>
+                  <p className="mb-3">
                     I confirm that all information provided during registration is accurate, and I agree to follow all
                     pop-up rules and safety guidelines provided on the day.
                   </p>
+                  <p className="border-t border-charcoal/10 pt-3">
+                    <span className="font-semibold text-charcoal">Media & Photography Consent:</span>{" "}
+                    I understand and agree that Houston Skate Project workshops may be filmed or photographed at various
+                    points throughout the event for use on social media and promotional content. By registering, I consent
+                    on behalf of myself and all attendees in my order to the recording, photographing, and public sharing
+                    of such content by Houston Skate Project.
+                  </p>
                 </div>
 
-                <label className="flex items-start gap-3 cursor-pointer mb-8 group">
+                <label className="flex items-start gap-3 cursor-pointer mb-5 group">
                   <div
                     onClick={() => setWaiverAccepted(!waiverAccepted)}
                     className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border-2 flex-shrink-0 transition-all ${
@@ -532,18 +540,37 @@ export default function Registration() {
                     {waiverAccepted && <Check className="w-3 h-3 text-white" />}
                   </div>
                   <span className="text-sm text-ink-secondary leading-relaxed">
-                    I have read and agree to the waiver above on behalf of myself and all attendees in my order.
-                    I confirm that I am 18 years or older, or that I am a parent/guardian agreeing on behalf of any minors.
+                    I have read and agree to the waiver above, including the media consent, on behalf of myself and all
+                    attendees in my order. I confirm that I am 18 years or older, or that I am a parent/guardian agreeing
+                    on behalf of any minors.
                   </span>
                 </label>
+
+                {/* Signature */}
+                <div className="mb-8">
+                  <label className="block text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
+                    Signature <span className="text-crimson">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={signature}
+                    onChange={(e) => setSignature(e.target.value)}
+                    placeholder="Type your full name to sign"
+                    className="w-full border-2 border-charcoal/15 rounded-xl px-4 py-3 text-charcoal font-medium placeholder-ink-muted/50 focus:outline-none focus:border-crimson transition-colors italic"
+                    style={{ fontFamily: "cursive" }}
+                  />
+                  <p className="text-[10px] text-ink-muted mt-1.5">
+                    By typing your name you are signing this waiver electronically.
+                  </p>
+                </div>
 
                 <div className="flex gap-3">
                   <button onClick={() => setStep(2)} className="btn-secondary px-6 py-3 text-sm">
                     Back
                   </button>
                   <button
-                    onClick={() => { if (waiverAccepted) setStep(4); }}
-                    disabled={!waiverAccepted}
+                    onClick={() => { if (waiverAccepted && signature.trim()) setStep(4); }}
+                    disabled={!waiverAccepted || !signature.trim()}
                     className="btn-primary flex-1 py-3 text-sm disabled:opacity-50"
                   >
                     Continue to Review
