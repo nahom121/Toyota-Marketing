@@ -21,8 +21,8 @@ const details = [
   {
     icon: MapPin,
     label: "Location",
-    value: "Katy, TX",
-    sub: "Full address revealed after registration",
+    value: "Houston, TX",
+    sub: "77090 · Full address revealed after registration",
     color: "bg-forest/10 text-forest",
   },
   {
@@ -89,7 +89,7 @@ export default function EventDetails() {
           className="mt-6 text-center"
         >
           <p className="text-white/40 text-sm">
-            📍 Katy, TX · Exact address sent to your email after registration
+            📍 Houston, TX 77090 · Exact address sent to your email after registration
           </p>
         </motion.div>
       </div>

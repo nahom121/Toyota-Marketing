@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Pop-Up Details</h2>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📅 <strong>Date:</strong> August 30th, 2026</p>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>Your session:</strong> ${timeSlot}</p>
-              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> KGSP · 2633 N Mason Rd, Katy, TX 77449</p>
+              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> 221 Barren Springs Dr, Ste 15, Houston, TX 77090</p>
             </div>
 
             <div style="text-align:center;padding:16px;background:#8B5E3C;border-radius:12px;color:white">

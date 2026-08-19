@@ -35,7 +35,7 @@ const faqs = [
   },
   {
     q: "Where is the pop-up located?",
-    a: "The pop-up is in Katy, TX. The exact address will be sent to your email after you register. Doors open at your booked session time.",
+    a: "The pop-up is in Houston, TX (77090). The exact address will be sent to your email after you register. Doors open at your booked session time.",
   },
   {
     q: "What if I don't have skates?",

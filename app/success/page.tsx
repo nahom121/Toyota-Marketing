@@ -78,7 +78,7 @@ function SuccessContent() {
         <div className="bg-charcoal text-white rounded-2xl p-5 mb-6">
           <Calendar className="w-6 h-6 text-sand mx-auto mb-3" />
           <p className="font-display text-xl mb-1">August 30th, 2026</p>
-          <p className="text-white/60 text-sm">KGSP · 2633 N Mason Rd, Katy, TX 77449</p>
+          <p className="text-white/60 text-sm">221 Barren Springs Dr, Ste 15, Houston, TX 77090</p>
           <p className="text-white/50 text-xs mt-2">
             Doors open at 9:30 AM · Arrive at your booked session time!
           </p>

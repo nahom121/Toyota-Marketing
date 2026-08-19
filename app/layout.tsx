@@ -71,8 +71,8 @@ const jsonLd = {
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   location: {
     "@type": "Place",
-    name: "Katy, TX",
-    address: { "@type": "PostalAddress", addressLocality: "Katy", addressRegion: "TX", addressCountry: "US" },
+    name: "Houston, TX",
+    address: { "@type": "PostalAddress", addressLocality: "Houston", addressRegion: "TX", postalCode: "77090", addressCountry: "US" },
   },
   organizer: { "@type": "Person", name: "Michaela" },
   offers: {
