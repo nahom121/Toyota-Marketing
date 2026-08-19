@@ -49,13 +49,13 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
     ],
   },
   "12:30 PM": {
-    title: "Backward Intermediate",
+    title: "Beginner",
     bullets: [
-      "Can already skate backward independently",
-      "Can maintain continuous backward movement",
-      "Feel comfortable balancing while skating backward",
-      "Are ready to improve weight shifts, edges, and control",
-      "Want to learn backward footwork, transitions, and tricks",
+      "Have skated before but may be returning after a long break",
+      "Can roll forward independently without holding the wall",
+      "Can get around the rink but still feel unsteady",
+      "Need more confidence with stopping and turning",
+      "Want better balance, control, and comfort on skates",
     ],
   },
 };
