@@ -19,6 +19,8 @@ export async function GET(request: NextRequest) {
     const email = session.customer_email || "";
     const ticketCount = meta.ticket_count || "1";
     const timeSlot = meta.time_slot || "";
+    const secondTimeSlot = meta.second_time_slot || "";
+    const isBundle = !!secondTimeSlot;
     const amountPaid = ((session.amount_total || 0) / 100).toFixed(2);
 
     if (email) {
@@ -39,8 +41,8 @@ export async function GET(request: NextRequest) {
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Your Order</h2>
               <table style="width:100%;font-size:14px;color:#1C1C1C;border-collapse:collapse">
                 <tr><td style="padding:6px 0">Hi, ${name}!</td></tr>
-                <tr><td style="padding:6px 0">Session</td><td style="padding:6px 0;text-align:right;font-weight:600">${timeSlot}</td></tr>
-                <tr><td style="padding:6px 0">Tickets</td><td style="padding:6px 0;text-align:right;font-weight:600">${ticketCount}</td></tr>
+                <tr><td style="padding:6px 0">${isBundle ? "Sessions" : "Session"}</td><td style="padding:6px 0;text-align:right;font-weight:600">${isBundle ? `${timeSlot} + ${secondTimeSlot}` : timeSlot}</td></tr>
+                <tr><td style="padding:6px 0">${isBundle ? "Bundle" : "Tickets"}</td><td style="padding:6px 0;text-align:right;font-weight:600">${isBundle ? `${ticketCount} person${Number(ticketCount) > 1 ? "s" : ""} · 2 sessions` : ticketCount}</td></tr>
                 <tr style="border-top:1px solid rgba(28,28,28,0.1)">
                   <td style="padding:10px 0 0;font-weight:bold">Total Paid</td>
                   <td style="padding:10px 0 0;text-align:right;font-weight:bold;color:#8B5E3C;font-size:18px">$${amountPaid}</td>
@@ -51,7 +53,7 @@ export async function GET(request: NextRequest) {
             <div style="background:white;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid rgba(28,28,28,0.1)">
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Pop-Up Details</h2>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📅 <strong>Date:</strong> August 30th, 2026</p>
-              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>Your session:</strong> ${timeSlot}</p>
+              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>${isBundle ? "Your sessions:" : "Your session:"}</strong> ${isBundle ? `${timeSlot} &amp; ${secondTimeSlot}` : timeSlot}</p>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> 221 Barren Springs Dr, Ste 15, Houston, TX 77090</p>
             </div>
 
@@ -82,7 +84,7 @@ export async function GET(request: NextRequest) {
             <table style="width:100%;font-size:14px;color:#1C1C1C;border-collapse:collapse">
               <tr><td style="padding:6px 0;color:#8A8A8A">Name</td><td style="padding:6px 0;font-weight:600;text-align:right">${name}</td></tr>
               <tr><td style="padding:6px 0;color:#8A8A8A">Email</td><td style="padding:6px 0;text-align:right">${email}</td></tr>
-              <tr><td style="padding:6px 0;color:#8A8A8A">Session</td><td style="padding:6px 0;font-weight:600;text-align:right">${timeSlot}</td></tr>
+              <tr><td style="padding:6px 0;color:#8A8A8A">${isBundle ? "Sessions" : "Session"}</td><td style="padding:6px 0;font-weight:600;text-align:right">${isBundle ? `${timeSlot} + ${secondTimeSlot}` : timeSlot}</td></tr>
               <tr><td style="padding:6px 0;color:#8A8A8A">Tickets</td><td style="padding:6px 0;font-weight:600;text-align:right">${ticketCount}</td></tr>
               <tr style="border-top:1px solid #eee"><td style="padding:10px 0 0;font-weight:bold">Paid</td><td style="padding:10px 0 0;text-align:right;font-weight:bold;color:#8B5E3C;font-size:18px">$${amountPaid}</td></tr>
             </table>
