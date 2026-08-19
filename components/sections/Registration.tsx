@@ -220,7 +220,7 @@ export default function Registration() {
   const isBundle = secondSlot !== null;
   const now = new Date();
   const earlyBirdEnds  = new Date("2026-08-20T00:00:00");
-  const bundleOfferEnds = new Date("2026-08-24T00:00:00");
+  const bundleOfferEnds = new Date("2026-08-23T00:00:00");
   const isEarlyBird   = now < earlyBirdEnds;
   const bundleAvailable = now < bundleOfferEnds;
   const bundlePrice   = isEarlyBird ? 40 : 45;
