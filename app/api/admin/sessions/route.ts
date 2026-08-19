@@ -25,8 +25,11 @@ export async function GET(request: NextRequest) {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
+    const CUTOFF = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
+
     const paid = sessions.filter((s) => {
       if (s.payment_status !== "paid") return false;
+      if (s.created < CUTOFF) return false;
       const pi = s.payment_intent as Stripe.PaymentIntent | null;
       const charge = pi?.latest_charge as Stripe.Charge | null;
       if (charge?.refunded) return false;
