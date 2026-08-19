@@ -29,7 +29,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
     ],
   },
   "10:30 AM": {
-    title: "Beginner",
+    title: "Beginner Morning Session",
     bullets: [
       "Have skated before but may be returning after a long break",
       "Can roll forward independently without holding the wall",
@@ -49,7 +49,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
     ],
   },
   "12:30 PM": {
-    title: "Beginner",
+    title: "Beginner Afternoon Session",
     bullets: [
       "Have skated before but may be returning after a long break",
       "Can roll forward independently without holding the wall",
