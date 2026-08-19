@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const isBundle = !!secondSlot;
     const now = new Date();
     const earlyBirdEnds   = new Date("2026-08-20T00:00:00Z");
-    const bundleOfferEnds = new Date("2026-08-22T00:00:00Z");
+    const bundleOfferEnds = new Date("2026-08-24T00:00:00Z");
     const isEarlyBird     = now < earlyBirdEnds;
     const bundleAvailable = now < bundleOfferEnds;
     if (isBundle && !bundleAvailable) {
