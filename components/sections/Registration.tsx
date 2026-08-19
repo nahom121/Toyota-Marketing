@@ -218,7 +218,11 @@ export default function Registration() {
   }, []);
 
   const isBundle = secondSlot !== null;
-  const pricePerPerson = isBundle ? 40 : TICKET_PRICE;
+  const earlyBirdEnds = new Date("2026-08-20T00:00:00");
+  const isEarlyBird = new Date() < earlyBirdEnds;
+  const bundlePrice = isEarlyBird ? 40 : 45;
+  const bundleSavings = isEarlyBird ? 10 : 5;
+  const pricePerPerson = isBundle ? bundlePrice : TICKET_PRICE;
   const spotsLeft = selectedSlot && slotData
     ? Math.min(
         slotData[selectedSlot]?.remaining ?? SLOT_CAPACITY,
@@ -393,10 +397,24 @@ export default function Registration() {
                   <div className="bg-white border border-charcoal/10 rounded-2xl p-4 mb-6">
                     <div className="flex items-center justify-between mb-3">
                       <div>
-                        <p className="font-semibold text-charcoal text-sm">Add a 2nd session</p>
-                        <p className="text-xs text-ink-muted">
-                          Bundle: 2 sessions for <span className="font-bold text-charcoal">$40</span> · Save $10
-                        </p>
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <p className="font-semibold text-charcoal text-sm">Add a 2nd session</p>
+                          {isEarlyBird && (
+                            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-crimson text-white">
+                              Early Bird · Today Only
+                            </span>
+                          )}
+                        </div>
+                        {isEarlyBird ? (
+                          <p className="text-xs text-ink-muted">
+                            Bundle: 2 sessions for <span className="font-bold text-charcoal">$40</span> · Save $10 —{" "}
+                            <span className="font-semibold" style={{ color: "#c0392b" }}>price goes up tomorrow</span>
+                          </p>
+                        ) : (
+                          <p className="text-xs text-ink-muted">
+                            Bundle: 2 sessions for <span className="font-bold text-charcoal">$45</span> · Save $5
+                          </p>
+                        )}
                       </div>
                       {secondSlot && (
                         <button
@@ -492,7 +510,7 @@ export default function Registration() {
                         <span className="font-display text-2xl text-charcoal">${total}</span>
                       </p>
                       <p className="text-xs font-semibold mt-1" style={{ color: "#2d6a4f" }}>
-                        You save ${10 * ticketCount}!
+                        You save ${bundleSavings * ticketCount}!{isEarlyBird ? " 🎉 Early bird rate — today only." : ""}
                       </p>
                     </>
                   ) : (
@@ -688,8 +706,10 @@ export default function Registration() {
                     </div>
                     {isBundle && (
                       <div className="flex justify-between text-xs">
-                        <span style={{ color: "#2d6a4f" }} className="font-medium">Bundle savings</span>
-                        <span style={{ color: "#2d6a4f" }} className="font-medium">-${10 * ticketCount}</span>
+                        <span style={{ color: "#2d6a4f" }} className="font-medium">
+                          Bundle savings{isEarlyBird ? " (early bird)" : ""}
+                        </span>
+                        <span style={{ color: "#2d6a4f" }} className="font-medium">-${bundleSavings * ticketCount}</span>
                       </div>
                     )}
                     <div className="pt-3 border-t border-charcoal/10 flex justify-between">
