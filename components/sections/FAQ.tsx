@@ -7,7 +7,7 @@ import { ChevronDown } from "lucide-react";
 const faqs = [
   {
     q: "How long will I be there?",
-    a: "Each workshop includes a 15-minute check-in and lace-up period followed by a 45-minute lesson, so plan to be there for a total of 1 hour. Please arrive at your selected session time — for example, if you booked the 9:30 AM session, arrive at 9:30 AM. Your class will begin 15 minutes after your arrival time.",
+    a: "Each workshop includes a 15-minute check-in and lace-up period followed by a 45-minute lesson, so plan to be there for a total of 1 hour. Please arrive at your selected session time. For example, if you booked the 9:30 AM session, arrive at 9:30 AM. Your class will begin 15 minutes after your arrival time.",
   },
   {
     q: "Do I bring my own skates?",
