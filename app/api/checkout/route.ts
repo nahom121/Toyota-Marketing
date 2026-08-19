@@ -12,29 +12,16 @@ function isRefunded(s: Stripe.Checkout.Session): boolean {
 
 export async function POST(request: NextRequest) {
   try {
-    const { ticketCount, timeSlot, secondSlot, primaryEmail, primaryName, primaryPhone, registrants } =
+    const { ticketCount, timeSlot, primaryEmail, primaryName, primaryPhone, registrants } =
       await request.json();
 
     if (!ticketCount || !timeSlot || !primaryEmail || !primaryName) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const isBundle = !!secondSlot;
-    const now = new Date();
-    const earlyBirdEnds   = new Date("2026-08-20T00:00:00Z");
-    const bundleOfferEnds = new Date("2026-08-23T00:00:00Z");
-    const isEarlyBird     = now < earlyBirdEnds;
-    const bundleAvailable = now < bundleOfferEnds;
-    if (isBundle && !bundleAvailable) {
-      return NextResponse.json({ error: "Bundle offer has ended." }, { status: 400 });
-    }
-    const bundleUnitAmount = isEarlyBird ? 4000 : 4500;
-    const unitAmount = isBundle ? bundleUnitAmount : 2500;
-
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-    // Capacity check for all booked slots
-    const slotsToCheck: string[] = isBundle ? [timeSlot, secondSlot] : [timeSlot];
+    // Per-slot capacity check
     const allSessions: Stripe.Checkout.Session[] = [];
     let hasMore = true;
     let startingAfter: string | undefined;
@@ -48,38 +35,26 @@ export async function POST(request: NextRequest) {
       hasMore = page.has_more;
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
-
-    for (const slot of slotsToCheck) {
-      const slotSold = allSessions
-        .filter((s) => {
-          if (s.payment_status !== "paid" || isRefunded(s)) return false;
-          return s.metadata?.time_slot === slot || s.metadata?.second_time_slot === slot;
-        })
-        .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
-      const remaining = Math.max(0, SLOT_CAPACITY - slotSold);
-      if (ticketCount > remaining) {
-        return NextResponse.json(
-          { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left for the ${slot} session.` },
-          { status: 409 }
-        );
-      }
+    const slotSold = allSessions
+      .filter((s) => s.payment_status === "paid" && !isRefunded(s) && s.metadata?.time_slot === timeSlot)
+      .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
+    const remaining = Math.max(0, SLOT_CAPACITY - slotSold);
+    if (ticketCount > remaining) {
+      return NextResponse.json(
+        { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left for the ${timeSlot} session.` },
+        { status: 409 }
+      );
     }
-
-    const sessionLabel = isBundle
-      ? `${timeSlot} + ${secondSlot}`
-      : `${timeSlot} session`;
 
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
       {
         price_data: {
           currency: "usd",
           product_data: {
-            name: isBundle
-              ? `Houston Skate Project · 2-Session Bundle${isEarlyBird ? " (Early Bird)" : ""}`
-              : "Houston Skate Project · General Admission",
-            description: `Pop-Up Workshop · August 30th, 2026 · ${sessionLabel} · Houston, TX`,
+            name: "Houston Skate Project · General Admission",
+            description: `Pop-Up Workshop · August 30th, 2026 · ${timeSlot} session · Houston, TX`,
           },
-          unit_amount: unitAmount,
+          unit_amount: 2500,
         },
         quantity: ticketCount,
       },
@@ -93,7 +68,6 @@ export async function POST(request: NextRequest) {
         event: "Houston Skate Project",
         date: "August 30, 2026",
         time_slot: timeSlot,
-        ...(isBundle ? { second_time_slot: secondSlot } : {}),
         primary_name: primaryName,
         primary_phone: primaryPhone || "",
         ticket_count: String(ticketCount),
@@ -102,7 +76,7 @@ export async function POST(request: NextRequest) {
       success_url: `${SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/#tickets`,
       payment_intent_data: {
-        description: `Houston Skate Project · ${sessionLabel} · ${ticketCount} ticket(s) · ${primaryName}`,
+        description: `Houston Skate Project · ${timeSlot} · ${ticketCount} ticket(s) · ${primaryName}`,
       },
     });
 
