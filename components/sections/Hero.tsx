@@ -47,7 +47,7 @@ export default function Hero() {
         <div>
           {/* Badge */}
           <div className="hero-badge mb-6">
-            <span className="label-tag-dark">Next Pop-Up Workshop · August 30th, 2026</span>
+            <span className="label-tag-dark">Next Pop-Up Workshop · <strong>August 30th, 2026</strong></span>
           </div>
 
           {/* Headline */}
@@ -73,11 +73,8 @@ export default function Hero() {
 
           {/* CTAs */}
           <div className="hero-ctas flex flex-col sm:flex-row gap-4 mb-12">
-            <button onClick={() => scrollTo("#tickets")} className="btn-primary text-base px-8 py-4">
+            <button onClick={() => scrollTo("#tickets")} className="btn-primary text-base px-8 py-4 font-black">
               Get Your Tickets · $25
-            </button>
-            <button onClick={() => scrollTo("#about")} className="btn-outline-white text-base px-8 py-4">
-              Meet Michaela
             </button>
           </div>
 

@@ -337,6 +337,7 @@ export default function Registration() {
                             : "border-charcoal/15 hover:border-sand bg-white"
                         }`}
                       >
+                        <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${selected ? "text-crimson" : "text-ink-muted"}`}>{SLOT_LEVELS[slot].title}</p>
                         <p className={`font-display text-xl mb-1 ${selected ? "text-crimson" : "text-charcoal"}`}>{slot}</p>
                         {timeClosed ? (
                           <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide">Closed</p>
