@@ -556,8 +556,7 @@ export default function Registration() {
                     value={signature}
                     onChange={(e) => setSignature(e.target.value)}
                     placeholder="Type your full name to sign"
-                    className="w-full border-2 border-charcoal/15 rounded-xl px-4 py-3 text-charcoal font-medium placeholder-ink-muted/50 focus:outline-none focus:border-crimson transition-colors italic"
-                    style={{ fontFamily: "cursive" }}
+                    className="w-full border-2 border-charcoal/15 rounded-xl px-4 py-3 text-charcoal font-medium placeholder-ink-muted/50 focus:outline-none focus:border-crimson transition-colors"
                   />
                   <p className="text-[10px] text-ink-muted mt-1.5">
                     By typing your name you are signing this waiver electronically.
