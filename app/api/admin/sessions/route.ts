@@ -7,6 +7,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const event = request.nextUrl.searchParams.get("event") || "current";
+
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -25,11 +27,13 @@ export async function GET(request: NextRequest) {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
-    const CUTOFF = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
+    // Workshop 2 (Aug 30, 2026) started Aug 18; anything before = Workshop 1
+    const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
 
     const paid = sessions.filter((s) => {
       if (s.payment_status !== "paid") return false;
-      if (s.created < CUTOFF) return false;
+      if (event === "current" && s.created < WORKSHOP2_START) return false;
+      if (event === "previous" && s.created >= WORKSHOP2_START) return false;
       const pi = s.payment_intent as Stripe.PaymentIntent | null;
       const charge = pi?.latest_charge as Stripe.Charge | null;
       if (charge?.refunded) return false;

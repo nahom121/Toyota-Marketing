@@ -56,12 +56,13 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [authed, setAuthed] = useState(false);
+  const [eventFilter, setEventFilter] = useState<"current" | "previous">("current");
 
-  const fetchData = useCallback(async (pw: string) => {
+  const fetchData = useCallback(async (pw: string, filter = "current") => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`/api/admin/sessions?password=${encodeURIComponent(pw)}`);
+      const res = await fetch(`/api/admin/sessions?password=${encodeURIComponent(pw)}&event=${filter}`);
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || "Failed to load");
@@ -79,7 +80,12 @@ export default function AdminPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchData(password);
+    fetchData(password, eventFilter);
+  };
+
+  const switchFilter = (filter: "current" | "previous") => {
+    setEventFilter(filter);
+    fetchData(password, filter);
   };
 
   const stats = attendees ? computeStats(attendees) : null;
@@ -125,11 +131,11 @@ export default function AdminPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="font-display text-3xl text-charcoal">Registrations</h1>
-            <p className="text-ink-secondary text-sm mt-0.5">Houston Skate Project · August 30, 2026</p>
+            <p className="text-ink-secondary text-sm mt-0.5">Houston Skate Project</p>
           </div>
           <div className="flex gap-3">
             <button
-              onClick={() => fetchData(password)}
+              onClick={() => fetchData(password, eventFilter)}
               disabled={loading}
               className="flex items-center gap-2 px-4 py-2 rounded-full border border-charcoal/20 text-charcoal text-sm hover:bg-charcoal/5 transition-colors disabled:opacity-50"
             >
@@ -146,6 +152,23 @@ export default function AdminPage() {
               </button>
             )}
           </div>
+        </div>
+
+        {/* Event filter tabs */}
+        <div className="flex gap-2 mb-8">
+          {(["current", "previous"] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => switchFilter(f)}
+              className={`px-5 py-2 rounded-full text-sm font-semibold border-2 transition-all ${
+                eventFilter === f
+                  ? "bg-charcoal text-white border-charcoal"
+                  : "bg-white text-ink-secondary border-charcoal/15 hover:border-charcoal/40"
+              }`}
+            >
+              {f === "current" ? "Workshop 2 · Aug 30, 2026" : "Workshop 1 · Previous"}
+            </button>
+          ))}
         </div>
 
         {/* Stats */}
