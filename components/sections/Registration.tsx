@@ -218,9 +218,12 @@ export default function Registration() {
   }, []);
 
   const isBundle = secondSlot !== null;
-  const earlyBirdEnds = new Date("2026-08-20T00:00:00");
-  const isEarlyBird = new Date() < earlyBirdEnds;
-  const bundlePrice = isEarlyBird ? 40 : 45;
+  const now = new Date();
+  const earlyBirdEnds  = new Date("2026-08-20T00:00:00");
+  const bundleOfferEnds = new Date("2026-08-22T00:00:00");
+  const isEarlyBird   = now < earlyBirdEnds;
+  const bundleAvailable = now < bundleOfferEnds;
+  const bundlePrice   = isEarlyBird ? 40 : 45;
   const bundleSavings = isEarlyBird ? 10 : 5;
   const pricePerPerson = isBundle ? bundlePrice : TICKET_PRICE;
   const spotsLeft = selectedSlot && slotData
@@ -393,7 +396,7 @@ export default function Registration() {
                 })()}
 
                 {/* 2nd session bundle picker */}
-                {selectedSlot && !isSoldOut && !timeClosedSlots.has(selectedSlot) && (
+                {selectedSlot && !isSoldOut && !timeClosedSlots.has(selectedSlot) && bundleAvailable && (
                   <div className="bg-white border border-charcoal/10 rounded-2xl p-4 mb-6">
                     <div className="flex items-center justify-between mb-3">
                       <div>

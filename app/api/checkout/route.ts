@@ -20,8 +20,14 @@ export async function POST(request: NextRequest) {
     }
 
     const isBundle = !!secondSlot;
-    const earlyBirdEnds = new Date("2026-08-20T00:00:00Z");
-    const isEarlyBird = new Date() < earlyBirdEnds;
+    const now = new Date();
+    const earlyBirdEnds   = new Date("2026-08-20T00:00:00Z");
+    const bundleOfferEnds = new Date("2026-08-22T00:00:00Z");
+    const isEarlyBird     = now < earlyBirdEnds;
+    const bundleAvailable = now < bundleOfferEnds;
+    if (isBundle && !bundleAvailable) {
+      return NextResponse.json({ error: "Bundle offer has ended." }, { status: 400 });
+    }
     const bundleUnitAmount = isEarlyBird ? 4000 : 4500;
     const unitAmount = isBundle ? bundleUnitAmount : 2500;
 
