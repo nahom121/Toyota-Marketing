@@ -29,7 +29,7 @@ const details = [
     icon: Ticket,
     label: "General Admission",
     value: "$25",
-    sub: "Per person · All beginner skaters welcome",
+    sub: "Per person",
     color: "bg-crimson/10 text-crimson",
   },
 ];
