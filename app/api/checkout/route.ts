@@ -40,10 +40,13 @@ export async function POST(request: NextRequest) {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
+    const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
+
     for (const slot of slotsToCheck) {
       const slotSold = allSessions
         .filter((s) => {
           if (s.payment_status !== "paid" || isRefunded(s)) return false;
+          if (s.created < WORKSHOP2_START) return false;
           return s.metadata?.time_slot === slot || s.metadata?.second_time_slot === slot;
         })
         .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
