@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 const SLOT_CAPACITIES: Record<string, number> = {
   "9:30 AM":  32,
-  "10:30 AM": 39,
+  "10:30 AM": 36,
   "11:30 AM": 36,
   "12:30 PM": 31,
 };

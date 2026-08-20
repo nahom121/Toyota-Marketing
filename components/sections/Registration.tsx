@@ -8,7 +8,7 @@ const TICKET_PRICE = 25;
 const SLOT_CAPACITY = 30;
 const SLOT_CAPACITIES: Record<Slot, number> = {
   "9:30 AM":  32,
-  "10:30 AM": 39,
+  "10:30 AM": 36,
   "11:30 AM": 36,
   "12:30 PM": 31,
 };
