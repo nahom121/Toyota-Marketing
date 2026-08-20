@@ -55,7 +55,9 @@ export async function GET(request: NextRequest) {
         name: meta.primary_name || "N/A",
         email: s.customer_email || "N/A",
         phone: phone || "N/A",
-        timeSlot: meta.time_slot || "N/A",
+        timeSlot: meta.second_time_slot
+          ? `${meta.time_slot} + ${meta.second_time_slot}`
+          : meta.time_slot || "N/A",
         tickets: Number(meta.ticket_count || 1),
         amountPaid: ((s.amount_total || 0) / 100).toFixed(2),
         sessionId: s.id,
