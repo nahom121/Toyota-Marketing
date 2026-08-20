@@ -2,6 +2,12 @@ import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
+const SLOT_CAPACITIES: Record<string, number> = {
+  "9:30 AM":  32,
+  "10:30 AM": 39,
+  "11:30 AM": 30,
+  "12:30 PM": 30,
+};
 const SLOT_CAPACITY = 30;
 
 function isRefunded(s: Stripe.Checkout.Session): boolean {
@@ -43,6 +49,7 @@ export async function POST(request: NextRequest) {
     const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
 
     for (const slot of slotsToCheck) {
+      const cap = SLOT_CAPACITIES[slot] ?? SLOT_CAPACITY;
       const slotSold = allSessions
         .filter((s) => {
           if (s.payment_status !== "paid" || isRefunded(s)) return false;
@@ -50,7 +57,7 @@ export async function POST(request: NextRequest) {
           return s.metadata?.time_slot === slot || s.metadata?.second_time_slot === slot;
         })
         .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
-      const remaining = Math.max(0, SLOT_CAPACITY - slotSold);
+      const remaining = Math.max(0, cap - slotSold);
       if (ticketCount > remaining) {
         return NextResponse.json(
           { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left for the ${slot} session.` },

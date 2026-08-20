@@ -6,6 +6,12 @@ import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-reac
 
 const TICKET_PRICE = 25;
 const SLOT_CAPACITY = 30;
+const SLOT_CAPACITIES: Record<Slot, number> = {
+  "9:30 AM":  32,
+  "10:30 AM": 39,
+  "11:30 AM": 30,
+  "12:30 PM": 30,
+};
 const SLOTS = ["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"] as const;
 type Slot = typeof SLOTS[number];
 
@@ -206,7 +212,7 @@ export default function Registration() {
             .then((r) => r.json())
             .then((d) => setSlotData(d.slots))
             .catch(() => {
-              const fallback = Object.fromEntries(SLOTS.map((s) => [s, { sold: 0, remaining: SLOT_CAPACITY, isFull: false }]));
+              const fallback = Object.fromEntries(SLOTS.map((s) => [s, { sold: 0, remaining: SLOT_CAPACITIES[s], isFull: false }]));
               setSlotData(fallback);
             });
         }
@@ -221,8 +227,8 @@ export default function Registration() {
   const pricePerPerson  = isBundle ? TICKET_PRICE * 2 : TICKET_PRICE;
   const spotsLeft = selectedSlot && slotData
     ? Math.min(
-        slotData[selectedSlot]?.remaining ?? SLOT_CAPACITY,
-        secondSlot ? (slotData[secondSlot]?.remaining ?? SLOT_CAPACITY) : SLOT_CAPACITY
+        slotData[selectedSlot]?.remaining ?? SLOT_CAPACITIES[selectedSlot],
+        secondSlot ? (slotData[secondSlot]?.remaining ?? SLOT_CAPACITIES[secondSlot]) : Infinity
       )
     : SLOT_CAPACITY;
   const maxTickets = Math.min(10, spotsLeft);
@@ -332,7 +338,7 @@ export default function Registration() {
                     const info = slotData?.[slot];
                     const timeClosed = timeClosedSlots.has(slot);
                     const full = (info?.isFull ?? false) || timeClosed;
-                    const left = info?.remaining ?? SLOT_CAPACITY;
+                    const left = info?.remaining ?? SLOT_CAPACITIES[slot];
                     const selected = selectedSlot === slot;
                     return (
                       <button
