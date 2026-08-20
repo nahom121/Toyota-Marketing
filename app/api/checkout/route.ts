@@ -6,7 +6,7 @@ const SLOT_CAPACITIES: Record<string, number> = {
   "9:30 AM":  32,
   "10:30 AM": 39,
   "11:30 AM": 36,
-  "12:30 PM": 30,
+  "12:30 PM": 31,
 };
 const SLOT_CAPACITY = 30;
 
