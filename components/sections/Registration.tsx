@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-react";
 
 const TICKET_PRICE = 25;
@@ -190,7 +190,6 @@ export default function Registration() {
     const now = new Date();
     return new Set(SLOTS.filter((s) => now >= SLOT_CUTOFFS[s]));
   });
-  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const check = () => {
@@ -202,25 +201,13 @@ export default function Registration() {
   }, []);
 
   useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          observer.disconnect();
-          fetch("/api/capacity")
-            .then((r) => r.json())
-            .then((d) => setSlotData(d.slots))
-            .catch(() => {
-              const fallback = Object.fromEntries(SLOTS.map((s) => [s, { sold: 0, remaining: SLOT_CAPACITIES[s], isFull: false }]));
-              setSlotData(fallback);
-            });
-        }
-      },
-      { rootMargin: "200px" }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    fetch("/api/capacity")
+      .then((r) => r.json())
+      .then((d) => setSlotData(d.slots))
+      .catch(() => {
+        const fallback = Object.fromEntries(SLOTS.map((s) => [s, { sold: 0, remaining: SLOT_CAPACITIES[s], isFull: false }]));
+        setSlotData(fallback);
+      });
   }, []);
 
   const isBundle = secondSlot !== null;
@@ -287,7 +274,7 @@ export default function Registration() {
   };
 
   return (
-    <section id="tickets" ref={sectionRef} className="section-pad bg-cream relative overflow-hidden">
+    <section id="tickets" className="section-pad bg-cream relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sand to-transparent" />
 
       <div className="max-w-3xl mx-auto container-pad relative z-10">
@@ -338,13 +325,13 @@ export default function Registration() {
                     const info = slotData?.[slot];
                     const timeClosed = timeClosedSlots.has(slot);
                     const full = (info?.isFull ?? false) || timeClosed;
-                    const left = info?.remaining ?? SLOT_CAPACITIES[slot];
+                    const left = info?.remaining;
                     const selected = selectedSlot === slot;
                     return (
                       <button
                         key={slot}
                         onClick={() => { if (!full) { setSelectedSlot(slot); setTicketCount(1); setSecondSlot(null); } }}
-                        disabled={full}
+                        disabled={full || slotData === null}
                         className={`rounded-2xl p-4 text-left border-2 transition-all ${
                           full
                             ? "border-charcoal/10 bg-charcoal/5 opacity-50 cursor-not-allowed"
@@ -355,13 +342,15 @@ export default function Registration() {
                       >
                         <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${selected ? "text-crimson" : "text-ink-muted"}`}>{SLOT_LEVELS[slot].title}</p>
                         <p className={`font-display text-xl mb-1 ${selected ? "text-crimson" : "text-charcoal"}`}>{slot}</p>
-                        {timeClosed ? (
+                        {slotData === null ? (
+                          <div className="h-3 w-16 bg-charcoal/10 rounded animate-pulse mt-1" />
+                        ) : timeClosed ? (
                           <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide">Closed</p>
                         ) : full ? (
                           <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide">Sold Out</p>
                         ) : (
-                          <p className={`text-xs font-semibold ${left <= 5 ? "text-crimson" : "text-ink-muted"}`}>
-                            {left <= 5 && <span className="inline-block w-1.5 h-1.5 bg-crimson rounded-full mr-1 animate-pulse align-middle" />}
+                          <p className={`text-xs font-semibold ${(left ?? 99) <= 5 ? "text-crimson" : "text-ink-muted"}`}>
+                            {(left ?? 99) <= 5 && <span className="inline-block w-1.5 h-1.5 bg-crimson rounded-full mr-1 animate-pulse align-middle" />}
                             {left} spot{left !== 1 ? "s" : ""} left
                           </p>
                         )}
