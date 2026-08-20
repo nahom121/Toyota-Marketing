@@ -9,7 +9,7 @@ const SLOT_CAPACITY = 30;
 const SLOT_CAPACITIES: Record<Slot, number> = {
   "9:30 AM":  32,
   "10:30 AM": 39,
-  "11:30 AM": 30,
+  "11:30 AM": 36,
   "12:30 PM": 30,
 };
 const SLOTS = ["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"] as const;
