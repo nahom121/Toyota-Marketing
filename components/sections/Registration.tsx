@@ -218,13 +218,7 @@ export default function Registration() {
   }, []);
 
   const isBundle = secondSlot !== null;
-  const now = new Date();
-  const bundleOfferEnds = new Date("2026-08-20T00:00:00");
-  const isEarlyBird     = true;
-  const bundleAvailable = now < bundleOfferEnds;
-  const bundlePrice     = 40;
-  const bundleSavings   = 10;
-  const pricePerPerson  = isBundle ? bundlePrice : TICKET_PRICE;
+  const pricePerPerson  = isBundle ? TICKET_PRICE * 2 : TICKET_PRICE;
   const spotsLeft = selectedSlot && slotData
     ? Math.min(
         slotData[selectedSlot]?.remaining ?? SLOT_CAPACITY,
@@ -394,22 +388,14 @@ export default function Registration() {
                   );
                 })()}
 
-                {/* 2nd session bundle picker */}
-                {selectedSlot && !isSoldOut && !timeClosedSlots.has(selectedSlot) && bundleAvailable && (
+                {/* 2nd session picker */}
+                {selectedSlot && !isSoldOut && !timeClosedSlots.has(selectedSlot) && (
                   <div className="bg-white border border-charcoal/10 rounded-2xl p-4 mb-6">
                     <div className="flex items-center justify-between mb-3">
                       <div>
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <p className="font-semibold text-charcoal text-sm">Add a 2nd session</p>
-                          {isEarlyBird && (
-                            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-crimson text-white">
-                              Early Bird · Today Only
-                            </span>
-                          )}
-                        </div>
+                        <p className="font-semibold text-charcoal text-sm mb-0.5">Add a 2nd session</p>
                         <p className="text-xs text-ink-muted">
-                          Bundle: 2 sessions for <span className="font-bold text-charcoal">$40</span> · Save $10 —{" "}
-                          <span className="font-semibold" style={{ color: "#c0392b" }}>ends tonight at midnight</span>
+                          $25 per session · 2 sessions = <span className="font-bold text-charcoal">$50</span>
                         </p>
                       </div>
                       {secondSlot && (
@@ -499,22 +485,13 @@ export default function Registration() {
 
                 {/* Price preview */}
                 <div className="bg-sand/20 border border-sand/40 rounded-2xl p-4 text-center mb-6">
-                  {isBundle ? (
-                    <>
-                      <p className="text-ink-secondary text-sm">
-                        {ticketCount} person{ticketCount > 1 ? "s" : ""} × 2-session bundle (${bundlePrice}){" = "}
-                        <span className="font-display text-2xl text-charcoal">${total}</span>
-                      </p>
-                      <p className="text-xs font-semibold mt-1" style={{ color: "#2d6a4f" }}>
-                        You save ${bundleSavings * ticketCount}! 🎉 Today only — ends at midnight.
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-ink-secondary text-sm">
-                      {ticketCount} ticket{ticketCount > 1 ? "s" : ""} × $25{" = "}
-                      <span className="font-display text-2xl text-charcoal">${total}</span>
-                    </p>
-                  )}
+                  <p className="text-ink-secondary text-sm">
+                    {isBundle
+                      ? `${ticketCount} person${ticketCount > 1 ? "s" : ""} × 2 sessions × $25`
+                      : `${ticketCount} ticket${ticketCount > 1 ? "s" : ""} × $25`}
+                    {" = "}
+                    <span className="font-display text-2xl text-charcoal">${total}</span>
+                  </p>
                 </div>
 
                 {/* BYOS acknowledgment */}
@@ -700,14 +677,6 @@ export default function Registration() {
                       </span>
                       <span className="font-medium text-charcoal">${total}</span>
                     </div>
-                    {isBundle && (
-                      <div className="flex justify-between text-xs">
-                        <span style={{ color: "#2d6a4f" }} className="font-medium">
-                          Bundle savings{isEarlyBird ? " (early bird)" : ""}
-                        </span>
-                        <span style={{ color: "#2d6a4f" }} className="font-medium">-${bundleSavings * ticketCount}</span>
-                      </div>
-                    )}
                     <div className="pt-3 border-t border-charcoal/10 flex justify-between">
                       <span className="font-bold text-charcoal">Total</span>
                       <span className="font-display text-2xl text-charcoal">${total}</span>

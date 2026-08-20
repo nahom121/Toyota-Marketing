@@ -20,12 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     const isBundle = !!secondSlot;
-    const bundleOfferEnds = new Date("2026-08-20T00:00:00Z");
-    const bundleAvailable = new Date() < bundleOfferEnds;
-    if (isBundle && !bundleAvailable) {
-      return NextResponse.json({ error: "Bundle offer has ended." }, { status: 400 });
-    }
-    const unitAmount = isBundle ? 4000 : 2500;
+    const unitAmount = isBundle ? 5000 : 2500;
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -69,7 +64,7 @@ export async function POST(request: NextRequest) {
           currency: "usd",
           product_data: {
             name: isBundle
-              ? "Houston Skate Project · 2-Session Bundle (Early Bird)"
+              ? "Houston Skate Project · 2-Session Pass"
               : "Houston Skate Project · General Admission",
             description: `Pop-Up Workshop · August 30th, 2026 · ${sessionLabel} · Houston, TX`,
           },
