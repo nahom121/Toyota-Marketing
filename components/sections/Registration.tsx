@@ -219,12 +219,11 @@ export default function Registration() {
 
   const isBundle = secondSlot !== null;
   const now = new Date();
-  const earlyBirdEnds   = new Date("2026-08-20T00:00:00");
-  const bundleOfferEnds = new Date("2026-08-23T00:00:00");
-  const isEarlyBird     = now < earlyBirdEnds;
+  const bundleOfferEnds = new Date("2026-08-20T00:00:00");
+  const isEarlyBird     = true;
   const bundleAvailable = now < bundleOfferEnds;
-  const bundlePrice     = isEarlyBird ? 40 : 45;
-  const bundleSavings   = isEarlyBird ? 10 : 5;
+  const bundlePrice     = 40;
+  const bundleSavings   = 10;
   const pricePerPerson  = isBundle ? bundlePrice : TICKET_PRICE;
   const spotsLeft = selectedSlot && slotData
     ? Math.min(
@@ -408,16 +407,10 @@ export default function Registration() {
                             </span>
                           )}
                         </div>
-                        {isEarlyBird ? (
-                          <p className="text-xs text-ink-muted">
-                            Bundle: 2 sessions for <span className="font-bold text-charcoal">$40</span> · Save $10 —{" "}
-                            <span className="font-semibold" style={{ color: "#c0392b" }}>price goes up tomorrow</span>
-                          </p>
-                        ) : (
-                          <p className="text-xs text-ink-muted">
-                            Bundle: 2 sessions for <span className="font-bold text-charcoal">$45</span> · Save $5
-                          </p>
-                        )}
+                        <p className="text-xs text-ink-muted">
+                          Bundle: 2 sessions for <span className="font-bold text-charcoal">$40</span> · Save $10 —{" "}
+                          <span className="font-semibold" style={{ color: "#c0392b" }}>ends tonight at midnight</span>
+                        </p>
                       </div>
                       {secondSlot && (
                         <button
@@ -513,7 +506,7 @@ export default function Registration() {
                         <span className="font-display text-2xl text-charcoal">${total}</span>
                       </p>
                       <p className="text-xs font-semibold mt-1" style={{ color: "#2d6a4f" }}>
-                        You save ${bundleSavings * ticketCount}!{isEarlyBird ? " 🎉 Early bird rate — today only." : ""}
+                        You save ${bundleSavings * ticketCount}! 🎉 Today only — ends at midnight.
                       </p>
                     </>
                   ) : (
