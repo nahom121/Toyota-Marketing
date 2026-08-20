@@ -28,12 +28,16 @@ export async function GET() {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
-    const valid = sessions.filter((s) => s.payment_status === "paid" && !isRefunded(s));
+    const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
+
+    const valid = sessions.filter(
+      (s) => s.payment_status === "paid" && !isRefunded(s) && s.created >= WORKSHOP2_START
+    );
 
     const slots = Object.fromEntries(
       SLOTS.map((slot) => {
         const sold = valid
-          .filter((s) => s.metadata?.time_slot === slot)
+          .filter((s) => s.metadata?.time_slot === slot || s.metadata?.second_time_slot === slot)
           .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
         return [slot, { sold, remaining: Math.max(0, SLOT_CAPACITY - sold), isFull: sold >= SLOT_CAPACITY }];
       })
