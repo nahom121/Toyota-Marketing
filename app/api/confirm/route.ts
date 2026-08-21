@@ -23,6 +23,16 @@ export async function GET(request: NextRequest) {
     const isBundle = !!secondTimeSlot;
     const amountPaid = ((session.amount_total || 0) / 100).toFixed(2);
 
+    // Already sent — return success without re-sending
+    if (meta.confirmation_sent === "true") {
+      return NextResponse.json({ success: true, name, email, ticketCount, timeSlot, amountPaid });
+    }
+
+    // Mark as sent before sending (prevents double-send on concurrent requests)
+    await stripe.checkout.sessions.update(sessionId, {
+      metadata: { ...meta, confirmation_sent: "true" },
+    });
+
     if (email) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
