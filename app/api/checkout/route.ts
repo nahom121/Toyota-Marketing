@@ -9,6 +9,10 @@ const SLOT_CAPACITIES: Record<string, number> = {
   "12:30 PM": 31,
 };
 const SLOT_CAPACITY = 30;
+const PROMO_CODES: Record<string, { slot: string }> = {
+  ABATAD: { slot: "9:30 AM" },
+  CACDCT: { slot: "9:30 AM" },
+};
 
 function isRefunded(s: Stripe.Checkout.Session): boolean {
   const pi = s.payment_intent as Stripe.PaymentIntent | null;
@@ -18,7 +22,7 @@ function isRefunded(s: Stripe.Checkout.Session): boolean {
 
 export async function POST(request: NextRequest) {
   try {
-    const { ticketCount, timeSlot, secondSlot, primaryEmail, primaryName, primaryPhone, registrants } =
+    const { ticketCount, timeSlot, secondSlot, primaryEmail, primaryName, primaryPhone, registrants, promoCode } =
       await request.json();
 
     if (!ticketCount || !timeSlot || !primaryEmail || !primaryName) {
@@ -28,10 +32,23 @@ export async function POST(request: NextRequest) {
     const isBundle = !!secondSlot;
     const unitAmount = isBundle ? 5000 : 2500;
 
+    // Validate promo code if provided
+    const promoUpper = promoCode ? String(promoCode).toUpperCase().trim() : null;
+    if (promoUpper) {
+      const promo = PROMO_CODES[promoUpper];
+      if (!promo) {
+        return NextResponse.json({ error: "Invalid reservation code." }, { status: 400 });
+      }
+      if (promo.slot !== timeSlot) {
+        return NextResponse.json({ error: "Reservation code is not valid for this session." }, { status: 400 });
+      }
+      if (ticketCount !== 1) {
+        return NextResponse.json({ error: "Reservation codes are valid for 1 ticket only." }, { status: 400 });
+      }
+    }
+
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-    // Capacity check for all booked slots
-    const slotsToCheck: string[] = isBundle ? [timeSlot, secondSlot] : [timeSlot];
     const allSessions: Stripe.Checkout.Session[] = [];
     let hasMore = true;
     let startingAfter: string | undefined;
@@ -48,7 +65,24 @@ export async function POST(request: NextRequest) {
 
     const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
 
+    // Check promo code hasn't been used
+    if (promoUpper) {
+      const codeUsed = allSessions.some(
+        (s) =>
+          s.payment_status === "paid" &&
+          !isRefunded(s) &&
+          s.created >= WORKSHOP2_START &&
+          s.metadata?.promo_code === promoUpper
+      );
+      if (codeUsed) {
+        return NextResponse.json({ error: "This reservation code has already been used." }, { status: 409 });
+      }
+    }
+
+    // Capacity check — skip for promo-code slots (reserved spots are outside normal cap)
+    const slotsToCheck: string[] = isBundle ? [timeSlot, secondSlot] : [timeSlot];
     for (const slot of slotsToCheck) {
+      if (promoUpper && slot === timeSlot) continue; // reserved spot bypasses capacity
       const cap = SLOT_CAPACITIES[slot] ?? SLOT_CAPACITY;
       const slotSold = allSessions
         .filter((s) => {
@@ -97,6 +131,7 @@ export async function POST(request: NextRequest) {
         primary_phone: primaryPhone || "",
         ticket_count: String(ticketCount),
         registrants: JSON.stringify(registrants).slice(0, 490),
+        ...(promoUpper ? { promo_code: promoUpper } : {}),
       },
       success_url: `${SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/#tickets`,

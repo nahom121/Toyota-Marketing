@@ -186,6 +186,12 @@ export default function Registration() {
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [secondSlot, setSecondSlot] = useState<Slot | null>(null);
   const [slotData, setSlotData] = useState<Record<string, SlotData> | null>(null);
+  const [promoInput, setPromoInput] = useState("");
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoError, setPromoError] = useState("");
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [showPromo, setShowPromo] = useState(false);
   const [timeClosedSlots, setTimeClosedSlots] = useState<Set<Slot>>(() => {
     const now = new Date();
     return new Set(SLOTS.filter((s) => now >= SLOT_CUTOFFS[s]));
@@ -235,7 +241,34 @@ export default function Registration() {
   const updateTicket = (i: number, t: TicketInfo) =>
     setTickets((prev) => { const next = [...prev]; next[i] = t; return next; });
 
-  const isSoldOut = selectedSlot ? slotData?.[selectedSlot]?.isFull ?? false : false;
+  const applyPromo = async () => {
+    setPromoLoading(true);
+    setPromoError("");
+    try {
+      const res = await fetch("/api/validate-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: promoInput }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.valid) {
+        setPromoError(data.error || "Invalid code.");
+      } else {
+        setPromoCode(promoInput.toUpperCase().trim());
+        setPromoApplied(true);
+        setSelectedSlot("9:30 AM");
+        setTicketCount(1);
+        setSecondSlot(null);
+        setShowPromo(false);
+      }
+    } catch {
+      setPromoError("Could not validate code. Try again.");
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
+  const isSoldOut = selectedSlot ? (promoApplied && selectedSlot === "9:30 AM" ? false : slotData?.[selectedSlot]?.isFull ?? false) : false;
   const isSecondSoldOut = secondSlot ? slotData?.[secondSlot]?.isFull ?? false : false;
   const step1Valid = !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut && !isSecondSoldOut && byosAcknowledged;
   const step2Valid = tickets.every((t, i) => {
@@ -262,6 +295,7 @@ export default function Registration() {
             name: t.name,
             ...(i === 0 ? { email: t.email, phone: t.phone } : {}),
           })),
+          ...(promoCode ? { promoCode } : {}),
         }),
       });
       if (!res.ok) throw new Error("Checkout failed");
@@ -324,14 +358,18 @@ export default function Registration() {
                   {SLOTS.map((slot) => {
                     const info = slotData?.[slot];
                     const timeClosed = timeClosedSlots.has(slot);
-                    const full = (info?.isFull ?? false) || timeClosed;
+                    const promoUnlocked = promoApplied && slot === "9:30 AM";
+                    const full = promoUnlocked ? false : (info?.isFull ?? false) || timeClosed;
                     const left = info?.remaining;
                     const selected = selectedSlot === slot;
                     return (
                       <button
                         key={slot}
-                        onClick={() => { if (!full) { setSelectedSlot(slot); setTicketCount(1); setSecondSlot(null); } }}
-                        disabled={full || slotData === null}
+                        onClick={() => {
+                          if (!full && !promoApplied) { setSelectedSlot(slot); setTicketCount(1); setSecondSlot(null); }
+                          else if (promoUnlocked) { setSelectedSlot(slot); }
+                        }}
+                        disabled={(full && !promoUnlocked) || slotData === null}
                         className={`rounded-2xl p-4 text-left border-2 transition-all ${
                           full
                             ? "border-charcoal/10 bg-charcoal/5 opacity-50 cursor-not-allowed"
@@ -344,6 +382,8 @@ export default function Registration() {
                         <p className={`font-display text-xl mb-1 ${selected ? "text-crimson" : "text-charcoal"}`}>{slot}</p>
                         {slotData === null ? (
                           <div className="h-3 w-16 bg-charcoal/10 rounded animate-pulse mt-1" />
+                        ) : promoUnlocked ? (
+                          <p className="text-xs font-semibold text-crimson uppercase tracking-wide">Reserved for you</p>
                         ) : timeClosed ? (
                           <p className="text-xs font-semibold text-ink-muted uppercase tracking-wide">Closed</p>
                         ) : full ? (
@@ -358,6 +398,54 @@ export default function Registration() {
                     );
                   })}
                 </div>
+
+                {/* Promo / reservation code */}
+                {!promoApplied ? (
+                  <div className="mb-6">
+                    {!showPromo ? (
+                      <button
+                        onClick={() => setShowPromo(true)}
+                        className="text-xs text-ink-muted hover:text-charcoal underline underline-offset-2 transition-colors"
+                      >
+                        Have a reservation code?
+                      </button>
+                    ) : (
+                      <div className="flex gap-2 items-start">
+                        <div className="flex-1">
+                          <input
+                            type="text"
+                            value={promoInput}
+                            onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoError(""); }}
+                            onKeyDown={(e) => e.key === "Enter" && promoInput && applyPromo()}
+                            placeholder="Enter code"
+                            maxLength={10}
+                            className="form-input w-full text-sm uppercase tracking-widest"
+                            autoFocus
+                          />
+                          {promoError && <p className="text-crimson text-xs mt-1">{promoError}</p>}
+                        </div>
+                        <button
+                          onClick={applyPromo}
+                          disabled={!promoInput || promoLoading}
+                          className="btn-primary px-4 py-2.5 text-sm disabled:opacity-50 shrink-0"
+                        >
+                          {promoLoading ? "…" : "Apply"}
+                        </button>
+                        <button
+                          onClick={() => { setShowPromo(false); setPromoInput(""); setPromoError(""); }}
+                          className="text-ink-muted hover:text-charcoal text-xs pt-3 shrink-0"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="mb-6 flex items-center gap-2 bg-crimson/8 border border-crimson/20 rounded-xl px-4 py-2.5">
+                    <Check className="w-4 h-4 text-crimson shrink-0" />
+                    <p className="text-sm text-crimson font-semibold">Reserved spot unlocked · 9:30 AM Pre-Beginner</p>
+                  </div>
+                )}
 
                 {/* Level description — shown when a slot is selected */}
                 {selectedSlot && !timeClosedSlots.has(selectedSlot) && (() => {
@@ -384,7 +472,7 @@ export default function Registration() {
                 })()}
 
                 {/* 2nd session picker */}
-                {selectedSlot && !isSoldOut && !timeClosedSlots.has(selectedSlot) && (
+                {selectedSlot && !isSoldOut && !timeClosedSlots.has(selectedSlot) && !promoApplied && (
                   <div className="bg-white border border-charcoal/10 rounded-2xl p-4 mb-6">
                     <div className="flex items-center justify-between mb-3">
                       <div>
@@ -435,8 +523,8 @@ export default function Registration() {
                   </div>
                 )}
 
-                {/* Ticket count — only show after slot selected */}
-                {selectedSlot && !isSoldOut && (
+                {/* Ticket count — only show after slot selected; locked to 1 for promo */}
+                {selectedSlot && !isSoldOut && !promoApplied && (
                   <>
                     <p className="text-ink-secondary text-sm font-medium mb-4">
                       How many people{isBundle ? " (attending both sessions)" : ` for the ${selectedSlot} session`}?
