@@ -7,3 +7,4 @@ export const SLOT_CAPACITIES: Record<Slot, number> = {
   "11:30 AM": 36,
   "12:30 PM": 31,
 };
+export const FORCE_SOLD_OUT = true;

@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
+import { FORCE_SOLD_OUT } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 const SLOT_CAPACITIES: Record<string, number> = {
@@ -27,6 +28,10 @@ export async function POST(request: NextRequest) {
 
     if (!ticketCount || !timeSlot || !primaryEmail || !primaryName) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    if (FORCE_SOLD_OUT && !promoCode) {
+      return NextResponse.json({ error: "All sessions are sold out." }, { status: 409 });
     }
 
     const isBundle = !!secondSlot;

@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import { SLOTS, SLOT_CAPACITIES } from "@/lib/slots";
+import { SLOTS, SLOT_CAPACITIES, FORCE_SOLD_OUT } from "@/lib/slots";
 import type { Slot } from "@/lib/slots";
 
 function isRefunded(s: Stripe.Checkout.Session): boolean {
@@ -10,6 +10,19 @@ function isRefunded(s: Stripe.Checkout.Session): boolean {
 }
 
 export async function GET() {
+  // Short-circuit: skip Stripe entirely and return all slots sold out
+  if (FORCE_SOLD_OUT) {
+    const slots = Object.fromEntries(
+      SLOTS.map((slot) => {
+        const cap = SLOT_CAPACITIES[slot];
+        return [slot, { sold: cap, remaining: 0, isFull: true }];
+      })
+    ) as Record<Slot, { sold: number; remaining: number; isFull: boolean }>;
+    return NextResponse.json({ slots, slotCapacity: SLOT_CAPACITIES }, {
+      headers: { "Cache-Control": "no-store" },
+    });
+  }
+
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
