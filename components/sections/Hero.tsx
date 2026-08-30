@@ -27,7 +27,7 @@ function useCountdown(targetDate: Date) {
 }
 
 export default function Hero() {
-  const eventDate = new Date("2026-08-30T09:30:00");
+  const eventDate = new Date("2026-09-06T13:00:00");
   const { days, hours, minutes, seconds } = useCountdown(eventDate);
 
   const scrollTo = (href: string) => {
