@@ -1,13 +1,13 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
-import { FORCE_SOLD_OUT } from "@/lib/slots";
+import { FORCE_SOLD_OUT, WORKSHOP3_START } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 const SLOT_CAPACITIES: Record<string, number> = {
-  "9:30 AM":  32,
-  "10:30 AM": 36,
-  "11:30 AM": 36,
-  "12:30 PM": 31,
+  "1:00 PM": 30,
+  "2:00 PM": 30,
+  "3:00 PM": 30,
+  "4:00 PM": 30,
 };
 const SLOT_CAPACITY = 30;
 const PROMO_CODES: Record<string, { slot: string }> = {
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
-    const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
+    const WORKSHOP2_START = WORKSHOP3_START;
 
     // Check promo code hasn't been used
     if (promoUpper) {
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
             name: isBundle
               ? "Houston Skate Project · 2-Session Pass"
               : "Houston Skate Project · General Admission",
-            description: `Pop-Up Workshop · August 30th, 2026 · ${sessionLabel} · Houston, TX`,
+            description: `Pop-Up Workshop · September 6th, 2026 · ${sessionLabel} · Houston, TX`,
           },
           unit_amount: unitAmount,
         },
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
       customer_email: primaryEmail,
       metadata: {
         event: "Houston Skate Project",
-        date: "August 30, 2026",
+        date: "September 6, 2026",
         time_slot: timeSlot,
         ...(isBundle ? { second_time_slot: secondSlot } : {}),
         primary_name: primaryName,

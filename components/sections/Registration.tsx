@@ -7,24 +7,24 @@ import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-reac
 const TICKET_PRICE = 25;
 const SLOT_CAPACITY = 30;
 const SLOT_CAPACITIES: Record<Slot, number> = {
-  "9:30 AM":  32,
-  "10:30 AM": 36,
-  "11:30 AM": 36,
-  "12:30 PM": 31,
+  "1:00 PM": 30,
+  "2:00 PM": 30,
+  "3:00 PM": 30,
+  "4:00 PM": 30,
 };
-const SLOTS = ["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"] as const;
+const SLOTS = ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"] as const;
 type Slot = typeof SLOTS[number];
 
-// Slots close 15 min after start time on Aug 30, 2026
+// Slots close 15 min after start time on Sep 6, 2026
 const SLOT_CUTOFFS: Record<Slot, Date> = {
-  "9:30 AM":  new Date("2026-08-30T09:45:00"),
-  "10:30 AM": new Date("2026-08-30T10:45:00"),
-  "11:30 AM": new Date("2026-08-30T11:45:00"),
-  "12:30 PM": new Date("2026-08-30T12:45:00"),
+  "1:00 PM": new Date("2026-09-06T13:15:00"),
+  "2:00 PM": new Date("2026-09-06T14:15:00"),
+  "3:00 PM": new Date("2026-09-06T15:15:00"),
+  "4:00 PM": new Date("2026-09-06T16:15:00"),
 };
 
 const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
-  "9:30 AM": {
+  "1:00 PM": {
     title: "Pre-Beginner",
     bullets: [
       "Have never skated or have very limited experience",
@@ -34,8 +34,8 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Are unsure how to safely fall and get back up",
     ],
   },
-  "10:30 AM": {
-    title: "Beginner Morning Session",
+  "2:00 PM": {
+    title: "Beginner",
     bullets: [
       "Have skated before but may be returning after a long break",
       "Can roll forward independently without holding the wall",
@@ -44,24 +44,24 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Want better balance, control, and comfort on skates",
     ],
   },
-  "11:30 AM": {
-    title: "Backward Beginner",
+  "3:00 PM": {
+    title: "Beginner",
+    bullets: [
+      "Have skated before but may be returning after a long break",
+      "Can roll forward independently without holding the wall",
+      "Can get around the rink but still feel unsteady",
+      "Need more confidence with stopping and turning",
+      "Want better balance, control, and comfort on skates",
+    ],
+  },
+  "4:00 PM": {
+    title: "Advanced",
     bullets: [
       "Can skate forward confidently and with control",
       "Have little to no backward skating experience",
       "Can skate backward slightly but want stronger fundamentals",
       "Want to learn how to transition from forward to backward",
       "Are ready to build confidence skating backward independently",
-    ],
-  },
-  "12:30 PM": {
-    title: "Beginner Afternoon Session",
-    bullets: [
-      "Have skated before but may be returning after a long break",
-      "Can roll forward independently without holding the wall",
-      "Can get around the rink but still feel unsteady",
-      "Need more confidence with stopping and turning",
-      "Want better balance, control, and comfort on skates",
     ],
   },
 };
@@ -326,7 +326,7 @@ export default function Registration() {
             Secure your spot.
             <br />
             <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-              August 30th.
+              September 6th.
             </span>
           </h2>
           <p className="text-ink-secondary mt-3 text-base">

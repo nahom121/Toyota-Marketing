@@ -27,22 +27,23 @@ export async function GET(request: NextRequest) {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
-    // Workshop 2 (Aug 30, 2026) started Aug 18; anything before = Workshop 1
+    // Workshop 1: before Aug 18 | Workshop 2: Aug 18–Sep 1 (Aug 30 event) | Workshop 3: Sep 1+ (Sep 6 event)
     const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
+    const WORKSHOP3_START = new Date("2026-09-01T00:00:00Z").getTime() / 1000;
 
     const paid = sessions.filter((s) => {
       if (s.payment_status !== "paid") return false;
-      if (event === "current" && s.created < WORKSHOP2_START) return false;
-      if (event === "previous" && s.created >= WORKSHOP2_START) return false;
       const pi = s.payment_intent as Stripe.PaymentIntent | null;
       const charge = pi?.latest_charge as Stripe.Charge | null;
       if (charge?.refunded) return false;
-      return true;
+      if (event === "current")  return s.created >= WORKSHOP3_START;
+      if (event === "workshop2") return s.created >= WORKSHOP2_START && s.created < WORKSHOP3_START;
+      if (event === "previous") return s.created < WORKSHOP2_START;
+      return false;
     });
 
     const attendees = paid.map((s) => {
       const meta = s.metadata || {};
-      // Parse phone from dedicated field first, fall back to registrants JSON
       let phone = meta.primary_phone || "";
       if (!phone && meta.registrants) {
         try {
@@ -51,7 +52,7 @@ export async function GET(request: NextRequest) {
         } catch {}
       }
       return {
-        date: new Date((s.created) * 1000).toISOString(),
+        date: new Date(s.created * 1000).toISOString(),
         name: meta.primary_name || "N/A",
         email: s.customer_email || "N/A",
         phone: phone || "N/A",

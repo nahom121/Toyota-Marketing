@@ -56,7 +56,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [authed, setAuthed] = useState(false);
-  const [eventFilter, setEventFilter] = useState<"current" | "previous">("current");
+  const [eventFilter, setEventFilter] = useState<"current" | "workshop2" | "previous">("current");
 
   const fetchData = useCallback(async (pw: string, filter = "current") => {
     setLoading(true);
@@ -83,7 +83,7 @@ export default function AdminPage() {
     fetchData(password, eventFilter);
   };
 
-  const switchFilter = (filter: "current" | "previous") => {
+  const switchFilter = (filter: "current" | "workshop2" | "previous") => {
     setEventFilter(filter);
     fetchData(password, filter);
   };
@@ -155,18 +155,22 @@ export default function AdminPage() {
         </div>
 
         {/* Event filter tabs */}
-        <div className="flex gap-2 mb-8">
-          {(["current", "previous"] as const).map((f) => (
+        <div className="flex gap-2 mb-8 flex-wrap">
+          {([
+            { key: "current",   label: "Workshop 3 · Sep 6, 2026" },
+            { key: "workshop2", label: "Workshop 2 · Aug 30, 2026" },
+            { key: "previous",  label: "Workshop 1 · Previous" },
+          ] as const).map(({ key, label }) => (
             <button
-              key={f}
-              onClick={() => switchFilter(f)}
+              key={key}
+              onClick={() => switchFilter(key)}
               className={`px-5 py-2 rounded-full text-sm font-semibold border-2 transition-all ${
-                eventFilter === f
+                eventFilter === key
                   ? "bg-charcoal text-white border-charcoal"
                   : "bg-white text-ink-secondary border-charcoal/15 hover:border-charcoal/40"
               }`}
             >
-              {f === "current" ? "Workshop 2 · Aug 30, 2026" : "Workshop 1 · Previous"}
+              {label}
             </button>
           ))}
         </div>
