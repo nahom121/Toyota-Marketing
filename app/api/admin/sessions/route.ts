@@ -27,18 +27,19 @@ export async function GET(request: NextRequest) {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
-    // Workshop 1: before Aug 18 | Workshop 2: Aug 18–Sep 1 (Aug 30 event) | Workshop 3: Sep 1+ (Sep 6 event)
     const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
-    const WORKSHOP3_START = new Date("2026-09-01T00:00:00Z").getTime() / 1000;
+    const WORKSHOP3_SLOTS = new Set(["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"]);
+    const WORKSHOP2_SLOTS = new Set(["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"]);
 
     const paid = sessions.filter((s) => {
       if (s.payment_status !== "paid") return false;
       const pi = s.payment_intent as Stripe.PaymentIntent | null;
       const charge = pi?.latest_charge as Stripe.Charge | null;
       if (charge?.refunded) return false;
-      if (event === "current")  return s.created >= WORKSHOP3_START;
-      if (event === "workshop2") return s.created >= WORKSHOP2_START && s.created < WORKSHOP3_START;
-      if (event === "previous") return s.created < WORKSHOP2_START;
+      const slot = s.metadata?.time_slot || "";
+      if (event === "current")   return WORKSHOP3_SLOTS.has(slot);
+      if (event === "workshop2") return WORKSHOP2_SLOTS.has(slot) && s.created >= WORKSHOP2_START;
+      if (event === "previous")  return s.created < WORKSHOP2_START;
       return false;
     });
 
