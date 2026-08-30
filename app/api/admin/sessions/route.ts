@@ -37,8 +37,11 @@ export async function GET(request: NextRequest) {
       const charge = pi?.latest_charge as Stripe.Charge | null;
       if (charge?.refunded) return false;
       const slot = s.metadata?.time_slot || "";
-      if (event === "current")   return WORKSHOP3_SLOTS.has(slot);
+      // Workshop 3: new PM slots registered after Workshop 2 opened (Aug 18+)
+      if (event === "current")   return WORKSHOP3_SLOTS.has(slot) && s.created >= WORKSHOP2_START;
+      // Workshop 2: AM slots registered after Aug 18
       if (event === "workshop2") return WORKSHOP2_SLOTS.has(slot) && s.created >= WORKSHOP2_START;
+      // Workshop 1: anything before Aug 18
       if (event === "previous")  return s.created < WORKSHOP2_START;
       return false;
     });
