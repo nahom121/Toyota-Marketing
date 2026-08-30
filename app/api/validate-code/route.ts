@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 const PROMO_CODES: Record<string, { slot: string }> = {
   ABATAD: { slot: "9:30 AM" },
   CACDCT: { slot: "9:30 AM" },
+  CKJFVO: { slot: "12:30 PM" },
 };
 
 function isRefunded(s: Stripe.Checkout.Session): boolean {

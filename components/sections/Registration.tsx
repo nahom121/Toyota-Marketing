@@ -189,6 +189,7 @@ export default function Registration() {
   const [promoInput, setPromoInput] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoCode, setPromoCode] = useState("");
+  const [promoSlot, setPromoSlot] = useState<Slot | null>(null);
   const [promoError, setPromoError] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
   const [showPromo, setShowPromo] = useState(false);
@@ -255,8 +256,9 @@ export default function Registration() {
         setPromoError(data.error || "Invalid code.");
       } else {
         setPromoCode(promoInput.toUpperCase().trim());
+        setPromoSlot(data.slot as Slot);
         setPromoApplied(true);
-        setSelectedSlot("9:30 AM");
+        setSelectedSlot(data.slot as Slot);
         setTicketCount(1);
         setSecondSlot(null);
         setShowPromo(false);
@@ -268,7 +270,7 @@ export default function Registration() {
     }
   };
 
-  const isSoldOut = selectedSlot ? (promoApplied && selectedSlot === "9:30 AM" ? false : slotData?.[selectedSlot]?.isFull ?? false) : false;
+  const isSoldOut = selectedSlot ? (promoApplied && selectedSlot === promoSlot ? false : slotData?.[selectedSlot]?.isFull ?? false) : false;
   const isSecondSoldOut = secondSlot ? slotData?.[secondSlot]?.isFull ?? false : false;
   const step1Valid = !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut && !isSecondSoldOut && byosAcknowledged;
   const step2Valid = tickets.every((t, i) => {
@@ -358,7 +360,7 @@ export default function Registration() {
                   {SLOTS.map((slot) => {
                     const info = slotData?.[slot];
                     const timeClosed = timeClosedSlots.has(slot);
-                    const promoUnlocked = promoApplied && slot === "9:30 AM";
+                    const promoUnlocked = promoApplied && slot === promoSlot;
                     const full = promoUnlocked ? false : (info?.isFull ?? false) || timeClosed;
                     const left = info?.remaining;
                     const selected = selectedSlot === slot;
@@ -443,7 +445,7 @@ export default function Registration() {
                 ) : (
                   <div className="mb-6 flex items-center gap-2 bg-crimson/8 border border-crimson/20 rounded-xl px-4 py-2.5">
                     <Check className="w-4 h-4 text-crimson shrink-0" />
-                    <p className="text-sm text-crimson font-semibold">Reserved spot unlocked · 9:30 AM Pre-Beginner</p>
+                    <p className="text-sm text-crimson font-semibold">Reserved spot unlocked · {promoSlot} {promoSlot ? SLOT_LEVELS[promoSlot].title : ""}</p>
                   </div>
                 )}
 
