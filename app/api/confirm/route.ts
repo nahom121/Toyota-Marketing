@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Pop-Up Details</h2>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📅 <strong>Date:</strong> September 6th, 2026</p>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>${isBundle ? "Your sessions:" : "Your session:"}</strong> ${isBundle ? `${timeSlot} &amp; ${secondTimeSlot}` : timeSlot}</p>
+              <p style="margin:8px 0 4px;font-size:13px;color:#4A4A4A;background:#FFF8EC;border-left:3px solid #8B5E3C;padding:8px 10px;border-radius:4px">📌 <strong>Arrive at your session time.</strong> The time above is your check-in time — you'll use the first 15 minutes to get your skates on and get comfortable. Class begins 15 minutes after you arrive.</p>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> 221 Barren Springs Dr, Ste 15, Houston, TX 77090</p>
             </div>
 

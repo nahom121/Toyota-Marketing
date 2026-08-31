@@ -467,7 +467,7 @@ export default function Registration() {
                         ))}
                       </ul>
                       <p className="text-xs text-ink-muted mt-4 border-t border-charcoal/10 pt-3">
-                        📌 Please arrive at <strong>{selectedSlot}</strong>. Your class will begin 15 minutes after your arrival time.
+                        📌 <strong>Arrive at {selectedSlot}</strong> — that's your check-in time, not your class start time. You'll use those first 15 minutes to get your skates on and get comfortable. Class begins at 15 minutes past your arrival time.
                       </p>
                     </div>
                   );
