@@ -19,7 +19,7 @@ export async function GET() {
       })
     ) as Record<Slot, { sold: number; remaining: number; isFull: boolean }>;
     return NextResponse.json({ slots, slotCapacity: SLOT_CAPACITIES }, {
-      headers: { "Cache-Control": "no-store" },
+      headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },
     });
   }
 
@@ -63,7 +63,7 @@ export async function GET() {
     ) as Record<Slot, { sold: number; remaining: number; isFull: boolean }>;
 
     return NextResponse.json({ slots, slotCapacity: SLOT_CAPACITIES }, {
-      headers: { "Cache-Control": "no-store" },
+      headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },
     });
   } catch (error) {
     console.error("Capacity error:", error);

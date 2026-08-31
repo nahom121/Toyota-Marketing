@@ -184,7 +184,6 @@ export default function Registration() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
-  const [secondSlot, setSecondSlot] = useState<Slot | null>(null);
   const [slotData, setSlotData] = useState<Record<string, SlotData> | null>(null);
   const [promoInput, setPromoInput] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
@@ -217,13 +216,8 @@ export default function Registration() {
       });
   }, []);
 
-  const isBundle = secondSlot !== null;
-  const pricePerPerson  = isBundle ? TICKET_PRICE * 2 : TICKET_PRICE;
   const spotsLeft = selectedSlot && slotData
-    ? Math.min(
-        slotData[selectedSlot]?.remaining ?? SLOT_CAPACITIES[selectedSlot],
-        secondSlot ? (slotData[secondSlot]?.remaining ?? SLOT_CAPACITIES[secondSlot]) : Infinity
-      )
+    ? (slotData[selectedSlot]?.remaining ?? SLOT_CAPACITIES[selectedSlot])
     : SLOT_CAPACITY;
   const maxTickets = Math.min(10, spotsLeft);
 
@@ -237,7 +231,7 @@ export default function Registration() {
     });
   }, [ticketCount]);
 
-  const total = ticketCount * pricePerPerson;
+  const total = ticketCount * TICKET_PRICE;
 
   const updateTicket = (i: number, t: TicketInfo) =>
     setTickets((prev) => { const next = [...prev]; next[i] = t; return next; });
@@ -260,7 +254,6 @@ export default function Registration() {
         setPromoApplied(true);
         setSelectedSlot(data.slot as Slot);
         setTicketCount(1);
-        setSecondSlot(null);
         setShowPromo(false);
       }
     } catch {
@@ -271,8 +264,7 @@ export default function Registration() {
   };
 
   const isSoldOut = selectedSlot ? (promoApplied && selectedSlot === promoSlot ? false : slotData?.[selectedSlot]?.isFull ?? false) : false;
-  const isSecondSoldOut = secondSlot ? slotData?.[secondSlot]?.isFull ?? false : false;
-  const step1Valid = !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut && !isSecondSoldOut && byosAcknowledged;
+  const step1Valid = !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut && byosAcknowledged;
   const step2Valid = tickets.every((t, i) => {
     if (!t.name.trim()) return false;
     if (i === 0 && (!t.email || t.email === "N/A" || !t.phone || t.phone === "N/A")) return false;
@@ -289,7 +281,6 @@ export default function Registration() {
         body: JSON.stringify({
           ticketCount,
           timeSlot: selectedSlot,
-          secondSlot: secondSlot ?? undefined,
           primaryEmail: tickets[0].email,
           primaryName: tickets[0].name,
           primaryPhone: tickets[0].phone,
@@ -368,7 +359,7 @@ export default function Registration() {
                       <button
                         key={slot}
                         onClick={() => {
-                          if (!full && !promoApplied) { setSelectedSlot(slot); setTicketCount(1); setSecondSlot(null); }
+                          if (!full && !promoApplied) { setSelectedSlot(slot); setTicketCount(1); }
                           else if (promoUnlocked) { setSelectedSlot(slot); }
                         }}
                         disabled={(full && !promoUnlocked) || slotData === null}
@@ -473,63 +464,11 @@ export default function Registration() {
                   );
                 })()}
 
-                {/* 2nd session picker */}
-                {selectedSlot && !isSoldOut && !timeClosedSlots.has(selectedSlot) && !promoApplied && (
-                  <div className="bg-white border border-charcoal/10 rounded-2xl p-4 mb-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <p className="font-semibold text-charcoal text-sm mb-0.5">Add a 2nd session</p>
-                        <p className="text-xs text-ink-muted">
-                          $25 per session · 2 sessions = <span className="font-bold text-charcoal">$50</span>
-                        </p>
-                      </div>
-                      {secondSlot && (
-                        <button
-                          onClick={() => setSecondSlot(null)}
-                          className="text-xs text-ink-muted hover:text-crimson transition-colors"
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {SLOTS.filter((s) => s !== selectedSlot).map((slot) => {
-                        const info2 = slotData?.[slot];
-                        const timeClosed2 = timeClosedSlots.has(slot);
-                        const full2 = (info2?.isFull ?? false) || timeClosed2;
-                        const picked = secondSlot === slot;
-                        return (
-                          <button
-                            key={slot}
-                            onClick={() => { if (!full2) setSecondSlot(picked ? null : slot); }}
-                            disabled={full2}
-                            className={`rounded-xl p-3 text-left border-2 transition-all ${
-                              full2
-                                ? "border-charcoal/10 bg-charcoal/5 opacity-50 cursor-not-allowed"
-                                : picked
-                                ? "border-crimson bg-crimson/5"
-                                : "border-charcoal/15 hover:border-sand bg-white"
-                            }`}
-                          >
-                            <p className={`font-black uppercase tracking-widest mb-0.5 ${picked ? "text-crimson" : "text-ink-muted"}`} style={{ fontSize: "9px" }}>
-                              {SLOT_LEVELS[slot].title}
-                            </p>
-                            <p className={`font-semibold text-sm ${picked ? "text-crimson" : "text-charcoal"}`}>{slot}</p>
-                            <p className={`text-[10px] font-medium mt-0.5 ${picked ? "text-crimson" : "text-ink-muted"}`}>
-                              {full2 ? (timeClosed2 ? "Closed" : "Sold Out") : picked ? "✓ Added" : "+ Add"}
-                            </p>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
                 {/* Ticket count — only show after slot selected; locked to 1 for promo */}
                 {selectedSlot && !isSoldOut && !promoApplied && (
                   <>
                     <p className="text-ink-secondary text-sm font-medium mb-4">
-                      How many people{isBundle ? " (attending both sessions)" : ` for the ${selectedSlot} session`}?
+                      How many people for the {selectedSlot} session?
                     </p>
                     <div className="flex items-center justify-center gap-6 mb-6">
                       <button
@@ -571,10 +510,7 @@ export default function Registration() {
                 {/* Price preview */}
                 <div className="bg-sand/20 border border-sand/40 rounded-2xl p-4 text-center mb-6">
                   <p className="text-ink-secondary text-sm">
-                    {isBundle
-                      ? `${ticketCount} person${ticketCount > 1 ? "s" : ""} × 2 sessions × $25`
-                      : `${ticketCount} ticket${ticketCount > 1 ? "s" : ""} × $25`}
-                    {" = "}
+                    {ticketCount} ticket{ticketCount > 1 ? "s" : ""} × $25{" = "}
                     <span className="font-display text-2xl text-charcoal">${total}</span>
                   </p>
                 </div>
@@ -750,16 +686,12 @@ export default function Registration() {
                   <div className="p-4 space-y-3">
                     {selectedSlot && (
                       <div className="flex justify-between text-sm">
-                        <span className="text-ink-secondary">{secondSlot ? "Sessions" : "Session"}</span>
-                        <span className="font-semibold text-charcoal">
-                          {secondSlot ? `${selectedSlot} + ${secondSlot}` : `${selectedSlot} · Aug 30`}
-                        </span>
+                        <span className="text-ink-secondary">Session</span>
+                        <span className="font-semibold text-charcoal">{selectedSlot} · Sep 6</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm">
-                      <span className="text-ink-secondary">
-                        {isBundle ? `2-Session Bundle × ${ticketCount}` : `General Admission × ${ticketCount}`}
-                      </span>
+                      <span className="text-ink-secondary">General Admission × {ticketCount}</span>
                       <span className="font-medium text-charcoal">${total}</span>
                     </div>
                     <div className="pt-3 border-t border-charcoal/10 flex justify-between">
