@@ -469,7 +469,7 @@ export default function Registration() {
                           {levelAcknowledged && <Check className="w-3 h-3 text-white" />}
                         </div>
                         <span className="text-xs text-ink-secondary leading-relaxed">
-                          <span className="font-semibold text-charcoal">I confirm I meet the requirements above.</span> I understand this class moves at the pace of the group and I will not be able to slow it down. I am signing up for the level that best matches my current skill.
+                          <span className="font-semibold text-charcoal">I confirm I meet the requirements for this session.</span> I understand that instruction will be delivered at the level and pace of the class, and I am registering for the session that accurately reflects my current skill level.
                         </span>
                       </label>
 
