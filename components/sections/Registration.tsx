@@ -55,7 +55,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
     ],
   },
   "4:00 PM": {
-    title: "Advanced",
+    title: "Backwards Beginner",
     bullets: [
       "Can skate forward confidently and with control",
       "Have little to no backward skating experience",
@@ -181,6 +181,7 @@ export default function Registration() {
   const [waiverAccepted, setWaiverAccepted] = useState(false);
   const [signature, setSignature] = useState("");
   const [byosAcknowledged, setByosAcknowledged] = useState(false);
+  const [levelAcknowledged, setLevelAcknowledged] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
@@ -264,7 +265,7 @@ export default function Registration() {
   };
 
   const isSoldOut = selectedSlot ? (promoApplied && selectedSlot === promoSlot ? false : slotData?.[selectedSlot]?.isFull ?? false) : false;
-  const step1Valid = !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut && byosAcknowledged;
+  const step1Valid = !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut && byosAcknowledged && levelAcknowledged;
   const step2Valid = tickets.every((t, i) => {
     if (!t.name.trim()) return false;
     if (i === 0 && (!t.email || t.email === "N/A" || !t.phone || t.phone === "N/A")) return false;
@@ -359,8 +360,8 @@ export default function Registration() {
                       <button
                         key={slot}
                         onClick={() => {
-                          if (!full && !promoApplied) { setSelectedSlot(slot); setTicketCount(1); }
-                          else if (promoUnlocked) { setSelectedSlot(slot); }
+                          if (!full && !promoApplied) { setSelectedSlot(slot); setTicketCount(1); setLevelAcknowledged(false); }
+                          else if (promoUnlocked) { setSelectedSlot(slot); setLevelAcknowledged(false); }
                         }}
                         disabled={(full && !promoUnlocked) || slotData === null}
                         className={`rounded-2xl p-4 text-left border-2 transition-all ${
@@ -457,6 +458,21 @@ export default function Registration() {
                           </li>
                         ))}
                       </ul>
+                      {/* Level qualification checkbox */}
+                      <label className="flex items-start gap-3 cursor-pointer mt-4 border-t border-charcoal/10 pt-4 group">
+                        <div
+                          onClick={() => setLevelAcknowledged(!levelAcknowledged)}
+                          className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border-2 flex-shrink-0 transition-all ${
+                            levelAcknowledged ? "bg-crimson border-crimson" : "border-charcoal/30 group-hover:border-crimson"
+                          }`}
+                        >
+                          {levelAcknowledged && <Check className="w-3 h-3 text-white" />}
+                        </div>
+                        <span className="text-xs text-ink-secondary leading-relaxed">
+                          <span className="font-semibold text-charcoal">I confirm I meet the requirements above.</span> I understand this class moves at the pace of the group and I will not be able to slow it down. I am signing up for the level that best matches my current skill.
+                        </span>
+                      </label>
+
                       <p className="text-xs text-ink-muted mt-4 border-t border-charcoal/10 pt-3">
                         📌 <strong>Arrive at {selectedSlot}</strong> — that's your check-in time, not your class start time. You'll use those first 15 minutes to get your skates on and get comfortable. Class begins at 15 minutes past your arrival time.
                       </p>
