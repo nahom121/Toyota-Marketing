@@ -542,7 +542,7 @@ export default function Registration() {
                     {byosAcknowledged && <Check className="w-3 h-3 text-white" />}
                   </div>
                   <span className="text-sm text-ink-secondary leading-relaxed">
-                    <span className="font-semibold text-charcoal">BYOS: Bring Your Own Skates!</span> I understand that skate rentals are not available for this first pop-up and I will bring my own skates.
+                    <span className="font-semibold text-charcoal">BYOS: Bring Your Own Skates!</span> I understand that skate rentals are not available for this pop-up and I will bring my own skates.
                   </span>
                 </label>
 
