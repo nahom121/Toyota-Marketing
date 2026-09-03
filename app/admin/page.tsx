@@ -1,7 +1,30 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { Download, RefreshCw, Lock, Users, Ticket, DollarSign } from "lucide-react";
+import { useState, useCallback, useEffect } from "react";
+import { Download, RefreshCw, Lock, Users, Ticket, DollarSign, ArrowRight, Trash2, Plus } from "lucide-react";
+
+type Transfer = {
+  id: string;
+  name: string;
+  fromWorkshop: string;
+  fromSlot: string;
+  toWorkshop: string;
+  toSlot: string;
+  note: string;
+  addedAt: string;
+};
+
+const WORKSHOPS = [
+  "Workshop 3 · Sep 6, 2026",
+  "Workshop 2 · Aug 30, 2026",
+  "Workshop 1 · Previous",
+];
+
+const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
+  "Workshop 3 · Sep 6, 2026": ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"],
+  "Workshop 2 · Aug 30, 2026": ["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"],
+  "Workshop 1 · Previous": ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"],
+};
 
 type Attendee = {
   date: string;
@@ -71,6 +94,31 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [authed, setAuthed] = useState(false);
   const [eventFilter, setEventFilter] = useState<"current" | "workshop2" | "previous">("current");
+  const [transfers, setTransfers] = useState<Transfer[]>([]);
+  const [showTransferForm, setShowTransferForm] = useState(false);
+  const [tf, setTf] = useState({ name: "", fromWorkshop: WORKSHOPS[1], fromSlot: "10:30 AM", toWorkshop: WORKSHOPS[0], toSlot: "1:00 PM", note: "" });
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("hsp_transfers");
+      if (saved) setTransfers(JSON.parse(saved));
+    } catch {}
+  }, []);
+
+  const saveTransfers = (list: Transfer[]) => {
+    setTransfers(list);
+    try { localStorage.setItem("hsp_transfers", JSON.stringify(list)); } catch {}
+  };
+
+  const addTransfer = () => {
+    if (!tf.name.trim()) return;
+    const entry: Transfer = { ...tf, id: Date.now().toString(), addedAt: new Date().toISOString() };
+    saveTransfers([entry, ...transfers]);
+    setTf({ name: "", fromWorkshop: WORKSHOPS[1], fromSlot: "10:30 AM", toWorkshop: WORKSHOPS[0], toSlot: "1:00 PM", note: "" });
+    setShowTransferForm(false);
+  };
+
+  const deleteTransfer = (id: string) => saveTransfers(transfers.filter((t) => t.id !== id));
 
   const fetchData = useCallback(async (pw: string, filter = "current") => {
     setLoading(true);
@@ -247,6 +295,108 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+        {/* Transfers */}
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-display text-xl text-charcoal">Transfers</h2>
+              <p className="text-ink-muted text-xs mt-0.5">Manual ticket transfers — for record keeping only, does not affect capacity</p>
+            </div>
+            <button
+              onClick={() => setShowTransferForm(!showTransferForm)}
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-charcoal text-white text-sm hover:bg-charcoal-soft transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Log Transfer
+            </button>
+          </div>
+
+          {showTransferForm && (
+            <div className="bg-cream-light border border-charcoal/10 rounded-2xl p-5 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Name</label>
+                  <input className="form-input w-full" placeholder="Attendee name" value={tf.name} onChange={(e) => setTf({ ...tf, name: e.target.value })} />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Note (optional)</label>
+                  <input className="form-input w-full" placeholder="e.g. requested via email" value={tf.note} onChange={(e) => setTf({ ...tf, note: e.target.value })} />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <div>
+                  <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">From</label>
+                  <select className="form-input w-full mb-2" value={tf.fromWorkshop} onChange={(e) => setTf({ ...tf, fromWorkshop: e.target.value, fromSlot: SLOTS_BY_WORKSHOP[e.target.value][0] })}>
+                    {WORKSHOPS.map((w) => <option key={w}>{w}</option>)}
+                  </select>
+                  <select className="form-input w-full" value={tf.fromSlot} onChange={(e) => setTf({ ...tf, fromSlot: e.target.value })}>
+                    {(SLOTS_BY_WORKSHOP[tf.fromWorkshop] || []).map((s) => <option key={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">To</label>
+                  <select className="form-input w-full mb-2" value={tf.toWorkshop} onChange={(e) => setTf({ ...tf, toWorkshop: e.target.value, toSlot: SLOTS_BY_WORKSHOP[e.target.value][0] })}>
+                    {WORKSHOPS.map((w) => <option key={w}>{w}</option>)}
+                  </select>
+                  <select className="form-input w-full" value={tf.toSlot} onChange={(e) => setTf({ ...tf, toSlot: e.target.value })}>
+                    {(SLOTS_BY_WORKSHOP[tf.toWorkshop] || []).map((s) => <option key={s}>{s}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={addTransfer} disabled={!tf.name.trim()} className="btn-primary px-6 py-2 disabled:opacity-50">Save</button>
+                <button onClick={() => setShowTransferForm(false)} className="px-6 py-2 rounded-full border border-charcoal/20 text-sm text-ink-secondary hover:bg-charcoal/5 transition-colors">Cancel</button>
+              </div>
+            </div>
+          )}
+
+          {transfers.length === 0 && !showTransferForm && (
+            <div className="text-center py-10 text-ink-muted text-sm border border-dashed border-charcoal/15 rounded-2xl">No transfers logged yet.</div>
+          )}
+
+          {transfers.length > 0 && (
+            <div className="bg-cream-light border border-charcoal/10 rounded-2xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-charcoal/10 bg-charcoal/5">
+                      {["Name", "From", "", "To", "Note", "Logged"].map((h, i) => (
+                        <th key={i} className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">{h}</th>
+                      ))}
+                      <th className="px-4 py-3" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transfers.map((t, i) => (
+                      <tr key={t.id} className={`border-b border-charcoal/5 last:border-0 ${i % 2 === 0 ? "" : "bg-charcoal/[0.02]"}`}>
+                        <td className="px-4 py-3 font-medium text-charcoal whitespace-nowrap">{t.name}</td>
+                        <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">
+                          <div className="font-semibold text-charcoal">{t.fromSlot}</div>
+                          <div className="text-xs text-ink-muted">{t.fromWorkshop}</div>
+                        </td>
+                        <td className="px-2 py-3 text-ink-muted"><ArrowRight className="w-4 h-4" /></td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="font-semibold text-charcoal">{t.toSlot}</div>
+                          <div className="text-xs text-ink-muted">{t.toWorkshop}</div>
+                        </td>
+                        <td className="px-4 py-3 text-ink-muted text-xs">{t.note || "—"}</td>
+                        <td className="px-4 py-3 text-ink-muted text-xs whitespace-nowrap">
+                          {new Date(t.addedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                        </td>
+                        <td className="px-4 py-3">
+                          <button onClick={() => deleteTransfer(t.id)} className="text-ink-muted hover:text-crimson transition-colors">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
 
         <p className="text-ink-muted text-xs text-center mt-8">
           Data pulled live from Stripe · {new Date().toLocaleString()}
