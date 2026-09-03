@@ -323,7 +323,7 @@ export default function AdminPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-charcoal/10 bg-white">
+                  <tr className="border-b border-charcoal/10">
                     {["Name", "Email", "Phone", "Session", "Level", "Tickets", "Paid", "Attendance"].map((h) => (
                       <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">
                         {h}
