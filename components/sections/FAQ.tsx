@@ -41,6 +41,10 @@ const faqs = [
     q: "What if I don't have skates?",
     a: "BYOS (Bring Your Own Skates!) Skate rentals are not available at this pop-up, so please plan to bring a pair or borrow one from a friend.",
   },
+  {
+    q: "Can I film or record during the workshop?",
+    a: "To ensure a safe, supportive, and focused environment for all skaters, personal video recording and filming are strictly prohibited during workshop sessions. Spectators and participants are welcome to take quick photos, but continuous video recording is not permitted. Thank you for respecting the privacy and learning space of our community!",
+  },
 ];
 
 function FAQItem({ q, a, index }: { q: string; a: string; index: number }) {

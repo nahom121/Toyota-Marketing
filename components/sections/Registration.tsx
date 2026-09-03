@@ -625,12 +625,19 @@ export default function Registration() {
                     I confirm that all information provided during registration is accurate, and I agree to follow all
                     pop-up rules and safety guidelines provided on the day.
                   </p>
-                  <p className="border-t border-charcoal/10 pt-3">
+                  <p className="mb-3 border-t border-charcoal/10 pt-3">
                     <span className="font-semibold text-charcoal">Media & Photography Consent:</span>{" "}
                     I understand and agree that Houston Skate Project workshops may be filmed or photographed at various
                     points throughout the event for use on social media and promotional content. By registering, I consent
                     on behalf of myself and all attendees in my order to the recording, photographing, and public sharing
                     of such content by Houston Skate Project.
+                  </p>
+                  <p className="border-t border-charcoal/10 pt-3">
+                    <span className="font-semibold text-charcoal">Video Recording Policy:</span>{" "}
+                    To ensure a safe, supportive, and focused environment for all skaters, personal video recording and
+                    filming are strictly prohibited during workshop sessions. Spectators and participants are welcome to
+                    take quick photos, but continuous video recording is not permitted. I agree to respect the privacy
+                    and learning space of all community members.
                   </p>
                 </div>
 
@@ -733,6 +740,16 @@ export default function Registration() {
                       </div>
                     ))}
                   </div>
+                </div>
+
+                {/* Video recording notice */}
+                <div className="bg-sand/40 border border-charcoal/10 rounded-2xl p-4 mb-5 text-sm text-ink-secondary leading-relaxed">
+                  <p className="font-semibold text-charcoal mb-1 text-xs uppercase tracking-wider">Notice Regarding Video Recording</p>
+                  <p>
+                    Personal video recording and filming are strictly prohibited during workshop sessions. Spectators and
+                    participants are welcome to take quick photos, but continuous video recording is not permitted. Thank
+                    you for respecting the privacy and learning space of our community!
+                  </p>
                 </div>
 
                 {error && (
