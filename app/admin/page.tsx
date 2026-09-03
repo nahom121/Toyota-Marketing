@@ -154,17 +154,26 @@ export default function AdminPage() {
       const data = await res.json();
       if (!res.ok) { setTfError("Could not verify registration. Try again."); return; }
 
-      const match = (data.attendees as Attendee[]).find(
+      const nameMatch = (data.attendees as Attendee[]).find(
         (a) =>
           a.name.trim().toLowerCase() === tf.name.trim().toLowerCase() &&
-          a.phone.replace(/\D/g, "") === tf.phone.replace(/\D/g, "") &&
           a.timeSlot.split("+").map((s) => s.trim()).includes(tf.fromSlot)
       );
 
-      if (!match) {
-        setTfError("No registration found with that name, phone number, and session. Please check the details and try again.");
+      if (!nameMatch) {
+        setTfError("No registration found with that name and session. Please check the spelling and try again.");
         return;
       }
+
+      // Verify phone if provided and stored (soft check — warns but doesn't block)
+      const phoneEntered = tf.phone.replace(/\D/g, "");
+      const phoneStored = nameMatch.phone.replace(/\D/g, "");
+      if (phoneEntered && phoneStored && phoneStored !== "NA" && phoneEntered !== phoneStored) {
+        setTfError(`Name matched but phone doesn't match what's on file. Double-check or clear the phone field to proceed anyway.`);
+        return;
+      }
+
+      const match = nameMatch;
 
       const entry: Transfer = { ...tf, id: Date.now().toString(), addedAt: new Date().toISOString() };
       saveTransfers([entry, ...transfers]);
