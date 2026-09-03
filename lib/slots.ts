@@ -2,7 +2,7 @@ export const SLOTS = ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"] as const;
 export type Slot = typeof SLOTS[number];
 export const SLOT_CAPACITY = 30;
 export const SLOT_CAPACITIES: Record<Slot, number> = {
-  "1:00 PM": 30,
+  "1:00 PM": 31,
   "2:00 PM": 30,
   "3:00 PM": 30,
   "4:00 PM": 30,

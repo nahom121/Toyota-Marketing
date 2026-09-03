@@ -4,7 +4,7 @@ import { FORCE_SOLD_OUT } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 const SLOT_CAPACITIES: Record<string, number> = {
-  "1:00 PM": 30,
+  "1:00 PM": 31,
   "2:00 PM": 30,
   "3:00 PM": 30,
   "4:00 PM": 30,

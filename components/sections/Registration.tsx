@@ -7,7 +7,7 @@ import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-reac
 const TICKET_PRICE = 25;
 const SLOT_CAPACITY = 30;
 const SLOT_CAPACITIES: Record<Slot, number> = {
-  "1:00 PM": 30,
+  "1:00 PM": 31,
   "2:00 PM": 30,
   "3:00 PM": 30,
   "4:00 PM": 30,
