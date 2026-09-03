@@ -217,7 +217,7 @@ export default function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-charcoal/10 bg-charcoal/5">
-                    {["Date", "Name", "Email", "Phone", "Session", "Tickets", "Paid"].map((h) => (
+                    {["Date", "Name", "Email", "Phone", "Session", "Level", "Tickets", "Paid"].map((h) => (
                       <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">
                         {h}
                       </th>
@@ -236,12 +236,8 @@ export default function AdminPage() {
                       <td className="px-4 py-3 font-medium text-charcoal whitespace-nowrap">{a.name}</td>
                       <td className="px-4 py-3 text-ink-secondary">{a.email}</td>
                       <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{a.phone}</td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="font-semibold text-charcoal">{a.timeSlot}</span>
-                        {getSlotTitle(a.timeSlot) !== "—" && (
-                          <span className="ml-1.5 text-xs text-ink-muted">· {getSlotTitle(a.timeSlot)}</span>
-                        )}
-                      </td>
+                      <td className="px-4 py-3 font-semibold text-charcoal whitespace-nowrap">{a.timeSlot}</td>
+                      <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{getSlotTitle(a.timeSlot)}</td>
                       <td className="px-4 py-3 text-center font-semibold text-charcoal">{a.tickets}</td>
                       <td className="px-4 py-3 font-bold text-crimson whitespace-nowrap">${a.amountPaid}</td>
                     </tr>
