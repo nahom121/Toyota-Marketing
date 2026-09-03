@@ -356,12 +356,12 @@ export default function AdminPage() {
             <div className="bg-cream-light border border-charcoal/10 rounded-2xl p-5 mb-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                 <div>
-                  <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Name (exact)</label>
-                  <input className="form-input w-full" placeholder="As registered" value={tf.name} onChange={(e) => { setTf({ ...tf, name: e.target.value }); setTfError(""); }} />
+                  <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Name</label>
+                  <input className="form-input w-full" placeholder="Attendee name" value={tf.name} onChange={(e) => { setTf({ ...tf, name: e.target.value }); setTfError(""); }} />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Phone (exact)</label>
-                  <input className="form-input w-full" placeholder="As registered" value={tf.phone} onChange={(e) => { setTf({ ...tf, phone: e.target.value }); setTfError(""); }} />
+                  <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Phone</label>
+                  <input className="form-input w-full" placeholder="Attendee phone number" value={tf.phone} onChange={(e) => { setTf({ ...tf, phone: e.target.value }); setTfError(""); }} />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Note (optional)</label>
