@@ -323,7 +323,7 @@ export default function AdminPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-charcoal/10 bg-charcoal/5">
+                  <tr className="border-b border-charcoal/10 bg-white">
                     {["Name", "Email", "Phone", "Session", "Level", "Tickets", "Paid", "Attendance"].map((h) => (
                       <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">
                         {h}
@@ -357,13 +357,13 @@ export default function AdminPage() {
 
                     return groups.map(({ slot, rows }) => (
                       <>
-                        <tr key={`group-${slot}`} className="bg-charcoal/[0.06] border-b border-charcoal/10">
-                          <td colSpan={8} className="px-4 py-2">
-                            <span className="font-bold text-charcoal text-xs uppercase tracking-wider">{slot}</span>
+                        <tr key={`group-${slot}`} className="bg-charcoal/[0.08] border-b border-t border-charcoal/15">
+                          <td colSpan={8} className="px-4 py-2.5">
+                            <span className="font-black text-charcoal text-sm">{slot}</span>
                             {getSlotTitle(slot) !== "—" && (
-                              <span className="ml-2 text-xs text-ink-muted font-medium">· {getSlotTitle(slot)}</span>
+                              <span className="ml-2 text-sm font-bold text-charcoal/70">· {getSlotTitle(slot)}</span>
                             )}
-                            <span className="ml-2 text-xs text-ink-muted">({rows.reduce((s, r) => s + r.tickets, 0)} ticket{rows.reduce((s, r) => s + r.tickets, 0) !== 1 ? "s" : ""})</span>
+                            <span className="ml-3 text-xs font-semibold text-ink-muted">({rows.reduce((s, r) => s + r.tickets, 0)} ticket{rows.reduce((s, r) => s + r.tickets, 0) !== 1 ? "s" : ""})</span>
                           </td>
                         </tr>
                         {rows.map((a) => {
