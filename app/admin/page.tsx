@@ -122,6 +122,7 @@ export default function AdminPage() {
   const [tfError, setTfError] = useState("");
   const [tfLoading, setTfLoading] = useState(false);
   const [attendance, setAttendance] = useState<Record<string, string>>({});
+  const [notes, setNotes] = useState<Record<string, string>>({});
 
   useEffect(() => {
     try {
@@ -129,6 +130,8 @@ export default function AdminPage() {
       if (saved) setTransfers(JSON.parse(saved));
       const att = localStorage.getItem("hsp_attendance");
       if (att) setAttendance(JSON.parse(att));
+      const n = localStorage.getItem("hsp_notes");
+      if (n) setNotes(JSON.parse(n));
     } catch {}
   }, []);
 
@@ -136,6 +139,12 @@ export default function AdminPage() {
     const updated = { ...attendance, [sessionId]: value };
     setAttendance(updated);
     try { localStorage.setItem("hsp_attendance", JSON.stringify(updated)); } catch {}
+  };
+
+  const saveNote = (key: string, value: string) => {
+    const updated = { ...notes, [key]: value };
+    setNotes(updated);
+    try { localStorage.setItem("hsp_notes", JSON.stringify(updated)); } catch {}
   };
 
   const saveTransfers = (list: Transfer[]) => {
@@ -337,7 +346,7 @@ export default function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-charcoal/10">
-                    {["Name", "Email", "Phone", "Session", "Level", "Tickets", "Paid", "Attendance"].map((h) => (
+                    {["Name", "Email", "Phone", "Session", "Level", "Tickets", "Paid", "Attendance", "Notes"].map((h) => (
                       <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">
                         {h}
                       </th>
@@ -371,7 +380,7 @@ export default function AdminPage() {
                     return groups.map(({ slot, rows }) => (
                       <>
                         <tr key={`group-${slot}`} className="bg-charcoal/[0.08] border-b border-t border-charcoal/15">
-                          <td colSpan={8} className="px-4 py-2.5">
+                          <td colSpan={9} className="px-4 py-2.5">
                             <span className="font-black text-charcoal text-sm">{slot}</span>
                             {getSlotTitle(slot) !== "—" && (
                               <span className="ml-2 text-sm font-bold text-charcoal/70">· {getSlotTitle(slot)}</span>
@@ -406,6 +415,15 @@ export default function AdminPage() {
                                   <option value="signed-in">Signed In</option>
                                   <option value="no-show">No Show</option>
                                 </select>
+                              </td>
+                              <td className="px-4 py-3">
+                                <input
+                                  type="text"
+                                  value={notes[`${a.sessionId}-${a.displaySlot}`] || ""}
+                                  onChange={(e) => saveNote(`${a.sessionId}-${a.displaySlot}`, e.target.value)}
+                                  placeholder="Add note…"
+                                  className="text-xs border border-charcoal/15 rounded-lg px-2 py-1.5 w-36 bg-white text-charcoal placeholder-ink-muted/50 focus:outline-none focus:border-crimson transition-colors"
+                                />
                               </td>
                             </tr>
                           );
