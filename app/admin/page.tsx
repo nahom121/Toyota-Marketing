@@ -491,7 +491,7 @@ export default function AdminPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-charcoal/10 bg-charcoal/5">
-                      {["Name", "From", "", "To", "Note", "Logged"].map((h, i) => (
+                      {["Name", "From", "", "To", "Note", "Logged", "Attendance"].map((h, i) => (
                         <th key={i} className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">{h}</th>
                       ))}
                       <th className="px-4 py-3" />
@@ -513,6 +513,29 @@ export default function AdminPage() {
                         <td className="px-4 py-3 text-ink-muted text-xs">{t.note || "—"}</td>
                         <td className="px-4 py-3 text-ink-muted text-xs whitespace-nowrap">
                           {new Date(t.addedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          {(() => {
+                            const attKey = `transfer-${t.id}`;
+                            const att = attendance[attKey] || "";
+                            return (
+                              <select
+                                value={att}
+                                onChange={(e) => markAttendance(attKey, e.target.value)}
+                                className={`text-xs rounded-full px-3 py-1.5 border font-semibold focus:outline-none cursor-pointer ${
+                                  att === "signed-in"
+                                    ? "bg-green-50 border-green-300 text-green-700"
+                                    : att === "no-show"
+                                    ? "bg-red-50 border-red-300 text-red-600"
+                                    : "bg-charcoal/5 border-charcoal/15 text-ink-muted"
+                                }`}
+                              >
+                                <option value="">— Mark —</option>
+                                <option value="signed-in">Signed In</option>
+                                <option value="no-show">No Show</option>
+                              </select>
+                            );
+                          })()}
                         </td>
                         <td className="px-4 py-3">
                           <button onClick={() => deleteTransfer(t.id)} className="text-ink-muted hover:text-crimson transition-colors">
