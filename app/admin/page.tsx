@@ -332,43 +332,65 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[...attendees].sort((a, b) => slotSortKey(a.timeSlot) - slotSortKey(b.timeSlot)).map((a, i) => {
-                    const att = attendance[a.sessionId] || "";
-                    return (
-                    <tr key={a.sessionId} className={`border-b border-charcoal/5 last:border-0 ${i % 2 === 0 ? "" : "bg-charcoal/[0.02]"}`}>
-                      <td className="px-4 py-3 text-ink-muted whitespace-nowrap">
-                        {new Date(a.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}{" "}
-                        <span className="text-xs opacity-60">
-                          {new Date(a.date).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 font-medium text-charcoal whitespace-nowrap">{a.name}</td>
-                      <td className="px-4 py-3 text-ink-secondary">{a.email}</td>
-                      <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{a.phone}</td>
-                      <td className="px-4 py-3 font-semibold text-charcoal whitespace-nowrap">{a.timeSlot}</td>
-                      <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{getSlotTitle(a.timeSlot)}</td>
-                      <td className="px-4 py-3 text-center font-semibold text-charcoal">{a.tickets}</td>
-                      <td className="px-4 py-3 font-bold text-crimson whitespace-nowrap">${a.amountPaid}</td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <select
-                          value={att}
-                          onChange={(e) => markAttendance(a.sessionId, e.target.value)}
-                          className={`text-xs rounded-full px-3 py-1.5 border font-semibold focus:outline-none cursor-pointer ${
-                            att === "signed-in"
-                              ? "bg-green-50 border-green-300 text-green-700"
-                              : att === "no-show"
-                              ? "bg-red-50 border-red-300 text-red-600"
-                              : "bg-charcoal/5 border-charcoal/15 text-ink-muted"
-                          }`}
-                        >
-                          <option value="">— Mark —</option>
-                          <option value="signed-in">Signed In</option>
-                          <option value="no-show">No Show</option>
-                        </select>
-                      </td>
-                    </tr>
-                    );
-                  })}
+                  {(() => {
+                    const sorted = [...attendees].sort((a, b) => slotSortKey(a.timeSlot) - slotSortKey(b.timeSlot));
+                    const groups: { slot: string; rows: Attendee[] }[] = [];
+                    for (const a of sorted) {
+                      const last = groups[groups.length - 1];
+                      if (last && last.slot === a.timeSlot) { last.rows.push(a); }
+                      else { groups.push({ slot: a.timeSlot, rows: [a] }); }
+                    }
+                    return groups.map(({ slot, rows }) => (
+                      <>
+                        <tr key={`group-${slot}`} className="bg-charcoal/[0.06] border-b border-charcoal/10">
+                          <td colSpan={9} className="px-4 py-2">
+                            <span className="font-bold text-charcoal text-xs uppercase tracking-wider">{slot}</span>
+                            {getSlotTitle(slot) !== "—" && (
+                              <span className="ml-2 text-xs text-ink-muted font-medium">· {getSlotTitle(slot)}</span>
+                            )}
+                            <span className="ml-2 text-xs text-ink-muted">({rows.reduce((s, r) => s + r.tickets, 0)} ticket{rows.reduce((s, r) => s + r.tickets, 0) !== 1 ? "s" : ""})</span>
+                          </td>
+                        </tr>
+                        {rows.map((a) => {
+                          const att = attendance[a.sessionId] || "";
+                          return (
+                            <tr key={a.sessionId} className="border-b border-charcoal/5 last:border-0">
+                              <td className="px-4 py-3 text-ink-muted whitespace-nowrap">
+                                {new Date(a.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}{" "}
+                                <span className="text-xs opacity-60">
+                                  {new Date(a.date).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 font-medium text-charcoal whitespace-nowrap">{a.name}</td>
+                              <td className="px-4 py-3 text-ink-secondary">{a.email}</td>
+                              <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{a.phone}</td>
+                              <td className="px-4 py-3 font-semibold text-charcoal whitespace-nowrap">{a.timeSlot}</td>
+                              <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{getSlotTitle(a.timeSlot)}</td>
+                              <td className="px-4 py-3 text-center font-semibold text-charcoal">{a.tickets}</td>
+                              <td className="px-4 py-3 font-bold text-crimson whitespace-nowrap">${a.amountPaid}</td>
+                              <td className="px-4 py-3 whitespace-nowrap">
+                                <select
+                                  value={att}
+                                  onChange={(e) => markAttendance(a.sessionId, e.target.value)}
+                                  className={`text-xs rounded-full px-3 py-1.5 border font-semibold focus:outline-none cursor-pointer ${
+                                    att === "signed-in"
+                                      ? "bg-green-50 border-green-300 text-green-700"
+                                      : att === "no-show"
+                                      ? "bg-red-50 border-red-300 text-red-600"
+                                      : "bg-charcoal/5 border-charcoal/15 text-ink-muted"
+                                  }`}
+                                >
+                                  <option value="">— Mark —</option>
+                                  <option value="signed-in">Signed In</option>
+                                  <option value="no-show">No Show</option>
+                                </select>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </>
+                    ));
+                  })()}
                 </tbody>
               </table>
             </div>
