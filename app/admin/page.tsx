@@ -158,7 +158,7 @@ export default function AdminPage() {
         (a) =>
           a.name.trim().toLowerCase() === tf.name.trim().toLowerCase() &&
           a.phone.replace(/\D/g, "") === tf.phone.replace(/\D/g, "") &&
-          a.timeSlot === tf.fromSlot
+          a.timeSlot.split("+").map((s) => s.trim()).includes(tf.fromSlot)
       );
 
       if (!match) {
