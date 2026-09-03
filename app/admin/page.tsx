@@ -333,13 +333,28 @@ export default function AdminPage() {
                 </thead>
                 <tbody>
                   {(() => {
-                    const sorted = [...attendees].sort((a, b) => slotSortKey(a.timeSlot) - slotSortKey(b.timeSlot));
-                    const groups: { slot: string; rows: Attendee[] }[] = [];
-                    for (const a of sorted) {
-                      const last = groups[groups.length - 1];
-                      if (last && last.slot === a.timeSlot) { last.rows.push(a); }
-                      else { groups.push({ slot: a.timeSlot, rows: [a] }); }
+                    // Expand bundle purchases into one row per slot
+                    type Row = Attendee & { displaySlot: string; displayAmount: string; rowKey: string };
+                    const expanded: Row[] = [];
+                    for (const a of attendees) {
+                      if (a.timeSlot.includes("+")) {
+                        const [s1, s2] = a.timeSlot.split("+").map((s) => s.trim());
+                        expanded.push({ ...a, displaySlot: s1, displayAmount: "25.00", rowKey: `${a.sessionId}-1` });
+                        expanded.push({ ...a, displaySlot: s2, displayAmount: "25.00", rowKey: `${a.sessionId}-2` });
+                      } else {
+                        expanded.push({ ...a, displaySlot: a.timeSlot, displayAmount: a.amountPaid, rowKey: a.sessionId });
+                      }
                     }
+                    expanded.sort((a, b) => slotSortKey(a.displaySlot) - slotSortKey(b.displaySlot));
+
+                    // Group by displaySlot
+                    const groups: { slot: string; rows: Row[] }[] = [];
+                    for (const r of expanded) {
+                      const last = groups[groups.length - 1];
+                      if (last && last.slot === r.displaySlot) { last.rows.push(r); }
+                      else { groups.push({ slot: r.displaySlot, rows: [r] }); }
+                    }
+
                     return groups.map(({ slot, rows }) => (
                       <>
                         <tr key={`group-${slot}`} className="bg-charcoal/[0.06] border-b border-charcoal/10">
@@ -352,20 +367,20 @@ export default function AdminPage() {
                           </td>
                         </tr>
                         {rows.map((a) => {
-                          const att = attendance[a.sessionId] || "";
+                          const att = attendance[`${a.sessionId}-${a.displaySlot}`] || "";
                           return (
-                            <tr key={a.sessionId} className="border-b border-charcoal/5 last:border-0">
+                            <tr key={a.rowKey} className="border-b border-charcoal/5 last:border-0">
                               <td className="px-4 py-3 font-medium text-charcoal whitespace-nowrap">{a.name}</td>
                               <td className="px-4 py-3 text-ink-secondary">{a.email}</td>
                               <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{a.phone}</td>
-                              <td className="px-4 py-3 font-semibold text-charcoal whitespace-nowrap">{a.timeSlot}</td>
-                              <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{getSlotTitle(a.timeSlot)}</td>
+                              <td className="px-4 py-3 font-semibold text-charcoal whitespace-nowrap">{a.displaySlot}</td>
+                              <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{getSlotTitle(a.displaySlot)}</td>
                               <td className="px-4 py-3 text-center font-semibold text-charcoal">{a.tickets}</td>
-                              <td className="px-4 py-3 font-bold text-crimson whitespace-nowrap">${a.amountPaid}</td>
+                              <td className="px-4 py-3 font-bold text-crimson whitespace-nowrap">${a.displayAmount}</td>
                               <td className="px-4 py-3 whitespace-nowrap">
                                 <select
                                   value={att}
-                                  onChange={(e) => markAttendance(a.sessionId, e.target.value)}
+                                  onChange={(e) => markAttendance(`${a.sessionId}-${a.displaySlot}`, e.target.value)}
                                   className={`text-xs rounded-full px-3 py-1.5 border font-semibold focus:outline-none cursor-pointer ${
                                     att === "signed-in"
                                       ? "bg-green-50 border-green-300 text-green-700"
