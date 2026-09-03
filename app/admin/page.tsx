@@ -324,7 +324,7 @@ export default function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-charcoal/10 bg-charcoal/5">
-                    {["Date", "Name", "Email", "Phone", "Session", "Level", "Tickets", "Paid", "Attendance"].map((h) => (
+                    {["Name", "Email", "Phone", "Session", "Level", "Tickets", "Paid", "Attendance"].map((h) => (
                       <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">
                         {h}
                       </th>
@@ -343,7 +343,7 @@ export default function AdminPage() {
                     return groups.map(({ slot, rows }) => (
                       <>
                         <tr key={`group-${slot}`} className="bg-charcoal/[0.06] border-b border-charcoal/10">
-                          <td colSpan={9} className="px-4 py-2">
+                          <td colSpan={8} className="px-4 py-2">
                             <span className="font-bold text-charcoal text-xs uppercase tracking-wider">{slot}</span>
                             {getSlotTitle(slot) !== "—" && (
                               <span className="ml-2 text-xs text-ink-muted font-medium">· {getSlotTitle(slot)}</span>
@@ -355,12 +355,6 @@ export default function AdminPage() {
                           const att = attendance[a.sessionId] || "";
                           return (
                             <tr key={a.sessionId} className="border-b border-charcoal/5 last:border-0">
-                              <td className="px-4 py-3 text-ink-muted whitespace-nowrap">
-                                {new Date(a.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}{" "}
-                                <span className="text-xs opacity-60">
-                                  {new Date(a.date).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
-                                </span>
-                              </td>
                               <td className="px-4 py-3 font-medium text-charcoal whitespace-nowrap">{a.name}</td>
                               <td className="px-4 py-3 text-ink-secondary">{a.email}</td>
                               <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{a.phone}</td>
