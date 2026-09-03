@@ -144,7 +144,7 @@ export default function AdminPage() {
   };
 
   const addTransfer = async () => {
-    if (!tf.name.trim()) return;
+    if (!tf.name.trim() || !tf.phone.trim()) return;
     setTfError("");
     setTfLoading(true);
     try {
@@ -162,6 +162,18 @@ export default function AdminPage() {
 
       if (!nameMatch) {
         setTfError("No registration found with that name and session. Please check the spelling and try again.");
+        return;
+      }
+
+      // Normalize phone: strip non-digits, strip leading 1 if 11-digit US number
+      const normalizePhone = (p: string) => {
+        const digits = p.replace(/\D/g, "");
+        return digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
+      };
+      const phoneEntered = normalizePhone(tf.phone);
+      const phoneStored = normalizePhone(nameMatch.phone);
+      if (phoneStored && phoneStored !== "NA" && phoneEntered !== phoneStored) {
+        setTfError("Name and session matched but the phone number doesn't match what's on file. Please double-check the number.");
         return;
       }
 
@@ -461,7 +473,7 @@ export default function AdminPage() {
               </div>
               {tfError && <p className="text-crimson text-sm mb-3">{tfError}</p>}
               <div className="flex gap-2">
-                <button onClick={addTransfer} disabled={!tf.name.trim() || tfLoading} className="btn-primary px-6 py-2 disabled:opacity-50">
+                <button onClick={addTransfer} disabled={!tf.name.trim() || !tf.phone.trim() || tfLoading} className="btn-primary px-6 py-2 disabled:opacity-50">
                   {tfLoading ? "Verifying…" : "Save Transfer"}
                 </button>
                 <button onClick={() => { setShowTransferForm(false); setTfError(""); }} className="px-6 py-2 rounded-full border border-charcoal/20 text-sm text-ink-secondary hover:bg-charcoal/5 transition-colors">Cancel</button>
