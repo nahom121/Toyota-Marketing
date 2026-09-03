@@ -62,10 +62,20 @@ const SLOT_TITLES: Record<string, string> = {
   "4:00 PM": "Backwards Beginner",
 };
 
+const SLOT_ORDER = [
+  "9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM",
+  "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM",
+];
+
 function getSlotTitle(timeSlot: string): string {
-  // Handle bundle slots like "9:30 AM + 10:30 AM"
   const first = timeSlot.split("+")[0].trim();
   return SLOT_TITLES[first] || "—";
+}
+
+function slotSortKey(timeSlot: string): number {
+  const first = timeSlot.split("+")[0].trim();
+  const idx = SLOT_ORDER.indexOf(first);
+  return idx === -1 ? 999 : idx;
 }
 
 function computeStats(attendees: Attendee[]): Stats {
@@ -111,13 +121,22 @@ export default function AdminPage() {
   const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "10:30 AM", toWorkshop: WORKSHOPS[0], toSlot: "1:00 PM", note: "" });
   const [tfError, setTfError] = useState("");
   const [tfLoading, setTfLoading] = useState(false);
+  const [attendance, setAttendance] = useState<Record<string, string>>({});
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem("hsp_transfers");
       if (saved) setTransfers(JSON.parse(saved));
+      const att = localStorage.getItem("hsp_attendance");
+      if (att) setAttendance(JSON.parse(att));
     } catch {}
   }, []);
+
+  const markAttendance = (sessionId: string, value: string) => {
+    const updated = { ...attendance, [sessionId]: value };
+    setAttendance(updated);
+    try { localStorage.setItem("hsp_attendance", JSON.stringify(updated)); } catch {}
+  };
 
   const saveTransfers = (list: Transfer[]) => {
     setTransfers(list);
@@ -305,7 +324,7 @@ export default function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-charcoal/10 bg-charcoal/5">
-                    {["Date", "Name", "Email", "Phone", "Session", "Level", "Tickets", "Paid"].map((h) => (
+                    {["Date", "Name", "Email", "Phone", "Session", "Level", "Tickets", "Paid", "Attendance"].map((h) => (
                       <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">
                         {h}
                       </th>
@@ -313,7 +332,9 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {attendees.map((a, i) => (
+                  {[...attendees].sort((a, b) => slotSortKey(a.timeSlot) - slotSortKey(b.timeSlot)).map((a, i) => {
+                    const att = attendance[a.sessionId] || "";
+                    return (
                     <tr key={a.sessionId} className={`border-b border-charcoal/5 last:border-0 ${i % 2 === 0 ? "" : "bg-charcoal/[0.02]"}`}>
                       <td className="px-4 py-3 text-ink-muted whitespace-nowrap">
                         {new Date(a.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}{" "}
@@ -328,8 +349,26 @@ export default function AdminPage() {
                       <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{getSlotTitle(a.timeSlot)}</td>
                       <td className="px-4 py-3 text-center font-semibold text-charcoal">{a.tickets}</td>
                       <td className="px-4 py-3 font-bold text-crimson whitespace-nowrap">${a.amountPaid}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <select
+                          value={att}
+                          onChange={(e) => markAttendance(a.sessionId, e.target.value)}
+                          className={`text-xs rounded-full px-3 py-1.5 border font-semibold focus:outline-none cursor-pointer ${
+                            att === "signed-in"
+                              ? "bg-green-50 border-green-300 text-green-700"
+                              : att === "no-show"
+                              ? "bg-red-50 border-red-300 text-red-600"
+                              : "bg-charcoal/5 border-charcoal/15 text-ink-muted"
+                          }`}
+                        >
+                          <option value="">— Mark —</option>
+                          <option value="signed-in">Signed In</option>
+                          <option value="no-show">No Show</option>
+                        </select>
+                      </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
