@@ -17,25 +17,25 @@ type Transfer = {
 const WORKSHOPS = [
   "Workshop 3 · Sep 6, 2026",
   "Workshop 2 · Aug 30, 2026",
-  "Workshop 1 · Previous",
+  "Workshop 1 · Aug 9, 2026",
 ];
 
 const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
   "Workshop 3 · Sep 6, 2026": ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"],
   "Workshop 2 · Aug 30, 2026": ["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"],
-  "Workshop 1 · Previous": ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"],
+  "Workshop 1 · Aug 9, 2026": ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"],
 };
 
 const WORKSHOP_TO_FILTER: Record<string, string> = {
   "Workshop 3 · Sep 6, 2026": "current",
   "Workshop 2 · Aug 30, 2026": "workshop2",
-  "Workshop 1 · Previous": "previous",
+  "Workshop 1 · Aug 9, 2026": "previous",
 };
 
 const FILTER_TO_WORKSHOP: Record<string, string> = {
   current: "Workshop 3 · Sep 6, 2026",
   workshop2: "Workshop 2 · Aug 30, 2026",
-  previous: "Workshop 1 · Previous",
+  previous: "Workshop 1 · Aug 9, 2026",
 };
 
 type Attendee = {
@@ -261,7 +261,7 @@ export default function AdminPage() {
           {([
             { key: "current",   label: "Workshop 3 · Sep 6, 2026" },
             { key: "workshop2", label: "Workshop 2 · Aug 30, 2026" },
-            { key: "previous",  label: "Workshop 1 · Previous" },
+            { key: "previous",  label: "Workshop 1 · Aug 9, 2026" },
           ] as const).map(({ key, label }) => (
             <button
               key={key}
