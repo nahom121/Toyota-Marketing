@@ -26,6 +26,18 @@ const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
   "Workshop 1 · Previous": ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"],
 };
 
+const WORKSHOP_TO_FILTER: Record<string, string> = {
+  "Workshop 3 · Sep 6, 2026": "current",
+  "Workshop 2 · Aug 30, 2026": "workshop2",
+  "Workshop 1 · Previous": "previous",
+};
+
+const FILTER_TO_WORKSHOP: Record<string, string> = {
+  current: "Workshop 3 · Sep 6, 2026",
+  workshop2: "Workshop 2 · Aug 30, 2026",
+  previous: "Workshop 1 · Previous",
+};
+
 type Attendee = {
   date: string;
   name: string;
@@ -96,7 +108,9 @@ export default function AdminPage() {
   const [eventFilter, setEventFilter] = useState<"current" | "workshop2" | "previous">("current");
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [showTransferForm, setShowTransferForm] = useState(false);
-  const [tf, setTf] = useState({ name: "", fromWorkshop: WORKSHOPS[1], fromSlot: "10:30 AM", toWorkshop: WORKSHOPS[0], toSlot: "1:00 PM", note: "" });
+  const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "10:30 AM", toWorkshop: WORKSHOPS[0], toSlot: "1:00 PM", note: "" });
+  const [tfError, setTfError] = useState("");
+  const [tfLoading, setTfLoading] = useState(false);
 
   useEffect(() => {
     try {
@@ -110,12 +124,38 @@ export default function AdminPage() {
     try { localStorage.setItem("hsp_transfers", JSON.stringify(list)); } catch {}
   };
 
-  const addTransfer = () => {
-    if (!tf.name.trim()) return;
-    const entry: Transfer = { ...tf, id: Date.now().toString(), addedAt: new Date().toISOString() };
-    saveTransfers([entry, ...transfers]);
-    setTf({ name: "", fromWorkshop: WORKSHOPS[1], fromSlot: "10:30 AM", toWorkshop: WORKSHOPS[0], toSlot: "1:00 PM", note: "" });
-    setShowTransferForm(false);
+  const addTransfer = async () => {
+    if (!tf.name.trim() || !tf.phone.trim()) return;
+    setTfError("");
+    setTfLoading(true);
+    try {
+      // Fetch attendees from the source workshop and validate name + phone
+      const sourceFilter = WORKSHOP_TO_FILTER[tf.fromWorkshop];
+      const res = await fetch(`/api/admin/sessions?password=${encodeURIComponent(password)}&event=${sourceFilter}`);
+      const data = await res.json();
+      if (!res.ok) { setTfError("Could not verify registration. Try again."); return; }
+
+      const match = (data.attendees as Attendee[]).find(
+        (a) =>
+          a.name.trim().toLowerCase() === tf.name.trim().toLowerCase() &&
+          a.phone.replace(/\D/g, "") === tf.phone.replace(/\D/g, "") &&
+          a.timeSlot === tf.fromSlot
+      );
+
+      if (!match) {
+        setTfError("No registration found with that name, phone number, and session. Please check the details and try again.");
+        return;
+      }
+
+      const entry: Transfer = { ...tf, id: Date.now().toString(), addedAt: new Date().toISOString() };
+      saveTransfers([entry, ...transfers]);
+      setTf({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "10:30 AM", toWorkshop: WORKSHOPS[0], toSlot: "1:00 PM", note: "" });
+      setShowTransferForm(false);
+    } catch {
+      setTfError("Something went wrong. Try again.");
+    } finally {
+      setTfLoading(false);
+    }
   };
 
   const deleteTransfer = (id: string) => saveTransfers(transfers.filter((t) => t.id !== id));
@@ -314,10 +354,14 @@ export default function AdminPage() {
 
           {showTransferForm && (
             <div className="bg-cream-light border border-charcoal/10 rounded-2xl p-5 mb-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                 <div>
-                  <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Name</label>
-                  <input className="form-input w-full" placeholder="Attendee name" value={tf.name} onChange={(e) => setTf({ ...tf, name: e.target.value })} />
+                  <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Name (exact)</label>
+                  <input className="form-input w-full" placeholder="As registered" value={tf.name} onChange={(e) => { setTf({ ...tf, name: e.target.value }); setTfError(""); }} />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Phone (exact)</label>
+                  <input className="form-input w-full" placeholder="As registered" value={tf.phone} onChange={(e) => { setTf({ ...tf, phone: e.target.value }); setTfError(""); }} />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Note (optional)</label>
@@ -327,7 +371,7 @@ export default function AdminPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                 <div>
                   <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">From</label>
-                  <select className="form-input w-full mb-2" value={tf.fromWorkshop} onChange={(e) => setTf({ ...tf, fromWorkshop: e.target.value, fromSlot: SLOTS_BY_WORKSHOP[e.target.value][0] })}>
+                  <select className="form-input w-full mb-2" value={tf.fromWorkshop} onChange={(e) => { setTf({ ...tf, fromWorkshop: e.target.value, fromSlot: SLOTS_BY_WORKSHOP[e.target.value][0] }); setTfError(""); }}>
                     {WORKSHOPS.map((w) => <option key={w}>{w}</option>)}
                   </select>
                   <select className="form-input w-full" value={tf.fromSlot} onChange={(e) => setTf({ ...tf, fromSlot: e.target.value })}>
@@ -344,18 +388,21 @@ export default function AdminPage() {
                   </select>
                 </div>
               </div>
+              {tfError && <p className="text-crimson text-sm mb-3">{tfError}</p>}
               <div className="flex gap-2">
-                <button onClick={addTransfer} disabled={!tf.name.trim()} className="btn-primary px-6 py-2 disabled:opacity-50">Save</button>
-                <button onClick={() => setShowTransferForm(false)} className="px-6 py-2 rounded-full border border-charcoal/20 text-sm text-ink-secondary hover:bg-charcoal/5 transition-colors">Cancel</button>
+                <button onClick={addTransfer} disabled={!tf.name.trim() || !tf.phone.trim() || tfLoading} className="btn-primary px-6 py-2 disabled:opacity-50">
+                  {tfLoading ? "Verifying…" : "Save Transfer"}
+                </button>
+                <button onClick={() => { setShowTransferForm(false); setTfError(""); }} className="px-6 py-2 rounded-full border border-charcoal/20 text-sm text-ink-secondary hover:bg-charcoal/5 transition-colors">Cancel</button>
               </div>
             </div>
           )}
 
-          {transfers.length === 0 && !showTransferForm && (
-            <div className="text-center py-10 text-ink-muted text-sm border border-dashed border-charcoal/15 rounded-2xl">No transfers logged yet.</div>
-          )}
-
-          {transfers.length > 0 && (
+          {(() => {
+            const tabTransfers = transfers.filter((t) => t.toWorkshop === FILTER_TO_WORKSHOP[eventFilter]);
+            return tabTransfers.length === 0 && !showTransferForm ? (
+              <div className="text-center py-10 text-ink-muted text-sm border border-dashed border-charcoal/15 rounded-2xl">No transfers for this workshop.</div>
+            ) : tabTransfers.length > 0 ? (
             <div className="bg-cream-light border border-charcoal/10 rounded-2xl overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
@@ -368,7 +415,7 @@ export default function AdminPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {transfers.map((t, i) => (
+                    {transfers.filter((t) => t.toWorkshop === FILTER_TO_WORKSHOP[eventFilter]).map((t, i) => (
                       <tr key={t.id} className={`border-b border-charcoal/5 last:border-0 ${i % 2 === 0 ? "" : "bg-charcoal/[0.02]"}`}>
                         <td className="px-4 py-3 font-medium text-charcoal whitespace-nowrap">{t.name}</td>
                         <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">
@@ -395,7 +442,8 @@ export default function AdminPage() {
                 </table>
               </div>
             </div>
-          )}
+            ) : null;
+          })()}
         </div>
 
         <p className="text-ink-muted text-xs text-center mt-8">
