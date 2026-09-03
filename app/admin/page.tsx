@@ -144,7 +144,7 @@ export default function AdminPage() {
   };
 
   const addTransfer = async () => {
-    if (!tf.name.trim() || !tf.phone.trim()) return;
+    if (!tf.name.trim()) return;
     setTfError("");
     setTfLoading(true);
     try {
@@ -162,14 +162,6 @@ export default function AdminPage() {
 
       if (!nameMatch) {
         setTfError("No registration found with that name and session. Please check the spelling and try again.");
-        return;
-      }
-
-      // Verify phone if provided and stored (soft check — warns but doesn't block)
-      const phoneEntered = tf.phone.replace(/\D/g, "");
-      const phoneStored = nameMatch.phone.replace(/\D/g, "");
-      if (phoneEntered && phoneStored && phoneStored !== "NA" && phoneEntered !== phoneStored) {
-        setTfError(`Name matched but phone doesn't match what's on file. Double-check or clear the phone field to proceed anyway.`);
         return;
       }
 
@@ -469,7 +461,7 @@ export default function AdminPage() {
               </div>
               {tfError && <p className="text-crimson text-sm mb-3">{tfError}</p>}
               <div className="flex gap-2">
-                <button onClick={addTransfer} disabled={!tf.name.trim() || !tf.phone.trim() || tfLoading} className="btn-primary px-6 py-2 disabled:opacity-50">
+                <button onClick={addTransfer} disabled={!tf.name.trim() || tfLoading} className="btn-primary px-6 py-2 disabled:opacity-50">
                   {tfLoading ? "Verifying…" : "Save Transfer"}
                 </button>
                 <button onClick={() => { setShowTransferForm(false); setTfError(""); }} className="px-6 py-2 rounded-full border border-charcoal/20 text-sm text-ink-secondary hover:bg-charcoal/5 transition-colors">Cancel</button>
