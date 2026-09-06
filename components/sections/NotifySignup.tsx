@@ -32,132 +32,108 @@ export default function NotifySignup() {
   };
 
   return (
-    <section className="relative overflow-hidden py-20 md:py-28" style={{ background: "linear-gradient(135deg, #1a0a14 0%, #1C1C1C 40%, #1a0d08 100%)" }}>
+    <section className="section-pad bg-cream relative overflow-hidden">
+      {/* Top divider */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sand to-transparent" />
 
-      {/* Decorative blobs */}
-      <div className="absolute top-0 left-0 w-80 h-80 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(200,16,46,0.18) 0%, transparent 70%)", transform: "translate(-30%, -30%)" }} />
-      <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(139,94,60,0.15) 0%, transparent 70%)", transform: "translate(30%, 30%)" }} />
-      <div className="absolute top-1/2 left-1/2 w-64 h-64 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(200,16,46,0.07) 0%, transparent 70%)", transform: "translate(-50%, -50%)" }} />
+      {/* Warm light glows */}
+      <div className="absolute top-0 left-1/4 w-96 h-64 rounded-full pointer-events-none opacity-40"
+        style={{ background: "radial-gradient(ellipse, #D4A86A33 0%, transparent 70%)" }} />
+      <div className="absolute bottom-0 right-1/4 w-96 h-64 rounded-full pointer-events-none opacity-30"
+        style={{ background: "radial-gradient(ellipse, #8B5E3C22 0%, transparent 70%)" }} />
 
-      {/* Top border */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-crimson/50 to-transparent" />
-
-      <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative max-w-2xl mx-auto container-pad">
         <motion.div
-          initial={{ opacity: 0, y: 28 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: "easeOut" }}
         >
-          {/* Skate emoji + label */}
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <motion.span
-              animate={{ rotate: [0, -8, 8, -8, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3 }}
-              className="text-4xl select-none"
-            >
-              🛼
-            </motion.span>
-            <div className="label-tag-dark">Stay in the Loop</div>
-            <motion.span
-              animate={{ rotate: [0, 8, -8, 8, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3, delay: 0.2 }}
-              className="text-4xl select-none"
-            >
-              🛼
-            </motion.span>
-          </div>
+          {/* Card */}
+          <div className="bg-cream-light rounded-3xl border border-charcoal/10 shadow-warm-lg overflow-hidden">
 
-          {/* Headline */}
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-cream leading-tight mb-4">
-            Join our email list &amp;{" "}
-            <span className="font-script text-crimson" style={{ fontSize: "1.08em" }}>
-              roll with us.
-            </span>
-          </h2>
+            {/* Top accent strip */}
+            <div className="h-1.5 w-full" style={{ background: "linear-gradient(90deg, #D4A86A, #8B5E3C, #D4A86A)" }} />
 
-          {/* Subtext */}
-          <p className="text-cream/55 text-base leading-relaxed mb-10 max-w-md mx-auto">
-            Be the first to know about upcoming workshops, special events, and Houston Skate Project announcements.
-          </p>
+            <div className="px-8 md:px-12 py-10 md:py-12 text-center">
 
-          {status === "success" ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="rounded-2xl px-8 py-8 text-center border border-green-500/20"
-              style={{ background: "rgba(20,60,30,0.4)" }}
-            >
-              <div className="text-4xl mb-3">🛼✨</div>
-              <p className="text-green-300 font-display text-xl mb-1">You&apos;re on the list!</p>
-              <p className="text-green-300/60 text-sm">We&apos;ll email you the moment a new workshop drops.</p>
-            </motion.div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-3">
-              {/* Inputs */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 relative">
-                  <label className="absolute -top-2 left-4 text-[10px] font-bold uppercase tracking-widest text-crimson bg-transparent px-1">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="e.g. Michaela"
-                    className="w-full px-5 py-4 rounded-2xl text-sm text-cream placeholder-cream/30 focus:outline-none transition-all"
-                    style={{
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1.5px solid rgba(200,16,46,0.35)",
-                    }}
-                    onFocus={(e) => (e.currentTarget.style.border = "1.5px solid rgba(200,16,46,0.75)")}
-                    onBlur={(e) => (e.currentTarget.style.border = "1.5px solid rgba(200,16,46,0.35)")}
-                  />
-                </div>
-                <div className="flex-1 relative">
-                  <label className="absolute -top-2 left-4 text-[10px] font-bold uppercase tracking-widest text-crimson bg-transparent px-1">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => { setEmail(e.target.value); setStatus("idle"); }}
-                    placeholder="you@example.com"
-                    className="w-full px-5 py-4 rounded-2xl text-sm text-cream placeholder-cream/30 focus:outline-none transition-all"
-                    style={{
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1.5px solid rgba(200,16,46,0.35)",
-                    }}
-                    onFocus={(e) => (e.currentTarget.style.border = "1.5px solid rgba(200,16,46,0.75)")}
-                    onBlur={(e) => (e.currentTarget.style.border = "1.5px solid rgba(200,16,46,0.35)")}
-                  />
-                </div>
+              {/* Skate + label */}
+              <div className="flex items-center justify-center gap-3 mb-5">
+                <span className="text-3xl">🛼</span>
+                <div className="label-tag">Stay in the Loop</div>
+                <span className="text-3xl">🛼</span>
               </div>
 
-              {/* Button */}
-              <button
-                type="submit"
-                disabled={status === "loading" || !email.trim()}
-                className="w-full py-4 rounded-full font-black tracking-widest uppercase text-sm text-white transition-all active:scale-[0.98] disabled:opacity-50"
-                style={{
-                  background: "linear-gradient(135deg, #C8102E 0%, #a00e25 100%)",
-                  boxShadow: "0 4px 24px rgba(200,16,46,0.35)",
-                }}
-              >
-                {status === "loading" ? "Saving…" : "Keep Me Updated"}
-              </button>
+              {/* Headline */}
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-charcoal leading-tight mb-3">
+                Be the first to know
+                <br />
+                <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
+                  when new dates drop.
+                </span>
+              </h2>
 
-              {status === "error" && (
-                <p className="text-crimson text-sm">{errorMsg}</p>
+              {/* Divider */}
+              <div className="flex items-center justify-center gap-3 my-5">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-sand/50" />
+                <span className="text-sand text-lg">✦</span>
+                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-sand/50" />
+              </div>
+
+              {/* Subtext */}
+              <p className="text-ink-secondary text-base leading-relaxed mb-8 max-w-md mx-auto">
+                Join our email list to be the first to know about upcoming workshops, special events,
+                and Houston Skate Project announcements.
+              </p>
+
+              {status === "success" ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-sand/20 border border-sand/40 rounded-2xl px-6 py-8 text-center"
+                >
+                  <div className="text-4xl mb-3">🛼✨</div>
+                  <p className="font-display text-xl text-charcoal mb-1">You&apos;re on the list!</p>
+                  <p className="text-ink-muted text-sm">We&apos;ll email you the moment a new workshop drops.</p>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-3 text-left">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <input
+                      type="text"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      placeholder="First Name"
+                      className="flex-1 bg-white border border-charcoal/15 rounded-2xl px-5 py-4 text-sm text-charcoal placeholder-ink-muted/60 focus:outline-none focus:border-sand focus:shadow-sand-glow transition-all"
+                    />
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => { setEmail(e.target.value); setStatus("idle"); }}
+                      placeholder="Email Address"
+                      className="flex-1 bg-white border border-charcoal/15 rounded-2xl px-5 py-4 text-sm text-charcoal placeholder-ink-muted/60 focus:outline-none focus:border-sand focus:shadow-sand-glow transition-all"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={status === "loading" || !email.trim()}
+                    className="w-full py-4 rounded-2xl font-bold tracking-widest uppercase text-sm text-white transition-all active:scale-[0.98] disabled:opacity-50 shadow-crimson-glow hover:shadow-crimson-glow-lg"
+                    style={{ background: "linear-gradient(135deg, #8B5E3C 0%, #6B4528 100%)" }}
+                  >
+                    {status === "loading" ? "Saving…" : "Keep Me Updated"}
+                  </button>
+
+                  {status === "error" && (
+                    <p className="text-crimson text-sm text-center">{errorMsg}</p>
+                  )}
+                </form>
               )}
-            </form>
-          )}
 
-          <p className="text-cream/20 text-xs mt-5">No spam, ever. Unsubscribe anytime.</p>
+              <p className="text-ink-muted/50 text-xs mt-5 text-center">No spam, ever. Unsubscribe anytime.</p>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>
