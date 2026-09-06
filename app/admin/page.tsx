@@ -123,6 +123,10 @@ export default function AdminPage() {
   const [tfLoading, setTfLoading] = useState(false);
   const [attendance, setAttendance] = useState<Record<string, string>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
+  const [announceSubject, setAnnounceSubject] = useState("");
+  const [announceMessage, setAnnounceMessage] = useState("");
+  const [announceStatus, setAnnounceStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [announceError, setAnnounceError] = useState("");
 
   useEffect(() => {
     try {
@@ -568,6 +572,66 @@ export default function AdminPage() {
             </div>
             ) : null;
           })()}
+        </div>
+
+        {/* Email Announcement */}
+        <div className="mt-12">
+          <div className="mb-4">
+            <h2 className="font-display text-xl text-charcoal">Send Announcement</h2>
+            <p className="text-ink-muted text-xs mt-0.5">Email everyone on the notify-me list when a new date drops</p>
+          </div>
+          <div className="bg-cream-light border border-charcoal/10 rounded-2xl p-5 space-y-3">
+            <div>
+              <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Subject Line</label>
+              <input
+                className="form-input w-full"
+                placeholder="e.g. New date just dropped — Register now!"
+                value={announceSubject}
+                onChange={(e) => { setAnnounceSubject(e.target.value); setAnnounceStatus("idle"); }}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Message</label>
+              <textarea
+                rows={5}
+                className="form-input w-full resize-none"
+                placeholder="Write your announcement here. A 'Register Now' button linking to the site will be added automatically."
+                value={announceMessage}
+                onChange={(e) => { setAnnounceMessage(e.target.value); setAnnounceStatus("idle"); }}
+              />
+            </div>
+            {announceStatus === "success" && (
+              <p className="text-green-700 text-sm font-semibold">Announcement sent to all subscribers!</p>
+            )}
+            {announceStatus === "error" && (
+              <p className="text-crimson text-sm">{announceError}</p>
+            )}
+            <button
+              disabled={!announceSubject.trim() || !announceMessage.trim() || announceStatus === "loading"}
+              onClick={async () => {
+                setAnnounceStatus("loading");
+                setAnnounceError("");
+                try {
+                  const res = await fetch(`/api/announce?password=${encodeURIComponent(password)}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ subject: announceSubject.trim(), message: announceMessage.trim() }),
+                  });
+                  const data = await res.json();
+                  if (!res.ok) throw new Error(data.error || "Failed");
+                  setAnnounceStatus("success");
+                  setAnnounceSubject("");
+                  setAnnounceMessage("");
+                } catch (err: unknown) {
+                  setAnnounceError(err instanceof Error ? err.message : "Something went wrong.");
+                  setAnnounceStatus("error");
+                }
+              }}
+              className="btn-primary px-6 py-2 disabled:opacity-50"
+            >
+              {announceStatus === "loading" ? "Sending…" : "Send to All Subscribers"}
+            </button>
+          </div>
         </div>
 
         <p className="text-ink-muted text-xs text-center mt-8">
