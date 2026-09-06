@@ -10,6 +10,19 @@ const SLOT_CAPACITIES: Record<string, number> = {
   "4:00 PM": 30,
 };
 const SLOT_CAPACITY = 30;
+
+// Registration closes at class start time (Houston CDT = UTC-5)
+const SLOT_START_UTC: Record<string, number> = {
+  "9:30 AM":  new Date("2026-08-30T14:30:00Z").getTime(),
+  "10:30 AM": new Date("2026-08-30T15:30:00Z").getTime(),
+  "11:30 AM": new Date("2026-08-30T16:30:00Z").getTime(),
+  "12:30 PM": new Date("2026-08-30T17:30:00Z").getTime(),
+  "1:00 PM":  new Date("2026-09-06T18:00:00Z").getTime(),
+  "2:00 PM":  new Date("2026-09-06T19:00:00Z").getTime(),
+  "3:00 PM":  new Date("2026-09-06T20:00:00Z").getTime(),
+  "4:00 PM":  new Date("2026-09-06T21:00:00Z").getTime(),
+};
+
 const PROMO_CODES: Record<string, { slot: string }> = {
   ABATAD: { slot: "9:30 AM" },
   CACDCT: { slot: "9:30 AM" },
@@ -50,6 +63,18 @@ export async function POST(request: NextRequest) {
       }
       if (ticketCount !== 1) {
         return NextResponse.json({ error: "Reservation codes are valid for 1 ticket only." }, { status: 400 });
+      }
+    }
+
+    // Reject if class has already started (applies to all slots in the order)
+    const slotsInOrder = isBundle ? [timeSlot, secondSlot] : [timeSlot];
+    for (const slot of slotsInOrder) {
+      const startUtc = SLOT_START_UTC[slot];
+      if (startUtc && Date.now() >= startUtc) {
+        return NextResponse.json(
+          { error: `Registration for the ${slot} session is now closed — class has already started.` },
+          { status: 409 }
+        );
       }
     }
 

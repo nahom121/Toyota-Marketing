@@ -15,12 +15,12 @@ const SLOT_CAPACITIES: Record<Slot, number> = {
 const SLOTS = ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"] as const;
 type Slot = typeof SLOTS[number];
 
-// Slots close 15 min after start time on Sep 6, 2026
+// Slots close exactly at class start time on Sep 6, 2026
 const SLOT_CUTOFFS: Record<Slot, Date> = {
-  "1:00 PM": new Date("2026-09-06T13:15:00"),
-  "2:00 PM": new Date("2026-09-06T14:15:00"),
-  "3:00 PM": new Date("2026-09-06T15:15:00"),
-  "4:00 PM": new Date("2026-09-06T16:15:00"),
+  "1:00 PM": new Date("2026-09-06T13:00:00"),
+  "2:00 PM": new Date("2026-09-06T14:00:00"),
+  "3:00 PM": new Date("2026-09-06T15:00:00"),
+  "4:00 PM": new Date("2026-09-06T16:00:00"),
 };
 
 const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
