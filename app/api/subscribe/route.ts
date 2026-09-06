@@ -46,8 +46,7 @@ export async function POST(request: NextRequest) {
 
           <div style="background:white;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid rgba(28,28,28,0.1);text-align:center">
             <p style="font-size:13px;color:#8A8A8A;margin:0 0 14px;text-transform:uppercase;letter-spacing:0.1em;font-weight:600">Follow Along</p>
-            <a href="https://www.instagram.com/HoustonSkateProject" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:white;padding:11px 22px;border-radius:50px;font-size:14px;font-weight:600">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png" alt="Instagram" width="20" height="20" style="border-radius:4px;vertical-align:middle" />
+            <a href="https://www.instagram.com/HoustonSkateProject" style="display:inline-block;text-decoration:none;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:white;padding:12px 28px;border-radius:50px;font-size:14px;font-weight:700;letter-spacing:0.03em">
               @HoustonSkateProject
             </a>
           </div>
