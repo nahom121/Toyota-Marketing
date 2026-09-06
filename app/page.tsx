@@ -20,8 +20,8 @@ export default function Home() {
         <EventDetails />
         <Registration />
         <FAQ />
-        <NotifySignup />
         <ContactStrip />
+        <NotifySignup />
       </main>
       <Footer />
     </>
