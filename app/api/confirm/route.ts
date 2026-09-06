@@ -2,6 +2,8 @@ import Stripe from "stripe";
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
+
 export async function GET(request: NextRequest) {
   try {
     const sessionId = request.nextUrl.searchParams.get("session_id");
@@ -42,7 +44,7 @@ export async function GET(request: NextRequest) {
         html: `
           <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#F5EDD9;padding:32px;border-radius:16px">
             <div style="text-align:center;margin-bottom:24px">
-              <div style="display:inline-block;background:#8B5E3C;color:white;font-size:32px;width:56px;height:56px;border-radius:50%;line-height:56px;text-align:center;margin-bottom:12px">🛼</div>
+              <img src="${SITE_URL}/logo.png" alt="Houston Skate Project" width="180" style="display:block;margin:0 auto 16px;border-radius:12px" />
               <h1 style="font-size:28px;color:#1C1C1C;margin:0">You're registered!</h1>
               <p style="color:#4A4A4A;margin-top:8px">Houston Skate Project · Pop-Up Workshop</p>
             </div>
