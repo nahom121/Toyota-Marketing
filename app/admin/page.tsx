@@ -15,25 +15,29 @@ type Transfer = {
 };
 
 const WORKSHOPS = [
+  "Workshop 4 · Sep 13, 2026",
   "Workshop 3 · Sep 6, 2026",
   "Workshop 2 · Aug 30, 2026",
   "Workshop 1 · Aug 9, 2026",
 ];
 
 const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
+  "Workshop 4 · Sep 13, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"],
   "Workshop 3 · Sep 6, 2026": ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"],
   "Workshop 2 · Aug 30, 2026": ["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"],
   "Workshop 1 · Aug 9, 2026": ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"],
 };
 
 const WORKSHOP_TO_FILTER: Record<string, string> = {
-  "Workshop 3 · Sep 6, 2026": "current",
+  "Workshop 4 · Sep 13, 2026": "current",
+  "Workshop 3 · Sep 6, 2026": "workshop3",
   "Workshop 2 · Aug 30, 2026": "workshop2",
   "Workshop 1 · Aug 9, 2026": "previous",
 };
 
 const FILTER_TO_WORKSHOP: Record<string, string> = {
-  current: "Workshop 3 · Sep 6, 2026",
+  current: "Workshop 4 · Sep 13, 2026",
+  workshop3: "Workshop 3 · Sep 6, 2026",
   workshop2: "Workshop 2 · Aug 30, 2026",
   previous: "Workshop 1 · Aug 9, 2026",
 };
@@ -55,21 +59,35 @@ type Stats = {
   totalRevenue: number;
 };
 
-const SLOT_TITLES: Record<string, string> = {
-  "1:00 PM": "Pre-Beginner",
-  "2:00 PM": "Beginner",
-  "3:00 PM": "Beginner",
-  "4:00 PM": "Backwards Beginner",
+const SLOT_TITLES_BY_WORKSHOP: Record<string, Record<string, string>> = {
+  "Workshop 4 · Sep 13, 2026": {
+    "10:00 AM": "Pre-Beginner",
+    "11:00 AM": "Beginner",
+    "12:00 PM": "Beginner",
+    "1:00 PM": "Backwards Beginner",
+  },
+  "Workshop 3 · Sep 6, 2026": {
+    "1:00 PM": "Pre-Beginner",
+    "2:00 PM": "Beginner",
+    "3:00 PM": "Beginner",
+    "4:00 PM": "Backwards Beginner",
+  },
+  "Workshop 1 · Aug 9, 2026": {
+    "1:00 PM": "Beginner",
+    "2:00 PM": "Beginner",
+    "3:00 PM": "Beginner",
+    "4:00 PM": "Beginner",
+  },
 };
 
 const SLOT_ORDER = [
   "9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM",
-  "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM",
+  "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM",
 ];
 
-function getSlotTitle(timeSlot: string): string {
+function getSlotTitle(workshop: string, timeSlot: string): string {
   const first = timeSlot.split("+")[0].trim();
-  return SLOT_TITLES[first] || "—";
+  return SLOT_TITLES_BY_WORKSHOP[workshop]?.[first] || "—";
 }
 
 function slotSortKey(timeSlot: string): number {
@@ -86,7 +104,7 @@ function computeStats(attendees: Attendee[]): Stats {
   };
 }
 
-function exportCSV(attendees: Attendee[]) {
+function exportCSV(attendees: Attendee[], workshop: string) {
   const headers = ["Date", "Name", "Email", "Phone", "Session", "Level", "Tickets", "Amount Paid", "Session ID"];
   const rows = attendees.map((a) => [
     new Date(a.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }),
@@ -94,7 +112,7 @@ function exportCSV(attendees: Attendee[]) {
     a.email,
     a.phone,
     a.timeSlot,
-    getSlotTitle(a.timeSlot),
+    getSlotTitle(workshop, a.timeSlot),
     a.tickets,
     `$${a.amountPaid}`,
     a.sessionId,
@@ -115,10 +133,10 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [authed, setAuthed] = useState(false);
-  const [eventFilter, setEventFilter] = useState<"current" | "workshop2" | "previous">("current");
+  const [eventFilter, setEventFilter] = useState<"current" | "workshop3" | "workshop2" | "previous">("current");
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [showTransferForm, setShowTransferForm] = useState(false);
-  const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "10:30 AM", toWorkshop: WORKSHOPS[0], toSlot: "1:00 PM", note: "" });
+  const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "1:00 PM", toWorkshop: WORKSHOPS[0], toSlot: "10:00 AM", note: "" });
   const [tfError, setTfError] = useState("");
   const [tfLoading, setTfLoading] = useState(false);
   const [attendance, setAttendance] = useState<Record<string, string>>({});
@@ -194,7 +212,7 @@ export default function AdminPage() {
 
       const entry: Transfer = { ...tf, id: Date.now().toString(), addedAt: new Date().toISOString() };
       saveTransfers([entry, ...transfers]);
-      setTf({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "10:30 AM", toWorkshop: WORKSHOPS[0], toSlot: "1:00 PM", note: "" });
+      setTf({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "1:00 PM", toWorkshop: WORKSHOPS[0], toSlot: "10:00 AM", note: "" });
       setShowTransferForm(false);
     } catch {
       setTfError("Something went wrong. Try again.");
@@ -230,7 +248,7 @@ export default function AdminPage() {
     fetchData(password, eventFilter);
   };
 
-  const switchFilter = (filter: "current" | "workshop2" | "previous") => {
+  const switchFilter = (filter: "current" | "workshop3" | "workshop2" | "previous") => {
     setEventFilter(filter);
     fetchData(password, filter);
   };
@@ -291,7 +309,7 @@ export default function AdminPage() {
             </button>
             {attendees && attendees.length > 0 && (
               <button
-                onClick={() => exportCSV(attendees)}
+                onClick={() => exportCSV(attendees, FILTER_TO_WORKSHOP[eventFilter])}
                 className="flex items-center gap-2 px-4 py-2 rounded-full bg-charcoal text-white text-sm hover:bg-charcoal-soft transition-colors"
               >
                 <Download className="w-4 h-4" />
@@ -304,7 +322,8 @@ export default function AdminPage() {
         {/* Event filter tabs */}
         <div className="flex gap-2 mb-8 flex-wrap">
           {([
-            { key: "current",   label: "Workshop 3 · Sep 6, 2026" },
+            { key: "current",   label: "Workshop 4 · Sep 13, 2026" },
+            { key: "workshop3", label: "Workshop 3 · Sep 6, 2026" },
             { key: "workshop2", label: "Workshop 2 · Aug 30, 2026" },
             { key: "previous",  label: "Workshop 1 · Aug 9, 2026" },
           ] as const).map(({ key, label }) => (
@@ -386,8 +405,8 @@ export default function AdminPage() {
                         <tr key={`group-${slot}`} className="bg-charcoal/[0.08] border-b border-t border-charcoal/15">
                           <td colSpan={9} className="px-4 py-2.5">
                             <span className="font-black text-charcoal text-sm">{slot}</span>
-                            {getSlotTitle(slot) !== "—" && (
-                              <span className="ml-2 text-sm font-bold text-charcoal/70">· {getSlotTitle(slot)}</span>
+                            {getSlotTitle(FILTER_TO_WORKSHOP[eventFilter], slot) !== "—" && (
+                              <span className="ml-2 text-sm font-bold text-charcoal/70">· {getSlotTitle(FILTER_TO_WORKSHOP[eventFilter], slot)}</span>
                             )}
                             <span className="ml-3 text-xs font-semibold text-ink-muted">({rows.reduce((s, r) => s + r.tickets, 0)} ticket{rows.reduce((s, r) => s + r.tickets, 0) !== 1 ? "s" : ""})</span>
                           </td>
@@ -400,7 +419,7 @@ export default function AdminPage() {
                               <td className="px-4 py-3 text-ink-secondary">{a.email}</td>
                               <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{a.phone}</td>
                               <td className="px-4 py-3 font-semibold text-charcoal whitespace-nowrap">{a.displaySlot}</td>
-                              <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{getSlotTitle(a.displaySlot)}</td>
+                              <td className="px-4 py-3 text-ink-secondary whitespace-nowrap">{getSlotTitle(FILTER_TO_WORKSHOP[eventFilter], a.displaySlot)}</td>
                               <td className="px-4 py-3 text-center font-semibold text-charcoal">{a.tickets}</td>
                               <td className="px-4 py-3 font-bold text-crimson whitespace-nowrap">${a.displayAmount}</td>
                               <td className="px-4 py-3 whitespace-nowrap">

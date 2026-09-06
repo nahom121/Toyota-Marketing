@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import { SLOTS, SLOT_CAPACITIES, FORCE_SOLD_OUT } from "@/lib/slots";
+import { SLOTS, SLOT_CAPACITIES, FORCE_SOLD_OUT, WORKSHOP4_START } from "@/lib/slots";
 import type { Slot } from "@/lib/slots";
 
 function isRefunded(s: Stripe.Checkout.Session): boolean {
@@ -42,12 +42,11 @@ export async function GET() {
     }
 
     const CURRENT_SLOTS = new Set(SLOTS as readonly string[]);
-    const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
     const valid = sessions.filter(
       (s) =>
         s.payment_status === "paid" &&
         !isRefunded(s) &&
-        s.created >= WORKSHOP2_START &&
+        s.created >= WORKSHOP4_START &&
         (CURRENT_SLOTS.has(s.metadata?.time_slot || "") ||
           CURRENT_SLOTS.has(s.metadata?.second_time_slot || ""))
     );

@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       await resend.emails.send({
         from: "Houston Skate Project <info@houstonskateproject.org>",
         to: email,
-        subject: "You're in! Houston Skate Project · September 6, 2026 🛼",
+        subject: "You're in! Houston Skate Project · September 13, 2026 🛼",
         html: `
           <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#F5EDD9;padding:32px;border-radius:16px">
             <div style="text-align:center;margin-bottom:24px">
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
 
             <div style="background:white;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid rgba(28,28,28,0.1)">
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Pop-Up Details</h2>
-              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📅 <strong>Date:</strong> September 6th, 2026</p>
+              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📅 <strong>Date:</strong> September 13th, 2026</p>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>${isBundle ? "Your sessions:" : "Your session:"}</strong> ${isBundle ? `${timeSlot} &amp; ${secondTimeSlot}` : timeSlot}</p>
               <p style="margin:8px 0 4px;font-size:13px;color:#4A4A4A;background:#FFF8EC;border-left:3px solid #8B5E3C;padding:8px 10px;border-radius:4px">📌 <strong>Arrive at your session time.</strong> The time above is your check-in time — you'll use the first 15 minutes to get your skates on and get comfortable. Class begins 15 minutes after you arrive.</p>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> 221 Barren Springs Dr, Ste 15, Houston, TX 77090</p>

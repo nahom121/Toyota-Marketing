@@ -7,24 +7,24 @@ import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-reac
 const TICKET_PRICE = 25;
 const SLOT_CAPACITY = 30;
 const SLOT_CAPACITIES: Record<Slot, number> = {
-  "1:00 PM": 31,
-  "2:00 PM": 30,
-  "3:00 PM": 30,
-  "4:00 PM": 30,
+  "10:00 AM": 30,
+  "11:00 AM": 30,
+  "12:00 PM": 30,
+  "1:00 PM": 30,
 };
-const SLOTS = ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"] as const;
+const SLOTS = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"] as const;
 type Slot = typeof SLOTS[number];
 
-// Slots close exactly at class start time on Sep 6, 2026
+// Slots close exactly at class start time on Sep 13, 2026
 const SLOT_CUTOFFS: Record<Slot, Date> = {
-  "1:00 PM": new Date("2026-09-06T13:00:00"),
-  "2:00 PM": new Date("2026-09-06T14:00:00"),
-  "3:00 PM": new Date("2026-09-06T15:00:00"),
-  "4:00 PM": new Date("2026-09-06T16:00:00"),
+  "10:00 AM": new Date("2026-09-13T10:00:00"),
+  "11:00 AM": new Date("2026-09-13T11:00:00"),
+  "12:00 PM": new Date("2026-09-13T12:00:00"),
+  "1:00 PM":  new Date("2026-09-13T13:00:00"),
 };
 
 const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
-  "1:00 PM": {
+  "10:00 AM": {
     title: "Pre-Beginner",
     bullets: [
       "Have never skated or have very limited experience",
@@ -34,7 +34,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Are unsure how to safely fall and get back up",
     ],
   },
-  "2:00 PM": {
+  "11:00 AM": {
     title: "Beginner",
     bullets: [
       "Have skated before but may be returning after a long break",
@@ -44,7 +44,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Want better balance, control, and comfort on skates",
     ],
   },
-  "3:00 PM": {
+  "12:00 PM": {
     title: "Beginner",
     bullets: [
       "Have skated before but may be returning after a long break",
@@ -54,7 +54,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Want better balance, control, and comfort on skates",
     ],
   },
-  "4:00 PM": {
+  "1:00 PM": {
     title: "Backwards Beginner",
     bullets: [
       "Can skate forward confidently and with control",
@@ -318,7 +318,7 @@ export default function Registration() {
             Secure your spot.
             <br />
             <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-              September 6th.
+              September 13th.
             </span>
           </h2>
           <p className="text-ink-secondary mt-3 text-base">
@@ -710,7 +710,7 @@ export default function Registration() {
                     {selectedSlot && (
                       <div className="flex justify-between text-sm">
                         <span className="text-ink-secondary">Session</span>
-                        <span className="font-semibold text-charcoal">{selectedSlot} · Sep 6</span>
+                        <span className="font-semibold text-charcoal">{selectedSlot} · Sep 13</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm">

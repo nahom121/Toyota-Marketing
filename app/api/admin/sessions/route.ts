@@ -28,6 +28,8 @@ export async function GET(request: NextRequest) {
     }
 
     const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
+    const WORKSHOP4_START = new Date("2026-09-07T00:00:00Z").getTime() / 1000;
+    const WORKSHOP4_SLOTS = new Set(["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"]);
     const WORKSHOP3_SLOTS = new Set(["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"]);
     const WORKSHOP2_SLOTS = new Set(["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"]);
 
@@ -37,8 +39,10 @@ export async function GET(request: NextRequest) {
       const charge = pi?.latest_charge as Stripe.Charge | null;
       if (charge?.refunded) return false;
       const slot = s.metadata?.time_slot || "";
-      // Workshop 3: new PM slots registered after Workshop 2 opened (Aug 18+)
-      if (event === "current")   return WORKSHOP3_SLOTS.has(slot) && s.created >= WORKSHOP2_START;
+      // Workshop 4: new AM/early-PM slots registered after Sep 7
+      if (event === "current")   return WORKSHOP4_SLOTS.has(slot) && s.created >= WORKSHOP4_START;
+      // Workshop 3: PM slots registered Aug 18 through Sep 6 (before Workshop 4 opened)
+      if (event === "workshop3") return WORKSHOP3_SLOTS.has(slot) && s.created >= WORKSHOP2_START && s.created < WORKSHOP4_START;
       // Workshop 2: AM slots registered after Aug 18
       if (event === "workshop2") return WORKSHOP2_SLOTS.has(slot) && s.created >= WORKSHOP2_START;
       // Workshop 1: anything before Aug 18
