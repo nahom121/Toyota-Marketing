@@ -2,15 +2,22 @@ import Stripe from "stripe";
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
+
 export async function POST(request: NextRequest) {
   const password = request.nextUrl.searchParams.get("password");
   if (!password || password !== process.env.ADMIN_PASSWORD) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const event = request.nextUrl.searchParams.get("event") || "workshop3";
+  const event = request.nextUrl.searchParams.get("event") || "current";
 
   try {
+    const { subject, message } = await request.json();
+    if (!subject?.trim() || !message?.trim()) {
+      return NextResponse.json({ error: "Subject and message are required." }, { status: 400 });
+    }
+
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
     const sessions: Stripe.Checkout.Session[] = [];
@@ -58,29 +65,49 @@ export async function POST(request: NextRequest) {
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
-    let added = 0;
+    let sent = 0;
     let failed = 0;
     const errors: string[] = [];
 
     for (const [email, firstName] of byEmail) {
+      const greeting = firstName ? `Hey ${firstName}!` : "Hey!";
       try {
-        const { error } = await resend.contacts.create({
-          email,
-          firstName: firstName || undefined,
-          unsubscribed: false,
-          audienceId: process.env.RESEND_AUDIENCE_ID!,
+        const { error } = await resend.emails.send({
+          from: "Houston Skate Project <info@houstonskateproject.org>",
+          to: email,
+          subject,
+          html: `
+            <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#F5EDD9;padding:32px;border-radius:16px">
+              <div style="text-align:center;margin-bottom:24px">
+                <img src="${SITE_URL}/logo.png" alt="Houston Skate Project" width="180" style="display:block;margin:0 auto 16px;border-radius:12px" />
+              </div>
+
+              <div style="background:white;border-radius:12px;padding:24px;margin-bottom:20px;border:1px solid rgba(28,28,28,0.1)">
+                <p style="font-size:14px;color:#1C1C1C;margin:0 0 12px">${greeting}</p>
+                <div style="font-size:14px;color:#1C1C1C;line-height:1.7;white-space:pre-line">${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+              </div>
+
+              <div style="text-align:center;padding:16px;background:#8B5E3C;border-radius:12px;margin-bottom:20px">
+                <a href="${SITE_URL}/#tickets" style="color:white;font-size:16px;font-weight:bold;text-decoration:none">Register Now →</a>
+              </div>
+
+              <p style="text-align:center;font-size:12px;color:#8A8A8A;margin:0">
+                Questions? info@houstonskateproject.org
+              </p>
+            </div>
+          `,
         });
         if (error) throw new Error(error.message || "Resend error");
-        added++;
+        sent++;
       } catch (err) {
         failed++;
         errors.push(`${email}: ${err instanceof Error ? err.message : "unknown error"}`);
       }
     }
 
-    return NextResponse.json({ success: true, total: byEmail.size, added, failed, errors });
+    return NextResponse.json({ success: true, total: byEmail.size, sent, failed, errors });
   } catch (error) {
-    console.error("Sync subscribers error:", error);
-    return NextResponse.json({ error: "Failed to sync subscribers" }, { status: 500 });
+    console.error("Email workshop error:", error);
+    return NextResponse.json({ error: "Failed to send emails" }, { status: 500 });
   }
 }

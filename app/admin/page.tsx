@@ -144,8 +144,10 @@ export default function AdminPage() {
   const [announceSubject, setAnnounceSubject] = useState("");
   const [announceMessage, setAnnounceMessage] = useState("");
   const [announceStatus, setAnnounceStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [syncStatus, setSyncStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [syncResult, setSyncResult] = useState("");
+  const [workshopEmailSubject, setWorkshopEmailSubject] = useState("");
+  const [workshopEmailMessage, setWorkshopEmailMessage] = useState("");
+  const [workshopEmailStatus, setWorkshopEmailStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [workshopEmailResult, setWorkshopEmailResult] = useState("");
   const [announceError, setAnnounceError] = useState("");
 
   useEffect(() => {
@@ -595,43 +597,66 @@ export default function AdminPage() {
           })()}
         </div>
 
-        {/* Sync registrants to email list */}
+        {/* Email this workshop's registrants */}
         <div className="mt-12">
           <div className="mb-4">
-            <h2 className="font-display text-xl text-charcoal">Add Registrants to Email List</h2>
-            <p className="text-ink-muted text-xs mt-0.5">Adds everyone who registered for the currently selected workshop tab to the notify-me list</p>
+            <h2 className="font-display text-xl text-charcoal">Email This Workshop&apos;s Registrants</h2>
+            <p className="text-ink-muted text-xs mt-0.5">Sends a one-time email directly to everyone who registered for the currently selected workshop tab</p>
           </div>
-          <div className="bg-cream-light border border-charcoal/10 rounded-2xl p-5">
-            <p className="text-sm text-ink-secondary mb-3">
-              Currently viewing: <span className="font-semibold text-charcoal">{FILTER_TO_WORKSHOP[eventFilter]}</span>
+          <div className="bg-cream-light border border-charcoal/10 rounded-2xl p-5 space-y-3">
+            <p className="text-sm text-ink-secondary">
+              Sending to: <span className="font-semibold text-charcoal">{FILTER_TO_WORKSHOP[eventFilter]}</span> registrants
             </p>
-            {syncStatus === "success" && (
-              <p className="text-green-700 text-sm font-semibold mb-3">{syncResult}</p>
+            <div>
+              <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Subject Line</label>
+              <input
+                className="form-input w-full"
+                placeholder="e.g. Registration is now open for September 13th!"
+                value={workshopEmailSubject}
+                onChange={(e) => { setWorkshopEmailSubject(e.target.value); setWorkshopEmailStatus("idle"); }}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Message</label>
+              <textarea
+                rows={5}
+                className="form-input w-full resize-none"
+                placeholder="Write your email here. A 'Register Now' button linking to the site will be added automatically."
+                value={workshopEmailMessage}
+                onChange={(e) => { setWorkshopEmailMessage(e.target.value); setWorkshopEmailStatus("idle"); }}
+              />
+            </div>
+            {workshopEmailStatus === "success" && (
+              <p className="text-green-700 text-sm font-semibold">{workshopEmailResult}</p>
             )}
-            {syncStatus === "error" && (
-              <p className="text-crimson text-sm mb-3">{syncResult}</p>
+            {workshopEmailStatus === "error" && (
+              <p className="text-crimson text-sm">{workshopEmailResult}</p>
             )}
             <button
-              disabled={syncStatus === "loading"}
+              disabled={!workshopEmailSubject.trim() || !workshopEmailMessage.trim() || workshopEmailStatus === "loading"}
               onClick={async () => {
-                setSyncStatus("loading");
-                setSyncResult("");
+                setWorkshopEmailStatus("loading");
+                setWorkshopEmailResult("");
                 try {
-                  const res = await fetch(`/api/admin/sync-subscribers?password=${encodeURIComponent(password)}&event=${eventFilter}`, {
+                  const res = await fetch(`/api/admin/email-workshop?password=${encodeURIComponent(password)}&event=${eventFilter}`, {
                     method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ subject: workshopEmailSubject.trim(), message: workshopEmailMessage.trim() }),
                   });
                   const data = await res.json();
                   if (!res.ok) throw new Error(data.error || "Failed");
-                  setSyncResult(`Added ${data.added} of ${data.total} registrants to the email list${data.failed ? ` (${data.failed} failed)` : ""}.`);
-                  setSyncStatus("success");
+                  setWorkshopEmailResult(`Sent to ${data.sent} of ${data.total} registrants${data.failed ? ` (${data.failed} failed)` : ""}.`);
+                  setWorkshopEmailStatus("success");
+                  setWorkshopEmailSubject("");
+                  setWorkshopEmailMessage("");
                 } catch (err: unknown) {
-                  setSyncResult(err instanceof Error ? err.message : "Something went wrong.");
-                  setSyncStatus("error");
+                  setWorkshopEmailResult(err instanceof Error ? err.message : "Something went wrong.");
+                  setWorkshopEmailStatus("error");
                 }
               }}
               className="btn-primary px-6 py-2 disabled:opacity-50"
             >
-              {syncStatus === "loading" ? "Adding…" : `Add ${FILTER_TO_WORKSHOP[eventFilter]} Registrants`}
+              {workshopEmailStatus === "loading" ? "Sending…" : `Send to ${FILTER_TO_WORKSHOP[eventFilter]} Registrants`}
             </button>
           </div>
         </div>
