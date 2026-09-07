@@ -484,7 +484,7 @@ export default function Registration() {
                           {levelAcknowledged && <Check className="w-3 h-3 text-white" />}
                         </div>
                         <span className="text-xs text-ink-secondary leading-relaxed">
-                          <span className="font-semibold text-charcoal">Skill Requirement Confirmation:</span> I confirm that I meet the skill requirements for this class. I understand that if I don&apos;t have these skills down yet, I will be immediately removed from this class and moved to a different class level on a future workshop date (not today).
+                          <span className="font-semibold text-charcoal">Skill Requirement Confirmation:</span> I confirm that I meet the skill requirements for this class. I understand that if I don&apos;t have these skills down yet, I will be immediately removed from this class and moved to a different class level on a future workshop date (not same day).
                         </span>
                       </label>
 
