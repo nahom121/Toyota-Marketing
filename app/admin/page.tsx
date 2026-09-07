@@ -151,6 +151,9 @@ export default function AdminPage() {
   const [workshopEmailErrors, setWorkshopEmailErrors] = useState<string[]>([]);
   const [workshopEmailTargets, setWorkshopEmailTargets] = useState("");
   const [workshopEmailForce, setWorkshopEmailForce] = useState(false);
+  const [backfillEmails, setBackfillEmails] = useState("");
+  const [backfillStatus, setBackfillStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [backfillResult, setBackfillResult] = useState("");
   const [announceError, setAnnounceError] = useState("");
 
   useEffect(() => {
@@ -722,6 +725,62 @@ export default function AdminPage() {
                   : `Send to ${FILTER_TO_WORKSHOP[eventFilter]} Registrants`}
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Backfill subscribers who signed up before the bug fix */}
+        <div className="mt-12">
+          <div className="mb-4">
+            <h2 className="font-display text-xl text-charcoal">Add People to the Email List</h2>
+            <p className="text-ink-muted text-xs mt-0.5">
+              Paste emails here to add them to your Resend audience. Useful for recovering people who signed up
+              via "Stay in the Loop" before it was fixed — export the "You're on the list!" emails from Resend's
+              Emails log and paste the addresses below.
+            </p>
+          </div>
+          <div className="bg-cream-light border border-charcoal/10 rounded-2xl p-5 space-y-3">
+            <textarea
+              rows={4}
+              className="form-input w-full resize-none"
+              placeholder="Paste emails here, separated by commas or new lines"
+              value={backfillEmails}
+              onChange={(e) => { setBackfillEmails(e.target.value); setBackfillStatus("idle"); }}
+            />
+            {backfillStatus === "success" && (
+              <p className="text-green-700 text-sm font-semibold">{backfillResult}</p>
+            )}
+            {backfillStatus === "error" && (
+              <p className="text-crimson text-sm">{backfillResult}</p>
+            )}
+            <button
+              disabled={!backfillEmails.trim() || backfillStatus === "loading"}
+              onClick={async () => {
+                setBackfillStatus("loading");
+                setBackfillResult("");
+                const emailList = backfillEmails
+                  .split(/[\n,]/)
+                  .map((e) => e.trim())
+                  .filter(Boolean);
+                try {
+                  const res = await fetch(`/api/admin/backfill-subscribers?password=${encodeURIComponent(password)}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ emails: emailList }),
+                  });
+                  const data = await res.json();
+                  if (!res.ok) throw new Error(data.error || "Failed");
+                  setBackfillResult(`Added ${data.added} of ${data.total} to the email list${data.failed ? ` (${data.failed} failed)` : ""}.`);
+                  setBackfillStatus("success");
+                  setBackfillEmails("");
+                } catch (err: unknown) {
+                  setBackfillResult(err instanceof Error ? err.message : "Something went wrong.");
+                  setBackfillStatus("error");
+                }
+              }}
+              className="btn-primary px-6 py-2 disabled:opacity-50"
+            >
+              {backfillStatus === "loading" ? "Adding…" : "Add to Email List"}
+            </button>
           </div>
         </div>
 
