@@ -148,6 +148,7 @@ export default function AdminPage() {
   const [workshopEmailMessage, setWorkshopEmailMessage] = useState("");
   const [workshopEmailStatus, setWorkshopEmailStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [workshopEmailResult, setWorkshopEmailResult] = useState("");
+  const [workshopEmailErrors, setWorkshopEmailErrors] = useState<string[]>([]);
   const [announceError, setAnnounceError] = useState("");
 
   useEffect(() => {
@@ -632,11 +633,20 @@ export default function AdminPage() {
             {workshopEmailStatus === "error" && (
               <p className="text-crimson text-sm">{workshopEmailResult}</p>
             )}
+            {workshopEmailErrors.length > 0 && (
+              <div className="bg-crimson/5 border border-crimson/20 rounded-xl p-3 max-h-40 overflow-y-auto">
+                <p className="text-xs font-semibold text-crimson mb-1">Failed recipients:</p>
+                {workshopEmailErrors.map((e, i) => (
+                  <p key={i} className="text-xs text-ink-secondary">{e}</p>
+                ))}
+              </div>
+            )}
             <button
               disabled={!workshopEmailSubject.trim() || !workshopEmailMessage.trim() || workshopEmailStatus === "loading"}
               onClick={async () => {
                 setWorkshopEmailStatus("loading");
                 setWorkshopEmailResult("");
+                setWorkshopEmailErrors([]);
                 try {
                   const res = await fetch(`/api/admin/email-workshop?password=${encodeURIComponent(password)}&event=${eventFilter}`, {
                     method: "POST",
@@ -646,6 +656,7 @@ export default function AdminPage() {
                   const data = await res.json();
                   if (!res.ok) throw new Error(data.error || "Failed");
                   setWorkshopEmailResult(`Sent to ${data.sent} of ${data.total} registrants${data.failed ? ` (${data.failed} failed)` : ""}.`);
+                  setWorkshopEmailErrors(data.errors || []);
                   setWorkshopEmailStatus("success");
                   setWorkshopEmailSubject("");
                   setWorkshopEmailMessage("");

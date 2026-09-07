@@ -4,6 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 
+// Sending is paced to respect Resend's rate limit, so give this route
+// more time on hosts that support a longer serverless function duration.
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   const password = request.nextUrl.searchParams.get("password");
   if (!password || password !== process.env.ADMIN_PASSWORD) {
@@ -77,40 +81,52 @@ export async function POST(request: NextRequest) {
     let failed = 0;
     const errors: string[] = [];
 
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    const sendOne = (email: string, greeting: string) =>
+      resend.emails.send({
+        from: "Houston Skate Project <info@houstonskateproject.org>",
+        to: email,
+        subject,
+        html: `
+          <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#F5EDD9;padding:32px;border-radius:16px">
+            <div style="text-align:center;margin-bottom:24px">
+              <img src="${SITE_URL}/logo.png" alt="Houston Skate Project" width="180" style="display:block;margin:0 auto 16px;border-radius:12px" />
+            </div>
+
+            <div style="background:white;border-radius:12px;padding:24px;margin-bottom:20px;border:1px solid rgba(28,28,28,0.1)">
+              <p style="font-size:14px;color:#1C1C1C;margin:0 0 12px">${greeting}</p>
+              <div style="font-size:14px;color:#1C1C1C;line-height:1.7;white-space:pre-line">${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+            </div>
+
+            <div style="text-align:center;padding:16px;background:#8B5E3C;border-radius:12px;margin-bottom:20px">
+              <a href="${SITE_URL}/#tickets" style="color:white;font-size:16px;font-weight:bold;text-decoration:none">Register Now →</a>
+            </div>
+
+            <p style="text-align:center;font-size:12px;color:#8A8A8A;margin:0">
+              Questions? info@houstonskateproject.org
+            </p>
+          </div>
+        `,
+      });
+
+    // Resend enforces a rate limit (2 requests/sec on most plans), so we
+    // pace sends and retry once on a 429 before giving up on a recipient.
     for (const [email, firstName] of byEmail) {
       const greeting = firstName ? `Hey ${firstName}!` : "Hey!";
       try {
-        const { error } = await resend.emails.send({
-          from: "Houston Skate Project <info@houstonskateproject.org>",
-          to: email,
-          subject,
-          html: `
-            <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#F5EDD9;padding:32px;border-radius:16px">
-              <div style="text-align:center;margin-bottom:24px">
-                <img src="${SITE_URL}/logo.png" alt="Houston Skate Project" width="180" style="display:block;margin:0 auto 16px;border-radius:12px" />
-              </div>
-
-              <div style="background:white;border-radius:12px;padding:24px;margin-bottom:20px;border:1px solid rgba(28,28,28,0.1)">
-                <p style="font-size:14px;color:#1C1C1C;margin:0 0 12px">${greeting}</p>
-                <div style="font-size:14px;color:#1C1C1C;line-height:1.7;white-space:pre-line">${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
-              </div>
-
-              <div style="text-align:center;padding:16px;background:#8B5E3C;border-radius:12px;margin-bottom:20px">
-                <a href="${SITE_URL}/#tickets" style="color:white;font-size:16px;font-weight:bold;text-decoration:none">Register Now →</a>
-              </div>
-
-              <p style="text-align:center;font-size:12px;color:#8A8A8A;margin:0">
-                Questions? info@houstonskateproject.org
-              </p>
-            </div>
-          `,
-        });
+        let { error } = await sendOne(email, greeting);
+        if (error && (error as { statusCode?: number }).statusCode === 429) {
+          await sleep(1200);
+          ({ error } = await sendOne(email, greeting));
+        }
         if (error) throw new Error(error.message || "Resend error");
         sent++;
       } catch (err) {
         failed++;
         errors.push(`${email}: ${err instanceof Error ? err.message : "unknown error"}`);
       }
+      await sleep(550); // stay under ~2 requests/sec
     }
 
     return NextResponse.json({ success: true, total: byEmail.size, sent, failed, errors });
