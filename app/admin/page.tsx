@@ -438,12 +438,15 @@ export default function AdminPage() {
                                       ? "bg-green-50 border-green-300 text-green-700"
                                       : att === "no-show"
                                       ? "bg-red-50 border-red-300 text-red-600"
+                                      : att === "transfer"
+                                      ? "bg-sand/20 border-sand text-sand-dark"
                                       : "bg-charcoal/5 border-charcoal/15 text-ink-muted"
                                   }`}
                                 >
                                   <option value="">— Mark —</option>
                                   <option value="signed-in">Signed In</option>
                                   <option value="no-show">No Show</option>
+                                  <option value="transfer">Transfer</option>
                                 </select>
                               </td>
                               <td className="px-4 py-3">
@@ -575,12 +578,15 @@ export default function AdminPage() {
                                     ? "bg-green-50 border-green-300 text-green-700"
                                     : att === "no-show"
                                     ? "bg-red-50 border-red-300 text-red-600"
+                                    : att === "transfer"
+                                    ? "bg-sand/20 border-sand text-sand-dark"
                                     : "bg-charcoal/5 border-charcoal/15 text-ink-muted"
                                 }`}
                               >
                                 <option value="">— Mark —</option>
                                 <option value="signed-in">Signed In</option>
                                 <option value="no-show">No Show</option>
+                                <option value="transfer">Transfer</option>
                               </select>
                             );
                           })()}
