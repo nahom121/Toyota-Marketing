@@ -28,41 +28,33 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
   "10:00 AM": {
     title: "Pre-Beginner",
     bullets: [
-      "Have never skated or have very limited experience",
-      "Rely on the wall or another person for support",
-      "Have difficulty balancing or rolling independently",
-      "Use the wall to slow down or stop",
-      "Are unsure how to safely fall and get back up",
+      "Have never skated before",
+      "Cannot skate across the floor on your own",
+      "Need to hold the wall or another person to skate or keep your balance",
     ],
   },
   "11:00 AM": {
     title: "Beginner",
     bullets: [
-      "Have skated before but may be returning after a long break",
-      "Can roll forward independently without holding the wall",
-      "Can get around the rink but still feel unsteady",
-      "Need more confidence with stopping and turning",
-      "Want better balance, control, and comfort on skates",
+      "Can skate across the floor without holding the wall or another person",
+      "Can pick up both feet while skating instead of walking/shuffling",
+      "Can glide forward and keep your balance without assistance",
     ],
   },
   "12:00 PM": {
-    title: "Beginner",
+    title: "Intermediate",
     bullets: [
-      "Have skated before but may be returning after a long break",
-      "Can roll forward independently without holding the wall",
-      "Can get around the rink but still feel unsteady",
-      "Need more confidence with stopping and turning",
-      "Want better balance, control, and comfort on skates",
+      "Can comfortably make forward scissors/bubbles (circles with your feet) while moving",
+      "Can glide on one foot for at least 5 seconds without putting your foot down",
+      "Can comfortably complete at least one backward scissor/bubble on your own",
     ],
   },
   "1:00 PM": {
-    title: "Backwards Beginner",
+    title: "Advanced",
     bullets: [
-      "Can skate forward confidently and with control",
-      "Have little to no backward skating experience",
-      "Can skate backward slightly but want stronger fundamentals",
-      "Want to learn how to transition from forward to backward",
-      "Are ready to build confidence skating backward independently",
+      "Can comfortably skate backward across the floor using backward scissors/bubbles without falling",
+      "Can squat all the way down into a cannonball while rolling and maintain your balance",
+      "Can cross one foot over the other while skating forward around a circle without losing your balance",
     ],
   },
 };
@@ -472,7 +464,7 @@ export default function Registration() {
                       <p className="font-semibold text-charcoal text-sm mb-1">
                         🛼 {level.title} — {selectedSlot}
                       </p>
-                      <p className="text-ink-muted text-xs mb-3">This session is for you if you:</p>
+                      <p className="text-ink-muted text-xs mb-3">Choose this class if you:</p>
                       <ul className="space-y-1.5">
                         {level.bullets.map((b) => (
                           <li key={b} className="flex items-start gap-2 text-xs text-ink-secondary">
@@ -492,7 +484,7 @@ export default function Registration() {
                           {levelAcknowledged && <Check className="w-3 h-3 text-white" />}
                         </div>
                         <span className="text-xs text-ink-secondary leading-relaxed">
-                          <span className="font-semibold text-charcoal">I meet the skill requirements for this session</span> and understand that class will be taught at this level and pace.
+                          <span className="font-semibold text-charcoal">Skill Requirement Confirmation:</span> I confirm that I meet the skill requirements for this class. I understand that if I don&apos;t have these skills down yet, I will be immediately removed from this class and moved to a different class level on a future workshop date (not today).
                         </span>
                       </label>
 

@@ -63,8 +63,8 @@ const SLOT_TITLES_BY_WORKSHOP: Record<string, Record<string, string>> = {
   "Workshop 4 · Sep 13, 2026": {
     "10:00 AM": "Pre-Beginner",
     "11:00 AM": "Beginner",
-    "12:00 PM": "Beginner",
-    "1:00 PM": "Backwards Beginner",
+    "12:00 PM": "Intermediate",
+    "1:00 PM": "Advanced",
   },
   "Workshop 3 · Sep 6, 2026": {
     "1:00 PM": "Pre-Beginner",
