@@ -149,6 +149,7 @@ export default function AdminPage() {
   const [workshopEmailStatus, setWorkshopEmailStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [workshopEmailResult, setWorkshopEmailResult] = useState("");
   const [workshopEmailErrors, setWorkshopEmailErrors] = useState<string[]>([]);
+  const [workshopEmailTargets, setWorkshopEmailTargets] = useState("");
   const [announceError, setAnnounceError] = useState("");
 
   useEffect(() => {
@@ -627,6 +628,18 @@ export default function AdminPage() {
                 onChange={(e) => { setWorkshopEmailMessage(e.target.value); setWorkshopEmailStatus("idle"); }}
               />
             </div>
+            <div>
+              <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">
+                Only send to these emails (optional)
+              </label>
+              <textarea
+                rows={2}
+                className="form-input w-full resize-none"
+                placeholder="Leave blank to send to everyone in this workshop. Or paste specific emails, separated by commas or new lines, to only send to those people."
+                value={workshopEmailTargets}
+                onChange={(e) => { setWorkshopEmailTargets(e.target.value); setWorkshopEmailStatus("idle"); }}
+              />
+            </div>
             {workshopEmailStatus === "success" && (
               <p className="text-green-700 text-sm font-semibold">{workshopEmailResult}</p>
             )}
@@ -639,36 +652,60 @@ export default function AdminPage() {
                 {workshopEmailErrors.map((e, i) => (
                   <p key={i} className="text-xs text-ink-secondary">{e}</p>
                 ))}
+                <button
+                  onClick={() => {
+                    const failedEmails = workshopEmailErrors.map((e) => e.split(":")[0].trim());
+                    setWorkshopEmailTargets(failedEmails.join(", "));
+                  }}
+                  className="text-xs font-semibold text-crimson underline mt-2"
+                >
+                  Fill "only send to" with these failed emails
+                </button>
               </div>
             )}
-            <button
-              disabled={!workshopEmailSubject.trim() || !workshopEmailMessage.trim() || workshopEmailStatus === "loading"}
-              onClick={async () => {
-                setWorkshopEmailStatus("loading");
-                setWorkshopEmailResult("");
-                setWorkshopEmailErrors([]);
-                try {
-                  const res = await fetch(`/api/admin/email-workshop?password=${encodeURIComponent(password)}&event=${eventFilter}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ subject: workshopEmailSubject.trim(), message: workshopEmailMessage.trim() }),
-                  });
-                  const data = await res.json();
-                  if (!res.ok) throw new Error(data.error || "Failed");
-                  setWorkshopEmailResult(`Sent to ${data.sent} of ${data.total} registrants${data.failed ? ` (${data.failed} failed)` : ""}.`);
-                  setWorkshopEmailErrors(data.errors || []);
-                  setWorkshopEmailStatus("success");
-                  setWorkshopEmailSubject("");
-                  setWorkshopEmailMessage("");
-                } catch (err: unknown) {
-                  setWorkshopEmailResult(err instanceof Error ? err.message : "Something went wrong.");
-                  setWorkshopEmailStatus("error");
-                }
-              }}
-              className="btn-primary px-6 py-2 disabled:opacity-50"
-            >
-              {workshopEmailStatus === "loading" ? "Sending…" : `Send to ${FILTER_TO_WORKSHOP[eventFilter]} Registrants`}
-            </button>
+            <div className="flex gap-2">
+              <button
+                disabled={!workshopEmailSubject.trim() || !workshopEmailMessage.trim() || workshopEmailStatus === "loading"}
+                onClick={async () => {
+                  setWorkshopEmailStatus("loading");
+                  setWorkshopEmailResult("");
+                  setWorkshopEmailErrors([]);
+                  const targetList = workshopEmailTargets
+                    .split(/[\n,]/)
+                    .map((e) => e.trim())
+                    .filter(Boolean);
+                  try {
+                    const res = await fetch(`/api/admin/email-workshop?password=${encodeURIComponent(password)}&event=${eventFilter}`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        subject: workshopEmailSubject.trim(),
+                        message: workshopEmailMessage.trim(),
+                        ...(targetList.length > 0 ? { emails: targetList } : {}),
+                      }),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || "Failed");
+                    setWorkshopEmailResult(`Sent to ${data.sent} of ${data.total} registrants${data.failed ? ` (${data.failed} failed)` : ""}.`);
+                    setWorkshopEmailErrors(data.errors || []);
+                    setWorkshopEmailStatus("success");
+                    setWorkshopEmailSubject("");
+                    setWorkshopEmailMessage("");
+                    setWorkshopEmailTargets("");
+                  } catch (err: unknown) {
+                    setWorkshopEmailResult(err instanceof Error ? err.message : "Something went wrong.");
+                    setWorkshopEmailStatus("error");
+                  }
+                }}
+                className="btn-primary px-6 py-2 disabled:opacity-50"
+              >
+                {workshopEmailStatus === "loading"
+                  ? "Sending…"
+                  : workshopEmailTargets.trim()
+                  ? "Send to Listed Emails Only"
+                  : `Send to ${FILTER_TO_WORKSHOP[eventFilter]} Registrants`}
+              </button>
+            </div>
           </div>
         </div>
 

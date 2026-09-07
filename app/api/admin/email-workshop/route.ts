@@ -17,10 +17,16 @@ export async function POST(request: NextRequest) {
   const event = request.nextUrl.searchParams.get("event") || "current";
 
   try {
-    const { subject, message } = await request.json();
+    const { subject, message, emails: targetEmailsRaw } = await request.json();
     if (!subject?.trim() || !message?.trim()) {
       return NextResponse.json({ error: "Subject and message are required." }, { status: 400 });
     }
+
+    // Optional: restrict sending to a specific list of emails (e.g. retrying
+    // just the ones that failed last time) instead of the whole workshop.
+    const targetEmails: string[] | null = Array.isArray(targetEmailsRaw) && targetEmailsRaw.length > 0
+      ? targetEmailsRaw.map((e: string) => e.trim().toLowerCase()).filter(Boolean)
+      : null;
 
     const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
     const WORKSHOP4_START = new Date("2026-09-07T00:00:00Z").getTime() / 1000;
@@ -74,6 +80,20 @@ export async function POST(request: NextRequest) {
       const fullName = s.metadata?.primary_name || "";
       const firstName = fullName.split(" ")[0] || "";
       if (!byEmail.has(email)) byEmail.set(email, firstName);
+    }
+
+    // If a specific list of emails was requested, narrow down to just those
+    if (targetEmails) {
+      const targetSet = new Set(targetEmails);
+      for (const email of [...byEmail.keys()]) {
+        if (!targetSet.has(email.toLowerCase())) byEmail.delete(email);
+      }
+      // Include any requested emails that weren't found in this workshop's
+      // registrant list (still worth trying, e.g. name/casing mismatch)
+      for (const email of targetEmails) {
+        const alreadyIn = [...byEmail.keys()].some((e) => e.toLowerCase() === email);
+        if (!alreadyIn) byEmail.set(email, "");
+      }
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
