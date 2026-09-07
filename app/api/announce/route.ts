@@ -44,12 +44,17 @@ export async function POST(request: NextRequest) {
       </div>
     `;
 
+    // Resend caps the internal broadcast `name` field at 70 characters —
+    // this is just a label in the Resend dashboard, not shown to recipients.
+    const rawName = `Announcement: ${subject}`;
+    const name = rawName.length > 70 ? `${rawName.slice(0, 67)}...` : rawName;
+
     const { data, error } = await resend.broadcasts.create({
       audienceId: process.env.RESEND_AUDIENCE_ID!,
       from: "Houston Skate Project <info@houstonskateproject.org>",
       subject,
       html,
-      name: `Announcement: ${subject}`,
+      name,
     });
 
     if (error) {
