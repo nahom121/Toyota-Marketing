@@ -8,15 +8,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Valid email required." }, { status: 400 });
     }
 
+    if (!process.env.RESEND_AUDIENCE_ID) {
+      console.error("Subscribe error: RESEND_AUDIENCE_ID is not set");
+      return NextResponse.json({ error: "Email list is not configured. Contact the site admin." }, { status: 500 });
+    }
+
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     // Save to audience list
-    await resend.contacts.create({
+    const { error: contactError } = await resend.contacts.create({
       email,
       firstName: firstName || undefined,
       unsubscribed: false,
-      audienceId: process.env.RESEND_AUDIENCE_ID!,
+      audienceId: process.env.RESEND_AUDIENCE_ID,
     });
+    if (contactError) {
+      console.error("Subscribe error (contacts.create):", contactError);
+      return NextResponse.json({ error: `Failed to add to email list: ${contactError.message}` }, { status: 500 });
+    }
 
     const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 
