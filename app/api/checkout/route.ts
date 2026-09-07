@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
     while (hasMore) {
       const page = await stripe.checkout.sessions.list({
         limit: 100,
+        created: { gte: WORKSHOP4_START },
         expand: ["data.payment_intent.latest_charge"],
         ...(startingAfter ? { starting_after: startingAfter } : {}),
       });

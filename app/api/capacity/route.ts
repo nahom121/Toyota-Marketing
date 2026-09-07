@@ -33,6 +33,7 @@ export async function GET() {
     while (hasMore) {
       const page = await stripe.checkout.sessions.list({
         limit: 100,
+        created: { gte: WORKSHOP4_START },
         expand: ["data.payment_intent.latest_charge"],
         ...(startingAfter ? { starting_after: startingAfter } : {}),
       });
@@ -46,7 +47,6 @@ export async function GET() {
       (s) =>
         s.payment_status === "paid" &&
         !isRefunded(s) &&
-        s.created >= WORKSHOP4_START &&
         (CURRENT_SLOTS.has(s.metadata?.time_slot || "") ||
           CURRENT_SLOTS.has(s.metadata?.second_time_slot || ""))
     );

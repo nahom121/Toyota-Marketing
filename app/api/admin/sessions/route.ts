@@ -9,6 +9,19 @@ export async function GET(request: NextRequest) {
 
   const event = request.nextUrl.searchParams.get("event") || "current";
 
+  const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
+  const WORKSHOP4_START = new Date("2026-09-07T00:00:00Z").getTime() / 1000;
+  const WORKSHOP4_SLOTS = new Set(["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"]);
+  const WORKSHOP3_SLOTS = new Set(["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"]);
+  const WORKSHOP2_SLOTS = new Set(["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"]);
+
+  // Narrow the Stripe query to only the date range this workshop needs
+  const created: { gte?: number; lt?: number } = {};
+  if (event === "current") created.gte = WORKSHOP4_START;
+  else if (event === "workshop3") { created.gte = WORKSHOP2_START; created.lt = WORKSHOP4_START; }
+  else if (event === "workshop2") created.gte = WORKSHOP2_START;
+  else if (event === "previous") created.lt = WORKSHOP2_START;
+
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -19,6 +32,7 @@ export async function GET(request: NextRequest) {
     while (hasMore) {
       const page = await stripe.checkout.sessions.list({
         limit: 100,
+        created,
         expand: ["data.payment_intent.latest_charge"],
         ...(startingAfter ? { starting_after: startingAfter } : {}),
       });
@@ -27,26 +41,16 @@ export async function GET(request: NextRequest) {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
-    const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
-    const WORKSHOP4_START = new Date("2026-09-07T00:00:00Z").getTime() / 1000;
-    const WORKSHOP4_SLOTS = new Set(["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"]);
-    const WORKSHOP3_SLOTS = new Set(["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"]);
-    const WORKSHOP2_SLOTS = new Set(["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"]);
-
     const paid = sessions.filter((s) => {
       if (s.payment_status !== "paid") return false;
       const pi = s.payment_intent as Stripe.PaymentIntent | null;
       const charge = pi?.latest_charge as Stripe.Charge | null;
       if (charge?.refunded) return false;
       const slot = s.metadata?.time_slot || "";
-      // Workshop 4: new AM/early-PM slots registered after Sep 7
-      if (event === "current")   return WORKSHOP4_SLOTS.has(slot) && s.created >= WORKSHOP4_START;
-      // Workshop 3: PM slots registered Aug 18 through Sep 6 (before Workshop 4 opened)
-      if (event === "workshop3") return WORKSHOP3_SLOTS.has(slot) && s.created >= WORKSHOP2_START && s.created < WORKSHOP4_START;
-      // Workshop 2: AM slots registered after Aug 18
-      if (event === "workshop2") return WORKSHOP2_SLOTS.has(slot) && s.created >= WORKSHOP2_START;
-      // Workshop 1: anything before Aug 18
-      if (event === "previous")  return s.created < WORKSHOP2_START;
+      if (event === "current")   return WORKSHOP4_SLOTS.has(slot);
+      if (event === "workshop3") return WORKSHOP3_SLOTS.has(slot);
+      if (event === "workshop2") return WORKSHOP2_SLOTS.has(slot);
+      if (event === "previous")  return true;
       return false;
     });
 
