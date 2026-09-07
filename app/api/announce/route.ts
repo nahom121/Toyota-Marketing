@@ -13,6 +13,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Subject and message are required." }, { status: 400 });
     }
 
+    if (!process.env.RESEND_AUDIENCE_ID) {
+      return NextResponse.json(
+        { error: "RESEND_AUDIENCE_ID is not set in the environment variables. Add it in your hosting platform's settings and try again." },
+        { status: 500 }
+      );
+    }
+
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const html = `
@@ -32,7 +39,7 @@ export async function POST(request: NextRequest) {
 
         <p style="text-align:center;font-size:11px;color:#8A8A8A;margin-top:16px">
           You're receiving this because you signed up for Houston Skate Project updates.<br/>
-          <a href="https://www.houstonskateproject.org/unsubscribe?email={{email}}" style="color:#8A8A8A">Unsubscribe</a>
+          <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color:#8A8A8A">Unsubscribe</a>
         </p>
       </div>
     `;
@@ -45,14 +52,21 @@ export async function POST(request: NextRequest) {
       name: `Announcement: ${subject}`,
     });
 
-    if (error) throw new Error(JSON.stringify(error));
+    if (error) {
+      console.error("Announce broadcast create error:", error);
+      return NextResponse.json({ error: `Resend error: ${error.message || "Failed to create broadcast."}` }, { status: 500 });
+    }
 
     // Send the broadcast immediately
-    await resend.broadcasts.send(data!.id);
+    const { error: sendError } = await resend.broadcasts.send(data!.id);
+    if (sendError) {
+      console.error("Announce broadcast send error:", sendError);
+      return NextResponse.json({ error: `Resend error: ${sendError.message || "Failed to send broadcast."}` }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Announce error:", error);
-    return NextResponse.json({ error: "Failed to send announcement." }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Failed to send announcement." }, { status: 500 });
   }
 }
