@@ -21,12 +21,12 @@ export async function POST(request: NextRequest) {
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 
     const html = `
       <div style="font-family:sans-serif;max-width:500px;margin:0 auto;background:#F5EDD9;padding:32px;border-radius:16px">
         <div style="text-align:center;margin-bottom:24px">
-          <div style="display:inline-block;background:#8B5E3C;color:white;font-size:32px;width:56px;height:56px;border-radius:50%;line-height:56px;text-align:center;margin-bottom:12px">🛼</div>
-          <h1 style="font-size:24px;color:#1C1C1C;margin:0">Houston Skate Project</h1>
+          <img src="${SITE_URL}/logo.png" alt="Houston Skate Project" width="180" style="display:block;margin:0 auto;border-radius:12px" />
         </div>
 
         <div style="background:white;border-radius:12px;padding:24px;margin-bottom:20px;border:1px solid rgba(28,28,28,0.1)">
