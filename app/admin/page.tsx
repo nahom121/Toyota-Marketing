@@ -144,6 +144,8 @@ export default function AdminPage() {
   const [announceSubject, setAnnounceSubject] = useState("");
   const [announceMessage, setAnnounceMessage] = useState("");
   const [announceStatus, setAnnounceStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [syncStatus, setSyncStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [syncResult, setSyncResult] = useState("");
   const [announceError, setAnnounceError] = useState("");
 
   useEffect(() => {
@@ -591,6 +593,47 @@ export default function AdminPage() {
             </div>
             ) : null;
           })()}
+        </div>
+
+        {/* Sync registrants to email list */}
+        <div className="mt-12">
+          <div className="mb-4">
+            <h2 className="font-display text-xl text-charcoal">Add Registrants to Email List</h2>
+            <p className="text-ink-muted text-xs mt-0.5">Adds everyone who registered for the currently selected workshop tab to the notify-me list</p>
+          </div>
+          <div className="bg-cream-light border border-charcoal/10 rounded-2xl p-5">
+            <p className="text-sm text-ink-secondary mb-3">
+              Currently viewing: <span className="font-semibold text-charcoal">{FILTER_TO_WORKSHOP[eventFilter]}</span>
+            </p>
+            {syncStatus === "success" && (
+              <p className="text-green-700 text-sm font-semibold mb-3">{syncResult}</p>
+            )}
+            {syncStatus === "error" && (
+              <p className="text-crimson text-sm mb-3">{syncResult}</p>
+            )}
+            <button
+              disabled={syncStatus === "loading"}
+              onClick={async () => {
+                setSyncStatus("loading");
+                setSyncResult("");
+                try {
+                  const res = await fetch(`/api/admin/sync-subscribers?password=${encodeURIComponent(password)}&event=${eventFilter}`, {
+                    method: "POST",
+                  });
+                  const data = await res.json();
+                  if (!res.ok) throw new Error(data.error || "Failed");
+                  setSyncResult(`Added ${data.added} of ${data.total} registrants to the email list${data.failed ? ` (${data.failed} failed)` : ""}.`);
+                  setSyncStatus("success");
+                } catch (err: unknown) {
+                  setSyncResult(err instanceof Error ? err.message : "Something went wrong.");
+                  setSyncStatus("error");
+                }
+              }}
+              className="btn-primary px-6 py-2 disabled:opacity-50"
+            >
+              {syncStatus === "loading" ? "Adding…" : `Add ${FILTER_TO_WORKSHOP[eventFilter]} Registrants`}
+            </button>
+          </div>
         </div>
 
         {/* Email Announcement */}
