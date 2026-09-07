@@ -387,7 +387,9 @@ export default function Registration() {
                             : "border-charcoal/15 hover:border-sand bg-white"
                         }`}
                       >
-                        <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${selected ? "text-crimson" : "text-ink-muted"}`}>{SLOT_LEVELS[slot].title}</p>
+                        <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${selected ? "text-crimson" : "text-ink-muted"}`}>
+                          {SLOT_LEVELS[slot].title} <span className="font-semibold normal-case tracking-normal opacity-70">(click to see what this requires)</span>
+                        </p>
                         <p className={`font-display text-xl mb-1 ${selected ? "text-crimson" : "text-charcoal"}`}>{slot}</p>
                         {slotData === null ? (
                           <div className="h-3 w-16 bg-charcoal/10 rounded animate-pulse mt-1" />
