@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { Resend } from "resend";
+import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
@@ -7,6 +8,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskatepr
 // Sending is paced to respect Resend's rate limit, so give this route
 // more time on hosts that support a longer serverless function duration.
 export const maxDuration = 60;
+
+function campaignKey(subject: string): string {
+  const hash = crypto.createHash("sha256").update(subject.trim().toLowerCase()).digest("hex").slice(0, 10);
+  return `camp_${hash}`;
+}
 
 export async function POST(request: NextRequest) {
   const password = request.nextUrl.searchParams.get("password");
@@ -17,7 +23,7 @@ export async function POST(request: NextRequest) {
   const event = request.nextUrl.searchParams.get("event") || "current";
 
   try {
-    const { subject, message, emails: targetEmailsRaw } = await request.json();
+    const { subject, message, emails: targetEmailsRaw, force } = await request.json();
     if (!subject?.trim() || !message?.trim()) {
       return NextResponse.json({ error: "Subject and message are required." }, { status: 400 });
     }
@@ -72,14 +78,21 @@ export async function POST(request: NextRequest) {
       return false;
     });
 
-    // Dedupe by email, grab first name from primary_name
-    const byEmail = new Map<string, string>();
+    const key = campaignKey(subject);
+
+    // Dedupe by email, remembering the underlying session (to check/mark the
+    // "already emailed this campaign" flag) and first name for personalizing
+    type Recipient = { firstName: string; sessionId: string | null; alreadySent: boolean };
+    const byEmail = new Map<string, Recipient>();
     for (const s of paid) {
       const email = s.customer_email || "";
       if (!email) continue;
       const fullName = s.metadata?.primary_name || "";
       const firstName = fullName.split(" ")[0] || "";
-      if (!byEmail.has(email)) byEmail.set(email, firstName);
+      const alreadySent = s.metadata?.[key] === "sent";
+      if (!byEmail.has(email)) {
+        byEmail.set(email, { firstName, sessionId: s.id, alreadySent });
+      }
     }
 
     // If a specific list of emails was requested, narrow down to just those
@@ -92,13 +105,14 @@ export async function POST(request: NextRequest) {
       // registrant list (still worth trying, e.g. name/casing mismatch)
       for (const email of targetEmails) {
         const alreadyIn = [...byEmail.keys()].some((e) => e.toLowerCase() === email);
-        if (!alreadyIn) byEmail.set(email, "");
+        if (!alreadyIn) byEmail.set(email, { firstName: "", sessionId: null, alreadySent: false });
       }
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     let sent = 0;
     let failed = 0;
+    let skipped = 0;
     const errors: string[] = [];
 
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -132,8 +146,12 @@ export async function POST(request: NextRequest) {
 
     // Resend enforces a rate limit (2 requests/sec on most plans), so we
     // pace sends and retry once on a 429 before giving up on a recipient.
-    for (const [email, firstName] of byEmail) {
-      const greeting = firstName ? `Hey ${firstName}!` : "Hey!";
+    for (const [email, r] of byEmail) {
+      if (r.alreadySent && !force) {
+        skipped++;
+        continue;
+      }
+      const greeting = r.firstName ? `Hey ${r.firstName}!` : "Hey!";
       try {
         let { error } = await sendOne(email, greeting);
         if (error && (error as { statusCode?: number }).statusCode === 429) {
@@ -142,6 +160,18 @@ export async function POST(request: NextRequest) {
         }
         if (error) throw new Error(error.message || "Resend error");
         sent++;
+        // Mark this registrant as having received this specific campaign so
+        // a future retry (same subject) automatically skips them.
+        if (r.sessionId) {
+          try {
+            const original = paid.find((s) => s.id === r.sessionId);
+            await stripe.checkout.sessions.update(r.sessionId, {
+              metadata: { ...(original?.metadata || {}), [key]: "sent" },
+            });
+          } catch {
+            // Non-fatal: the email went out even if we couldn't record it
+          }
+        }
       } catch (err) {
         failed++;
         errors.push(`${email}: ${err instanceof Error ? err.message : "unknown error"}`);
@@ -149,7 +179,7 @@ export async function POST(request: NextRequest) {
       await sleep(550); // stay under ~2 requests/sec
     }
 
-    return NextResponse.json({ success: true, total: byEmail.size, sent, failed, errors });
+    return NextResponse.json({ success: true, total: byEmail.size, sent, skipped, failed, errors });
   } catch (error) {
     console.error("Email workshop error:", error);
     return NextResponse.json({ error: "Failed to send emails" }, { status: 500 });

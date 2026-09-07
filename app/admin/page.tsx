@@ -150,6 +150,7 @@ export default function AdminPage() {
   const [workshopEmailResult, setWorkshopEmailResult] = useState("");
   const [workshopEmailErrors, setWorkshopEmailErrors] = useState<string[]>([]);
   const [workshopEmailTargets, setWorkshopEmailTargets] = useState("");
+  const [workshopEmailForce, setWorkshopEmailForce] = useState(false);
   const [announceError, setAnnounceError] = useState("");
 
   useEffect(() => {
@@ -603,7 +604,7 @@ export default function AdminPage() {
         <div className="mt-12">
           <div className="mb-4">
             <h2 className="font-display text-xl text-charcoal">Email This Workshop&apos;s Registrants</h2>
-            <p className="text-ink-muted text-xs mt-0.5">Sends a one-time email directly to everyone who registered for the currently selected workshop tab</p>
+            <p className="text-ink-muted text-xs mt-0.5">Sends a one-time email directly to everyone who registered for the currently selected workshop tab. If you send again with the same subject line, anyone who already received it is automatically skipped — only people who didn&apos;t get it (or failed) will be retried.</p>
           </div>
           <div className="bg-cream-light border border-charcoal/10 rounded-2xl p-5 space-y-3">
             <p className="text-sm text-ink-secondary">
@@ -663,6 +664,15 @@ export default function AdminPage() {
                 </button>
               </div>
             )}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={workshopEmailForce}
+                onChange={(e) => setWorkshopEmailForce(e.target.checked)}
+                className="w-4 h-4"
+              />
+              <span className="text-xs text-ink-secondary">Resend to everyone anyway, even people who already got this exact subject line</span>
+            </label>
             <div className="flex gap-2">
               <button
                 disabled={!workshopEmailSubject.trim() || !workshopEmailMessage.trim() || workshopEmailStatus === "loading"}
@@ -682,15 +692,15 @@ export default function AdminPage() {
                         subject: workshopEmailSubject.trim(),
                         message: workshopEmailMessage.trim(),
                         ...(targetList.length > 0 ? { emails: targetList } : {}),
+                        ...(workshopEmailForce ? { force: true } : {}),
                       }),
                     });
                     const data = await res.json();
                     if (!res.ok) throw new Error(data.error || "Failed");
-                    setWorkshopEmailResult(`Sent to ${data.sent} of ${data.total} registrants${data.failed ? ` (${data.failed} failed)` : ""}.`);
+                    const skippedText = data.skipped ? ` ${data.skipped} already received this and were skipped.` : "";
+                    setWorkshopEmailResult(`Sent to ${data.sent} of ${data.total} registrants${data.failed ? ` (${data.failed} failed)` : ""}.${skippedText}`);
                     setWorkshopEmailErrors(data.errors || []);
                     setWorkshopEmailStatus("success");
-                    setWorkshopEmailSubject("");
-                    setWorkshopEmailMessage("");
                     setWorkshopEmailTargets("");
                   } catch (err: unknown) {
                     setWorkshopEmailResult(err instanceof Error ? err.message : "Something went wrong.");
