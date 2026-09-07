@@ -2,7 +2,8 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail } from "lucide-react";
+import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail, Bell } from "lucide-react";
+import { FORCE_SOLD_OUT } from "@/lib/slots";
 
 const TICKET_PRICE = 25;
 const SLOT_CAPACITY = 30;
@@ -324,11 +325,33 @@ export default function Registration() {
           <p className="text-ink-secondary mt-3 text-base">
             General Admission: <span className="font-semibold text-charcoal">$25</span> per person
           </p>
-          {slotData && (
+          {slotData && !FORCE_SOLD_OUT && (
             <p className="text-ink-muted text-xs mt-3">Select a session below to see availability</p>
           )}
         </motion.div>
 
+        {FORCE_SOLD_OUT ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-cream-light border border-charcoal/10 rounded-3xl p-10 md:p-14 text-center"
+          >
+            <div className="w-16 h-16 rounded-full bg-crimson/10 border border-crimson/20 flex items-center justify-center mx-auto mb-6">
+              <Bell className="w-7 h-7 text-crimson" />
+            </div>
+            <h3 className="font-display text-2xl md:text-3xl text-charcoal mb-3">
+              Registration for the{" "}
+              <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
+                September 13th
+              </span>{" "}
+              workshop will open soon.
+            </h3>
+            <p className="text-ink-secondary text-base max-w-md mx-auto mb-2">
+              We&apos;re putting the finishing touches on the next pop-up. Check back shortly, or join our email list below to be the first to know the moment tickets go live.
+            </p>
+          </motion.div>
+        ) : (
         <>
 
         <StepIndicator current={step} />
@@ -782,6 +805,7 @@ export default function Registration() {
           </AnimatePresence>
         </div>
         </>
+        )}
       </div>
     </section>
   );
