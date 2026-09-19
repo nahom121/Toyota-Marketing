@@ -16,12 +16,12 @@ const SLOT_CAPACITIES: Record<Slot, number> = {
 const SLOTS = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"] as const;
 type Slot = typeof SLOTS[number];
 
-// Slots close exactly at class start time on Sep 13, 2026
+// Slots close exactly at class start time on Sep 27, 2026
 const SLOT_CUTOFFS: Record<Slot, Date> = {
-  "10:00 AM": new Date("2026-09-13T10:00:00"),
-  "11:00 AM": new Date("2026-09-13T11:00:00"),
-  "12:00 PM": new Date("2026-09-13T12:00:00"),
-  "1:00 PM":  new Date("2026-09-13T13:00:00"),
+  "10:00 AM": new Date("2026-09-27T10:00:00"),
+  "11:00 AM": new Date("2026-09-27T11:00:00"),
+  "12:00 PM": new Date("2026-09-27T12:00:00"),
+  "1:00 PM":  new Date("2026-09-27T13:00:00"),
 };
 
 const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
@@ -311,7 +311,7 @@ export default function Registration() {
             Secure your spot.
             <br />
             <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-              September 13th.
+              September 27th.
             </span>
           </h2>
           <p className="text-ink-secondary mt-3 text-base">
@@ -335,12 +335,12 @@ export default function Registration() {
             <h3 className="font-display text-2xl md:text-3xl text-charcoal mb-3">
               Registration for the{" "}
               <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-                September 13th
+                September 27th
               </span>{" "}
               workshop will open soon.
             </h3>
             <p className="text-ink-secondary text-base max-w-md mx-auto mb-2">
-              We&apos;re putting the finishing touches on the next pop-up. Check back shortly, or join our email list below to be the first to know the moment tickets go live.
+              Spots are coming soon! We&apos;re putting the finishing touches on our next pop-up, happening Sunday, September 27th. Check back shortly, or join our email list below to be the first to know the moment tickets go live.
             </p>
           </motion.div>
         ) : (
@@ -727,7 +727,7 @@ export default function Registration() {
                     {selectedSlot && (
                       <div className="flex justify-between text-sm">
                         <span className="text-ink-secondary">Session</span>
-                        <span className="font-semibold text-charcoal">{selectedSlot} · Sep 13</span>
+                        <span className="font-semibold text-charcoal">{selectedSlot} · Sep 27</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm">

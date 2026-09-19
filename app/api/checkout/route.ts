@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
-import { FORCE_SOLD_OUT, WORKSHOP4_START } from "@/lib/slots";
+import { FORCE_SOLD_OUT, WORKSHOP5_START } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 const SLOT_CAPACITIES: Record<string, number> = {
@@ -11,12 +11,12 @@ const SLOT_CAPACITIES: Record<string, number> = {
 };
 const SLOT_CAPACITY = 30;
 
-// Registration closes at class start time (Houston CDT = UTC-5), Sep 13, 2026
+// Registration closes at class start time (Houston CDT = UTC-5), Sep 27, 2026
 const SLOT_START_UTC: Record<string, number> = {
-  "10:00 AM": new Date("2026-09-13T15:00:00Z").getTime(),
-  "11:00 AM": new Date("2026-09-13T16:00:00Z").getTime(),
-  "12:00 PM": new Date("2026-09-13T17:00:00Z").getTime(),
-  "1:00 PM":  new Date("2026-09-13T18:00:00Z").getTime(),
+  "10:00 AM": new Date("2026-09-27T15:00:00Z").getTime(),
+  "11:00 AM": new Date("2026-09-27T16:00:00Z").getTime(),
+  "12:00 PM": new Date("2026-09-27T17:00:00Z").getTime(),
+  "1:00 PM":  new Date("2026-09-27T18:00:00Z").getTime(),
 };
 
 const PROMO_CODES: Record<string, { slot: string }> = {
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     while (hasMore) {
       const page = await stripe.checkout.sessions.list({
         limit: 100,
-        created: { gte: WORKSHOP4_START },
+        created: { gte: WORKSHOP5_START },
         expand: ["data.payment_intent.latest_charge"],
         ...(startingAfter ? { starting_after: startingAfter } : {}),
       });
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
         (s) =>
           s.payment_status === "paid" &&
           !isRefunded(s) &&
-          s.created >= WORKSHOP4_START &&
+          s.created >= WORKSHOP5_START &&
           CURRENT_SLOTS.has(s.metadata?.time_slot || "") &&
           s.metadata?.promo_code === promoUpper
       );
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
       const slotSold = allSessions
         .filter((s) => {
           if (s.payment_status !== "paid" || isRefunded(s)) return false;
-          if (s.created < WORKSHOP4_START) return false;
+          if (s.created < WORKSHOP5_START) return false;
           if (!CURRENT_SLOTS.has(s.metadata?.time_slot || "")) return false;
           return s.metadata?.time_slot === slot || s.metadata?.second_time_slot === slot;
         })
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
             name: isBundle
               ? "Houston Skate Project · 2-Session Pass"
               : "Houston Skate Project · General Admission",
-            description: `Pop-Up Workshop · September 13th, 2026 · ${sessionLabel} · Houston, TX`,
+            description: `Pop-Up Workshop · September 27th, 2026 · ${sessionLabel} · Houston, TX`,
           },
           unit_amount: unitAmount,
         },
@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
       customer_email: primaryEmail,
       metadata: {
         event: "Houston Skate Project",
-        date: "September 13, 2026",
+        date: "September 27, 2026",
         time_slot: timeSlot,
         ...(isBundle ? { second_time_slot: secondSlot } : {}),
         primary_name: primaryName,

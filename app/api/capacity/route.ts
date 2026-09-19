@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import { SLOTS, SLOT_CAPACITIES, FORCE_SOLD_OUT, WORKSHOP4_START } from "@/lib/slots";
+import { SLOTS, SLOT_CAPACITIES, FORCE_SOLD_OUT, WORKSHOP5_START } from "@/lib/slots";
 import type { Slot } from "@/lib/slots";
 
 function isRefunded(s: Stripe.Checkout.Session): boolean {
@@ -33,7 +33,7 @@ export async function GET() {
     while (hasMore) {
       const page = await stripe.checkout.sessions.list({
         limit: 100,
-        created: { gte: WORKSHOP4_START },
+        created: { gte: WORKSHOP5_START },
         expand: ["data.payment_intent.latest_charge"],
         ...(startingAfter ? { starting_after: startingAfter } : {}),
       });
