@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
   const WORKSHOP4_START = new Date("2026-09-07T00:00:00Z").getTime() / 1000;
   const WORKSHOP5_START = new Date("2026-09-20T00:00:00Z").getTime() / 1000;
-  const WORKSHOP5_SLOTS = new Set(["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"]);
+  const WORKSHOP5_SLOTS = new Set(["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"]);
   const WORKSHOP4_SLOTS = new Set(["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"]);
   const WORKSHOP3_SLOTS = new Set(["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"]);
   const WORKSHOP2_SLOTS = new Set(["9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM"]);

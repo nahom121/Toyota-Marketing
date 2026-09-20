@@ -4,19 +4,19 @@ import { FORCE_SOLD_OUT, WORKSHOP5_START } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 const SLOT_CAPACITIES: Record<string, number> = {
-  "10:00 AM": 30,
   "11:00 AM": 30,
   "12:00 PM": 30,
   "1:00 PM": 30,
+  "2:00 PM": 30,
 };
 const SLOT_CAPACITY = 30;
 
 // Registration closes at class start time (Houston CDT = UTC-5), Sep 27, 2026
 const SLOT_START_UTC: Record<string, number> = {
-  "10:00 AM": new Date("2026-09-27T15:00:00Z").getTime(),
   "11:00 AM": new Date("2026-09-27T16:00:00Z").getTime(),
   "12:00 PM": new Date("2026-09-27T17:00:00Z").getTime(),
   "1:00 PM":  new Date("2026-09-27T18:00:00Z").getTime(),
+  "2:00 PM":  new Date("2026-09-27T19:00:00Z").getTime(),
 };
 
 const PROMO_CODES: Record<string, { slot: string }> = {

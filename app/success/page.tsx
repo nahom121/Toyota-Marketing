@@ -80,7 +80,7 @@ function SuccessContent() {
           <p className="font-display text-xl mb-1">September 27th, 2026</p>
           <p className="text-white/60 text-sm">221 Barren Springs Dr, Ste 15, Houston, TX 77090</p>
           <p className="text-white/50 text-xs mt-2">
-            Doors open at 10:00 AM · Arrive at your booked session time!
+            Doors open at 11:00 AM · Arrive at your booked session time!
           </p>
         </div>
 

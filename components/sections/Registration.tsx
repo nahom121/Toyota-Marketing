@@ -8,24 +8,24 @@ import { FORCE_SOLD_OUT } from "@/lib/slots";
 const TICKET_PRICE = 25;
 const SLOT_CAPACITY = 30;
 const SLOT_CAPACITIES: Record<Slot, number> = {
-  "10:00 AM": 30,
   "11:00 AM": 30,
   "12:00 PM": 30,
   "1:00 PM": 30,
+  "2:00 PM": 30,
 };
-const SLOTS = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"] as const;
+const SLOTS = ["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"] as const;
 type Slot = typeof SLOTS[number];
 
 // Slots close exactly at class start time on Sep 27, 2026
 const SLOT_CUTOFFS: Record<Slot, Date> = {
-  "10:00 AM": new Date("2026-09-27T10:00:00"),
   "11:00 AM": new Date("2026-09-27T11:00:00"),
   "12:00 PM": new Date("2026-09-27T12:00:00"),
   "1:00 PM":  new Date("2026-09-27T13:00:00"),
+  "2:00 PM":  new Date("2026-09-27T14:00:00"),
 };
 
 const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
-  "10:00 AM": {
+  "11:00 AM": {
     title: "Pre-Beginner",
     bullets: [
       "Have never skated before",
@@ -33,7 +33,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Need to hold the wall or another person to skate or keep your balance",
     ],
   },
-  "11:00 AM": {
+  "12:00 PM": {
     title: "Beginner",
     bullets: [
       "Can skate across the floor without holding the wall or another person",
@@ -41,7 +41,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Can glide forward and keep your balance without assistance",
     ],
   },
-  "12:00 PM": {
+  "1:00 PM": {
     title: "Intermediate",
     bullets: [
       "Can comfortably make forward scissors/bubbles (circles with your feet) while moving",
@@ -49,7 +49,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Can comfortably complete at least one backward scissor/bubble on your own",
     ],
   },
-  "1:00 PM": {
+  "2:00 PM": {
     title: "Advanced",
     bullets: [
       "Can comfortably skate backward across the floor using backward scissors/bubbles without falling",
