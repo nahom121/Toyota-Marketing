@@ -12,6 +12,8 @@ export async function GET(request: NextRequest) {
   const WORKSHOP2_START = new Date("2026-08-18T00:00:00Z").getTime() / 1000;
   const WORKSHOP4_START = new Date("2026-09-07T00:00:00Z").getTime() / 1000;
   const WORKSHOP5_START = new Date("2026-09-20T00:00:00Z").getTime() / 1000;
+  const WORKSHOP6_START = new Date("2026-09-28T00:00:00Z").getTime() / 1000;
+  const WORKSHOP6_SLOTS = new Set(["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"]);
   const WORKSHOP5_SLOTS = new Set(["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"]);
   const WORKSHOP4_SLOTS = new Set(["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"]);
   const WORKSHOP3_SLOTS = new Set(["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"]);
@@ -19,7 +21,8 @@ export async function GET(request: NextRequest) {
 
   // Narrow the Stripe query to only the date range this workshop needs
   const created: { gte?: number; lt?: number } = {};
-  if (event === "current") created.gte = WORKSHOP5_START;
+  if (event === "current") created.gte = WORKSHOP6_START;
+  else if (event === "workshop5") { created.gte = WORKSHOP5_START; created.lt = WORKSHOP6_START; }
   else if (event === "workshop4") { created.gte = WORKSHOP4_START; created.lt = WORKSHOP5_START; }
   else if (event === "workshop3") { created.gte = WORKSHOP2_START; created.lt = WORKSHOP4_START; }
   else if (event === "workshop2") created.gte = WORKSHOP2_START;
@@ -50,7 +53,8 @@ export async function GET(request: NextRequest) {
       const charge = pi?.latest_charge as Stripe.Charge | null;
       if (charge?.refunded) return false;
       const slot = s.metadata?.time_slot || "";
-      if (event === "current")   return WORKSHOP5_SLOTS.has(slot);
+      if (event === "current")   return WORKSHOP6_SLOTS.has(slot);
+      if (event === "workshop5") return WORKSHOP5_SLOTS.has(slot);
       if (event === "workshop4") return WORKSHOP4_SLOTS.has(slot);
       if (event === "workshop3") return WORKSHOP3_SLOTS.has(slot);
       if (event === "workshop2") return WORKSHOP2_SLOTS.has(slot);

@@ -8,24 +8,24 @@ import { FORCE_SOLD_OUT } from "@/lib/slots";
 const TICKET_PRICE = 25;
 const SLOT_CAPACITY = 30;
 const SLOT_CAPACITIES: Record<Slot, number> = {
+  "10:00 AM": 30,
   "11:00 AM": 30,
   "12:00 PM": 30,
   "1:00 PM": 30,
-  "2:00 PM": 30,
 };
-const SLOTS = ["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"] as const;
+const SLOTS = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"] as const;
 type Slot = typeof SLOTS[number];
 
-// Slots close exactly at class start time on Sep 27, 2026
+// Slots close exactly at class start time on Oct 4, 2026
 const SLOT_CUTOFFS: Record<Slot, Date> = {
-  "11:00 AM": new Date("2026-09-27T11:00:00"),
-  "12:00 PM": new Date("2026-09-27T12:00:00"),
-  "1:00 PM":  new Date("2026-09-27T13:00:00"),
-  "2:00 PM":  new Date("2026-09-27T14:00:00"),
+  "10:00 AM": new Date("2026-10-04T10:00:00"),
+  "11:00 AM": new Date("2026-10-04T11:00:00"),
+  "12:00 PM": new Date("2026-10-04T12:00:00"),
+  "1:00 PM":  new Date("2026-10-04T13:00:00"),
 };
 
 const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
-  "11:00 AM": {
+  "10:00 AM": {
     title: "Pre-Beginner",
     bullets: [
       "Have never skated before",
@@ -33,7 +33,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Need to hold the wall or another person to skate or keep your balance",
     ],
   },
-  "12:00 PM": {
+  "11:00 AM": {
     title: "Beginner",
     bullets: [
       "Can skate across the floor without holding the wall or another person",
@@ -41,7 +41,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Can glide forward and keep your balance without assistance",
     ],
   },
-  "1:00 PM": {
+  "12:00 PM": {
     title: "Intermediate",
     bullets: [
       "Can comfortably make forward scissors/bubbles (circles with your feet) while moving",
@@ -49,7 +49,7 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Can comfortably complete at least one backward scissor/bubble on your own",
     ],
   },
-  "2:00 PM": {
+  "1:00 PM": {
     title: "Advanced",
     bullets: [
       "Can comfortably skate backward across the floor using backward scissors/bubbles without falling",
@@ -311,7 +311,7 @@ export default function Registration() {
             Secure your spot.
             <br />
             <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-              September 27th.
+              October 4th.
             </span>
           </h2>
           <p className="text-ink-secondary mt-3 text-base">
@@ -335,12 +335,12 @@ export default function Registration() {
             <h3 className="font-display text-2xl md:text-3xl text-charcoal mb-3">
               Registration for the{" "}
               <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-                September 27th
+                October 4th
               </span>{" "}
               workshop will open soon.
             </h3>
             <p className="text-ink-secondary text-base max-w-md mx-auto mb-2">
-              Spots are coming soon! We&apos;re putting the finishing touches on our next pop-up, happening Sunday, September 27th. Check back shortly, or join our email list below to be the first to know the moment tickets go live.
+              Spots are coming soon! We&apos;re putting the finishing touches on our next pop-up, happening Sunday, October 4th. Check back shortly, or join our email list below to be the first to know the moment tickets go live.
             </p>
           </motion.div>
         ) : (
@@ -727,7 +727,7 @@ export default function Registration() {
                     {selectedSlot && (
                       <div className="flex justify-between text-sm">
                         <span className="text-ink-secondary">Session</span>
-                        <span className="font-semibold text-charcoal">{selectedSlot} · Sep 27</span>
+                        <span className="font-semibold text-charcoal">{selectedSlot} · Oct 4</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm">
