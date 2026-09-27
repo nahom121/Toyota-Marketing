@@ -337,10 +337,10 @@ export default function Registration() {
               <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
                 October 4th
               </span>{" "}
-              workshop will open in 1 hour.
+              workshop will open soon.
             </h3>
             <p className="text-ink-secondary text-base max-w-md mx-auto mb-2">
-              We&apos;re just about ready! Registration for our next pop-up, happening Sunday, October 4th, will open in about an hour. Check back shortly, or join our email list below to be the first to know the moment tickets go live.
+              Spots are coming soon! We&apos;re putting the finishing touches on our next pop-up, happening Sunday, October 4th. Check back shortly, or join our email list below to be the first to know the moment tickets go live.
             </p>
           </motion.div>
         ) : (
