@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail, Bell } from "lucide-react";
 import { FORCE_SOLD_OUT } from "@/lib/slots";
 
@@ -185,6 +185,8 @@ function TicketCard({
 
 export default function Registration() {
   const [step, setStep] = useState(1);
+  const sectionRef = useRef<HTMLElement>(null);
+  const isFirstRender = useRef(true);
   const [ticketCount, setTicketCount] = useState(1);
   const [tickets, setTickets] = useState<TicketInfo[]>([defaultTicket(true)]);
   const [waiverAccepted, setWaiverAccepted] = useState(false);
@@ -215,6 +217,15 @@ export default function Registration() {
     const id = setInterval(check, 30000);
     return () => clearInterval(id);
   }, []);
+
+  // Each step can be a different height than the last, so without this the
+  // browser keeps the same scroll position and the user can land anywhere —
+  // including past this section, in the FAQ. Snap back to the top of the
+  // registration card whenever the step changes.
+  useEffect(() => {
+    if (isFirstRender.current) { isFirstRender.current = false; return; }
+    sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [step]);
 
   useEffect(() => {
     fetch("/api/capacity")
@@ -311,7 +322,7 @@ export default function Registration() {
   };
 
   return (
-    <section id="tickets" className="section-pad bg-cream relative overflow-hidden">
+    <section id="tickets" ref={sectionRef} className="section-pad bg-cream relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sand to-transparent" />
 
       <div className="max-w-3xl mx-auto container-pad relative z-10">
