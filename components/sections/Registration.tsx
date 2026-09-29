@@ -11,9 +11,10 @@ const SLOT_CAPACITIES: Record<Slot, number> = {
   "10:00 AM": 30,
   "11:00 AM": 30,
   "12:00 PM": 30,
-  "1:00 PM": 30,
+  "1:00 PM": 5,
+  "1:00 PM (Beginner)": 25,
 };
-const SLOTS = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"] as const;
+const SLOTS = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "1:00 PM (Beginner)"] as const;
 type Slot = typeof SLOTS[number];
 
 // Slots close exactly at class start time on Oct 4, 2026
@@ -22,6 +23,7 @@ const SLOT_CUTOFFS: Record<Slot, Date> = {
   "11:00 AM": new Date("2026-10-04T11:00:00"),
   "12:00 PM": new Date("2026-10-04T12:00:00"),
   "1:00 PM":  new Date("2026-10-04T13:00:00"),
+  "1:00 PM (Beginner)": new Date("2026-10-04T13:00:00"),
 };
 
 const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
@@ -57,8 +59,22 @@ const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
       "Can cross one foot over the other while skating forward around a circle without losing your balance",
     ],
   },
+  "1:00 PM (Beginner)": {
+    title: "Beginner",
+    bullets: [
+      "Can skate across the floor without holding the wall or another person",
+      "Can pick up both feet while skating instead of walking/shuffling",
+      "Can glide forward and keep your balance without assistance",
+    ],
+  },
 };
 type SlotData = { sold: number; remaining: number; isFull: boolean };
+
+// Two classes both run at 1:00 PM (Advanced + a second Beginner section),
+// so the slot key needs to be unique internally, but shown as plain "1:00 PM"
+function displayTime(slot: Slot): string {
+  return slot.replace(" (Beginner)", "");
+}
 
 type TicketInfo = {
   name: string;
@@ -390,7 +406,7 @@ export default function Registration() {
                         <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${selected ? "text-crimson" : "text-ink-muted"}`}>
                           {SLOT_LEVELS[slot].title} <span className="font-semibold normal-case tracking-normal opacity-70">(click to see what this requires)</span>
                         </p>
-                        <p className={`font-display text-xl mb-1 ${selected ? "text-crimson" : "text-charcoal"}`}>{slot}</p>
+                        <p className={`font-display text-xl mb-1 ${selected ? "text-crimson" : "text-charcoal"}`}>{displayTime(slot)}</p>
                         {slotData === null ? (
                           <div className="h-3 w-16 bg-charcoal/10 rounded animate-pulse mt-1" />
                         ) : promoUnlocked ? (
@@ -464,7 +480,7 @@ export default function Registration() {
                   return (
                     <div className="bg-charcoal/4 border border-charcoal/10 rounded-2xl p-5 mb-6">
                       <p className="font-semibold text-charcoal text-sm mb-1">
-                        🛼 {level.title} — {selectedSlot}
+                        🛼 {level.title} — {displayTime(selectedSlot)}
                       </p>
                       <p className="text-ink-muted text-xs mb-3">Choose this class if you:</p>
                       <ul className="space-y-1.5">
@@ -491,7 +507,7 @@ export default function Registration() {
                       </label>
 
                       <p className="text-xs text-ink-muted mt-4 border-t border-charcoal/10 pt-3">
-                        📌 <strong>Arrive at {selectedSlot}</strong> — that's your check-in time, not your class start time. You'll use those first 15 minutes to get your skates on and get comfortable. Class begins at 15 minutes past your arrival time.
+                        📌 <strong>Arrive at {displayTime(selectedSlot)}</strong> — that's your check-in time, not your class start time. You'll use those first 15 minutes to get your skates on and get comfortable. Class begins at 15 minutes past your arrival time.
                       </p>
                     </div>
                   );
@@ -501,7 +517,7 @@ export default function Registration() {
                 {selectedSlot && !isSoldOut && !promoApplied && (
                   <>
                     <p className="text-ink-secondary text-sm font-medium mb-4">
-                      How many people for the {selectedSlot} session?
+                      How many people for the {displayTime(selectedSlot)} session?
                     </p>
                     <div className="flex items-center justify-center gap-6 mb-6">
                       <button
@@ -727,7 +743,7 @@ export default function Registration() {
                     {selectedSlot && (
                       <div className="flex justify-between text-sm">
                         <span className="text-ink-secondary">Session</span>
-                        <span className="font-semibold text-charcoal">{selectedSlot} · Oct 4</span>
+                        <span className="font-semibold text-charcoal">{displayTime(selectedSlot)} · Oct 4</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm">

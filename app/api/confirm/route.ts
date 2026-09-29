@@ -4,6 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 
+// Two classes both run at 1:00 PM (Advanced + a second Beginner section), so
+// the slot is stored uniquely internally but shown as plain "1:00 PM" to customers.
+function displayTime(slot: string): string {
+  return slot.replace(" (Beginner)", "");
+}
+
 export async function GET(request: NextRequest) {
   try {
     const sessionId = request.nextUrl.searchParams.get("session_id");
@@ -27,7 +33,7 @@ export async function GET(request: NextRequest) {
 
     // Already sent — return success without re-sending
     if (meta.confirmation_sent === "true") {
-      return NextResponse.json({ success: true, name, email, ticketCount, timeSlot, amountPaid });
+      return NextResponse.json({ success: true, name, email, ticketCount, timeSlot: displayTime(timeSlot), amountPaid });
     }
 
     // Mark as sent before sending (prevents double-send on concurrent requests)
@@ -53,7 +59,7 @@ export async function GET(request: NextRequest) {
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Your Order</h2>
               <table style="width:100%;font-size:14px;color:#1C1C1C;border-collapse:collapse">
                 <tr><td style="padding:6px 0">Hi, ${name}!</td></tr>
-                <tr><td style="padding:6px 0">${isBundle ? "Sessions" : "Session"}</td><td style="padding:6px 0;text-align:right;font-weight:600">${isBundle ? `${timeSlot} + ${secondTimeSlot}` : timeSlot}</td></tr>
+                <tr><td style="padding:6px 0">${isBundle ? "Sessions" : "Session"}</td><td style="padding:6px 0;text-align:right;font-weight:600">${isBundle ? `${displayTime(timeSlot)} + ${displayTime(secondTimeSlot)}` : displayTime(timeSlot)}</td></tr>
                 <tr><td style="padding:6px 0">${isBundle ? "Bundle" : "Tickets"}</td><td style="padding:6px 0;text-align:right;font-weight:600">${isBundle ? `${ticketCount} person${Number(ticketCount) > 1 ? "s" : ""} · 2 sessions` : ticketCount}</td></tr>
                 <tr style="border-top:1px solid rgba(28,28,28,0.1)">
                   <td style="padding:10px 0 0;font-weight:bold">Total Paid</td>
@@ -65,7 +71,7 @@ export async function GET(request: NextRequest) {
             <div style="background:white;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid rgba(28,28,28,0.1)">
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Pop-Up Details</h2>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📅 <strong>Date:</strong> October 4th, 2026</p>
-              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>${isBundle ? "Your sessions:" : "Your session:"}</strong> ${isBundle ? `${timeSlot} &amp; ${secondTimeSlot}` : timeSlot}</p>
+              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>${isBundle ? "Your sessions:" : "Your session:"}</strong> ${isBundle ? `${displayTime(timeSlot)} &amp; ${displayTime(secondTimeSlot)}` : displayTime(timeSlot)}</p>
               <p style="margin:8px 0 4px;font-size:13px;color:#4A4A4A;background:#FFF8EC;border-left:3px solid #8B5E3C;padding:8px 10px;border-radius:4px">📌 <strong>Arrive at your session time.</strong> The time above is your check-in time — you'll use the first 15 minutes to get your skates on and get comfortable. Class begins 15 minutes after you arrive.</p>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> 221 Barren Springs Dr, Ste 15, Houston, TX 77090</p>
             </div>
@@ -111,7 +117,7 @@ export async function GET(request: NextRequest) {
       name,
       email,
       ticketCount,
-      timeSlot,
+      timeSlot: displayTime(timeSlot),
       amountPaid,
     });
   } catch (error) {

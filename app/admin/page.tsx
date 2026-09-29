@@ -24,7 +24,7 @@ const WORKSHOPS = [
 ];
 
 const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
-  "Workshop 6 · Oct 4, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"],
+  "Workshop 6 · Oct 4, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "1:00 PM (Beginner)"],
   "Workshop 5 · Sep 27, 2026": ["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"],
   "Workshop 4 · Sep 13, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"],
   "Workshop 3 · Sep 6, 2026": ["1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"],
@@ -73,6 +73,7 @@ const SLOT_TITLES_BY_WORKSHOP: Record<string, Record<string, string>> = {
     "11:00 AM": "Beginner",
     "12:00 PM": "Intermediate",
     "1:00 PM": "Advanced",
+    "1:00 PM (Beginner)": "Beginner",
   },
   "Workshop 5 · Sep 27, 2026": {
     "11:00 AM": "Pre-Beginner",
@@ -102,7 +103,7 @@ const SLOT_TITLES_BY_WORKSHOP: Record<string, Record<string, string>> = {
 
 const SLOT_ORDER = [
   "9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM",
-  "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM",
+  "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "1:00 PM (Beginner)", "2:00 PM", "3:00 PM", "4:00 PM",
 ];
 
 function getSlotTitle(workshop: string, timeSlot: string): string {

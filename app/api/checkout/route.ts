@@ -7,7 +7,8 @@ const SLOT_CAPACITIES: Record<string, number> = {
   "10:00 AM": 30,
   "11:00 AM": 30,
   "12:00 PM": 30,
-  "1:00 PM": 30,
+  "1:00 PM": 5,
+  "1:00 PM (Beginner)": 25,
 };
 const SLOT_CAPACITY = 30;
 
@@ -17,7 +18,14 @@ const SLOT_START_UTC: Record<string, number> = {
   "11:00 AM": new Date("2026-10-04T16:00:00Z").getTime(),
   "12:00 PM": new Date("2026-10-04T17:00:00Z").getTime(),
   "1:00 PM":  new Date("2026-10-04T18:00:00Z").getTime(),
+  "1:00 PM (Beginner)": new Date("2026-10-04T18:00:00Z").getTime(),
 };
+
+// Two classes both run at 1:00 PM (Advanced + a second Beginner section), so
+// the slot is stored uniquely internally but shown as plain "1:00 PM" to customers.
+function displayTime(slot: string): string {
+  return slot.replace(" (Beginner)", "");
+}
 
 const PROMO_CODES: Record<string, { slot: string }> = {
   ABATAD: { slot: "9:30 AM" },
@@ -68,7 +76,7 @@ export async function POST(request: NextRequest) {
       const startUtc = SLOT_START_UTC[slot];
       if (startUtc && Date.now() >= startUtc) {
         return NextResponse.json(
-          { error: `Registration for the ${slot} session is now closed — class has already started.` },
+          { error: `Registration for the ${displayTime(slot)} session is now closed — class has already started.` },
           { status: 409 }
         );
       }
@@ -120,13 +128,13 @@ export async function POST(request: NextRequest) {
       const remaining = Math.max(0, cap - slotSold);
       if (ticketCount > remaining) {
         return NextResponse.json(
-          { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left for the ${slot} session.` },
+          { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left for the ${displayTime(slot)} session.` },
           { status: 409 }
         );
       }
     }
 
-    const sessionLabel = isBundle ? `${timeSlot} + ${secondSlot}` : `${timeSlot} session`;
+    const sessionLabel = isBundle ? `${displayTime(timeSlot)} + ${displayTime(secondSlot)}` : `${displayTime(timeSlot)} session`;
 
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
       {
