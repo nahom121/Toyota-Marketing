@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
-import { FORCE_SOLD_OUT, WORKSHOP6_START } from "@/lib/slots";
+import { FORCE_SOLD_OUT, WORKSHOP6_START, CURRENT_EVENT_DATE } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 const SLOT_CAPACITIES: Record<string, number> = {
@@ -91,16 +91,13 @@ export async function POST(request: NextRequest) {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
-    const CURRENT_SLOTS = new Set(Object.keys(SLOT_CAPACITIES));
-
     // Check promo code hasn't been used
     if (promoUpper) {
       const codeUsed = allSessions.some(
         (s) =>
           s.payment_status === "paid" &&
           !isRefunded(s) &&
-          s.created >= WORKSHOP6_START &&
-          CURRENT_SLOTS.has(s.metadata?.time_slot || "") &&
+          s.metadata?.date === CURRENT_EVENT_DATE &&
           s.metadata?.promo_code === promoUpper
       );
       if (codeUsed) {
@@ -116,8 +113,7 @@ export async function POST(request: NextRequest) {
       const slotSold = allSessions
         .filter((s) => {
           if (s.payment_status !== "paid" || isRefunded(s)) return false;
-          if (s.created < WORKSHOP6_START) return false;
-          if (!CURRENT_SLOTS.has(s.metadata?.time_slot || "")) return false;
+          if (s.metadata?.date !== CURRENT_EVENT_DATE) return false;
           return s.metadata?.time_slot === slot || s.metadata?.second_time_slot === slot;
         })
         .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
