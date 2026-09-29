@@ -8,4 +8,4 @@ export const SLOT_CAPACITIES: Record<Slot, number> = {
   "1:00 PM": 30,
 };
 export const FORCE_SOLD_OUT = true;
-export const WORKSHOP6_START = new Date("2026-09-28T00:00:00Z").getTime() / 1000;
+export const WORKSHOP6_START = new Date("2026-09-27T19:00:00Z").getTime() / 1000;
