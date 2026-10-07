@@ -1,31 +1,23 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
-import { FORCE_SOLD_OUT, WORKSHOP6_START, CURRENT_EVENT_DATE } from "@/lib/slots";
+import { FORCE_SOLD_OUT, WORKSHOP7_START, CURRENT_EVENT_DATE } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 const SLOT_CAPACITIES: Record<string, number> = {
   "10:00 AM": 30,
   "11:00 AM": 30,
   "12:00 PM": 30,
-  "1:00 PM": 5,
-  "1:00 PM (Beginner)": 25,
+  "1:00 PM": 30,
 };
 const SLOT_CAPACITY = 30;
 
-// Registration closes at class start time (Houston CDT = UTC-5), Oct 4, 2026
+// Registration closes at class start time (Houston CDT = UTC-5), Oct 11, 2026
 const SLOT_START_UTC: Record<string, number> = {
-  "10:00 AM": new Date("2026-10-04T15:00:00Z").getTime(),
-  "11:00 AM": new Date("2026-10-04T16:00:00Z").getTime(),
-  "12:00 PM": new Date("2026-10-04T17:00:00Z").getTime(),
-  "1:00 PM":  new Date("2026-10-04T18:00:00Z").getTime(),
-  "1:00 PM (Beginner)": new Date("2026-10-04T18:00:00Z").getTime(),
+  "10:00 AM": new Date("2026-10-11T15:00:00Z").getTime(),
+  "11:00 AM": new Date("2026-10-11T16:00:00Z").getTime(),
+  "12:00 PM": new Date("2026-10-11T17:00:00Z").getTime(),
+  "1:00 PM":  new Date("2026-10-11T18:00:00Z").getTime(),
 };
-
-// Two classes both run at 1:00 PM (Advanced + a second Beginner section), so
-// the slot is stored uniquely internally but shown as plain "1:00 PM" to customers.
-function displayTime(slot: string): string {
-  return slot.replace(" (Beginner)", "");
-}
 
 const PROMO_CODES: Record<string, { slot: string }> = {
   ABATAD: { slot: "9:30 AM" },
@@ -76,7 +68,7 @@ export async function POST(request: NextRequest) {
       const startUtc = SLOT_START_UTC[slot];
       if (startUtc && Date.now() >= startUtc) {
         return NextResponse.json(
-          { error: `Registration for the ${displayTime(slot)} session is now closed — class has already started.` },
+          { error: `Registration for the ${slot} session is now closed — class has already started.` },
           { status: 409 }
         );
       }
@@ -90,7 +82,7 @@ export async function POST(request: NextRequest) {
     while (hasMore) {
       const page = await stripe.checkout.sessions.list({
         limit: 100,
-        created: { gte: WORKSHOP6_START },
+        created: { gte: WORKSHOP7_START },
         expand: ["data.payment_intent.latest_charge"],
         ...(startingAfter ? { starting_after: startingAfter } : {}),
       });
@@ -128,13 +120,13 @@ export async function POST(request: NextRequest) {
       const remaining = Math.max(0, cap - slotSold);
       if (ticketCount > remaining) {
         return NextResponse.json(
-          { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left for the ${displayTime(slot)} session.` },
+          { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left for the ${slot} session.` },
           { status: 409 }
         );
       }
     }
 
-    const sessionLabel = isBundle ? `${displayTime(timeSlot)} + ${displayTime(secondSlot)}` : `${displayTime(timeSlot)} session`;
+    const sessionLabel = isBundle ? `${timeSlot} + ${secondSlot}` : `${timeSlot} session`;
 
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
       {
@@ -144,7 +136,7 @@ export async function POST(request: NextRequest) {
             name: isBundle
               ? "Houston Skate Project · 2-Session Pass"
               : "Houston Skate Project · General Admission",
-            description: `Pop-Up Workshop · October 4th, 2026 · ${sessionLabel} · Houston, TX`,
+            description: `Pop-Up Workshop · October 11th, 2026 · ${sessionLabel} · Houston, TX`,
           },
           unit_amount: unitAmount,
         },
@@ -158,7 +150,7 @@ export async function POST(request: NextRequest) {
       customer_email: primaryEmail,
       metadata: {
         event: "Houston Skate Project",
-        date: "October 4, 2026",
+        date: "October 11, 2026",
         time_slot: timeSlot,
         ...(isBundle ? { second_time_slot: secondSlot } : {}),
         primary_name: primaryName,
