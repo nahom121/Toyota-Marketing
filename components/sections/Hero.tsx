@@ -45,10 +45,6 @@ export default function Hero() {
 
         {/* Left: Text */}
         <div>
-          {/* Badge */}
-          <div className="hero-badge mb-6">
-            <span className="label-tag-dark">Two Pop-Up Workshops · <strong>October 11th & 14th, 2026</strong></span>
-          </div>
 
           {/* Headline */}
           <div className="hero-headline">
