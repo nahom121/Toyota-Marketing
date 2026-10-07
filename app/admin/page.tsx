@@ -63,6 +63,10 @@ type Attendee = {
   tickets: number;
   amountPaid: string;
   sessionId: string;
+  attendance?: string;
+  attendance2?: string;
+  note?: string;
+  note2?: string;
 };
 
 type Stats = {
@@ -191,23 +195,47 @@ export default function AdminPage() {
     try {
       const saved = localStorage.getItem("hsp_transfers");
       if (saved) setTransfers(JSON.parse(saved));
-      const att = localStorage.getItem("hsp_attendance");
-      if (att) setAttendance(JSON.parse(att));
-      const n = localStorage.getItem("hsp_notes");
-      if (n) setNotes(JSON.parse(n));
+      // Transfer rows aren't tied to a real Stripe session, so their
+      // attendance still lives in localStorage; real attendee attendance and
+      // notes now come from Stripe metadata instead, via fetchData, so they
+      // show the same on every device.
+      const att = localStorage.getItem("hsp_attendance_transfers");
+      if (att) setAttendance((prev) => ({ ...prev, ...JSON.parse(att) }));
     } catch {}
   }, []);
 
-  const markAttendance = (sessionId: string, value: string) => {
-    const updated = { ...attendance, [sessionId]: value };
-    setAttendance(updated);
-    try { localStorage.setItem("hsp_attendance", JSON.stringify(updated)); } catch {}
+  // sessionId + slotIndex persist to Stripe (shared across devices). Omit
+  // them (as the Transfers table does) to fall back to a local-only save.
+  const markAttendance = (key: string, value: string, sessionId?: string, slotIndex?: 1 | 2) => {
+    setAttendance((prev) => ({ ...prev, [key]: value }));
+    if (sessionId) {
+      fetch(`/api/admin/attendance?password=${encodeURIComponent(password)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId, slotIndex: slotIndex || 1, field: "attendance", value }),
+      }).catch(() => {});
+    } else {
+      try {
+        const raw = localStorage.getItem("hsp_attendance_transfers");
+        const existing = raw ? JSON.parse(raw) : {};
+        existing[key] = value;
+        localStorage.setItem("hsp_attendance_transfers", JSON.stringify(existing));
+      } catch {}
+    }
   };
 
+  // Updates local state on every keystroke; the actual save to Stripe fires
+  // on blur (see commitNote) so we're not hitting the API on every letter.
   const saveNote = (key: string, value: string) => {
-    const updated = { ...notes, [key]: value };
-    setNotes(updated);
-    try { localStorage.setItem("hsp_notes", JSON.stringify(updated)); } catch {}
+    setNotes((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const commitNote = (sessionId: string, slotIndex: 1 | 2, value: string) => {
+    fetch(`/api/admin/attendance?password=${encodeURIComponent(password)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId, slotIndex, field: "note", value }),
+    }).catch(() => {});
   };
 
   const saveTransfers = (list: Transfer[]) => {
@@ -276,6 +304,25 @@ export default function AdminPage() {
       } else {
         setAttendees(data.attendees);
         setAuthed(true);
+
+        // Attendance/notes live on the Stripe session itself (not localStorage),
+        // so every device sees the same values — pull them in from the fetch.
+        const attUpdates: Record<string, string> = {};
+        const noteUpdates: Record<string, string> = {};
+        for (const a of data.attendees as Attendee[]) {
+          if (a.timeSlot.includes("+")) {
+            const [s1, s2] = a.timeSlot.split("+").map((s) => s.trim());
+            if (a.attendance) attUpdates[`${a.sessionId}-${s1}`] = a.attendance;
+            if (a.attendance2) attUpdates[`${a.sessionId}-${s2}`] = a.attendance2;
+            if (a.note) noteUpdates[`${a.sessionId}-${s1}`] = a.note;
+            if (a.note2) noteUpdates[`${a.sessionId}-${s2}`] = a.note2;
+          } else {
+            if (a.attendance) attUpdates[`${a.sessionId}-${a.timeSlot}`] = a.attendance;
+            if (a.note) noteUpdates[`${a.sessionId}-${a.timeSlot}`] = a.note;
+          }
+        }
+        setAttendance((prev) => ({ ...prev, ...attUpdates }));
+        setNotes((prev) => ({ ...prev, ...noteUpdates }));
       }
     } catch {
       setError("Network error. Try again.");
@@ -423,15 +470,15 @@ export default function AdminPage() {
                 <tbody>
                   {(() => {
                     // Expand bundle purchases into one row per slot
-                    type Row = Attendee & { displaySlot: string; displayAmount: string; rowKey: string };
+                    type Row = Attendee & { displaySlot: string; displayAmount: string; rowKey: string; slotIndex: 1 | 2 };
                     const expanded: Row[] = [];
                     for (const a of attendees) {
                       if (a.timeSlot.includes("+")) {
                         const [s1, s2] = a.timeSlot.split("+").map((s) => s.trim());
-                        expanded.push({ ...a, displaySlot: s1, displayAmount: "25.00", rowKey: `${a.sessionId}-1` });
-                        expanded.push({ ...a, displaySlot: s2, displayAmount: "25.00", rowKey: `${a.sessionId}-2` });
+                        expanded.push({ ...a, displaySlot: s1, displayAmount: "25.00", rowKey: `${a.sessionId}-1`, slotIndex: 1 });
+                        expanded.push({ ...a, displaySlot: s2, displayAmount: "25.00", rowKey: `${a.sessionId}-2`, slotIndex: 2 });
                       } else {
-                        expanded.push({ ...a, displaySlot: a.timeSlot, displayAmount: a.amountPaid, rowKey: a.sessionId });
+                        expanded.push({ ...a, displaySlot: a.timeSlot, displayAmount: a.amountPaid, rowKey: a.sessionId, slotIndex: 1 });
                       }
                     }
                     expanded.sort((a, b) => slotSortKey(a.displaySlot) - slotSortKey(b.displaySlot));
@@ -469,7 +516,7 @@ export default function AdminPage() {
                               <td className="px-4 py-3 whitespace-nowrap">
                                 <select
                                   value={att}
-                                  onChange={(e) => markAttendance(`${a.sessionId}-${a.displaySlot}`, e.target.value)}
+                                  onChange={(e) => markAttendance(`${a.sessionId}-${a.displaySlot}`, e.target.value, a.sessionId, a.slotIndex)}
                                   className={`text-xs rounded-full px-3 py-1.5 border font-semibold focus:outline-none cursor-pointer ${
                                     att === "signed-in"
                                       ? "bg-green-50 border-green-300 text-green-700"
@@ -491,6 +538,7 @@ export default function AdminPage() {
                                   type="text"
                                   value={notes[`${a.sessionId}-${a.displaySlot}`] || ""}
                                   onChange={(e) => saveNote(`${a.sessionId}-${a.displaySlot}`, e.target.value)}
+                                  onBlur={(e) => commitNote(a.sessionId, a.slotIndex, e.target.value)}
                                   placeholder="Add note…"
                                   className="text-xs border border-charcoal/15 rounded-lg px-2 py-1.5 w-36 bg-white text-charcoal placeholder-ink-muted/50 focus:outline-none focus:border-crimson transition-colors"
                                 />

@@ -95,6 +95,10 @@ export async function GET(request: NextRequest) {
         tickets: Number(meta.ticket_count || 1),
         amountPaid: ((s.amount_total || 0) / 100).toFixed(2),
         sessionId: s.id,
+        attendance: meta.attendance || "",
+        attendance2: meta.attendance_2 || "",
+        note: meta.note || "",
+        note2: meta.note_2 || "",
       };
     });
 
