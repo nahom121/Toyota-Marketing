@@ -128,6 +128,17 @@ const SLOT_ORDER = [
   "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "1:00 PM (Beginner)", "2:00 PM", "3:00 PM", "4:00 PM",
 ];
 
+const EVENT_FILTER_TABS = [
+  { key: "current",   label: "Workshop 8 · Oct 14, 2026" },
+  { key: "workshop7", label: "Workshop 7 · Oct 11, 2026" },
+  { key: "workshop6", label: "Workshop 6 · Oct 4, 2026" },
+  { key: "workshop5", label: "Workshop 5 · Sep 27, 2026" },
+  { key: "workshop4", label: "Workshop 4 · Sep 13, 2026" },
+  { key: "workshop3", label: "Workshop 3 · Sep 6, 2026" },
+  { key: "workshop2", label: "Workshop 2 · Aug 30, 2026" },
+  { key: "previous",  label: "Workshop 1 · Aug 9, 2026" },
+] as const;
+
 function getSlotTitle(workshop: string, timeSlot: string): string {
   const first = timeSlot.split("+")[0].trim();
   return SLOT_TITLES_BY_WORKSHOP[workshop]?.[first] || "—";
@@ -176,6 +187,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [authed, setAuthed] = useState(false);
+  const [pickerDone, setPickerDone] = useState(false);
   const [eventFilter, setEventFilter] = useState<"current" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous">("current");
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [showTransferForm, setShowTransferForm] = useState(false);
@@ -385,6 +397,31 @@ export default function AdminPage() {
     );
   }
 
+  if (!pickerDone) {
+    return (
+      <main className="min-h-screen bg-cream flex items-center justify-center px-4 py-16">
+        <div className="w-full max-w-xl">
+          <div className="text-center mb-8">
+            <h1 className="font-display text-3xl text-charcoal">Select a workshop</h1>
+            <p className="text-ink-secondary text-sm mt-1">Choose which workshop&apos;s registrations to view</p>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {EVENT_FILTER_TABS.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => { switchFilter(key); setPickerDone(true); }}
+                className="flex items-center justify-between gap-3 px-5 py-4 rounded-2xl border-2 border-charcoal/15 bg-white text-left hover:border-charcoal/40 transition-colors"
+              >
+                <span className="font-semibold text-charcoal text-sm">{label}</span>
+                <ArrowRight className="w-4 h-4 text-ink-muted shrink-0" />
+              </button>
+            ))}
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-cream px-4 py-10">
       <div className="max-w-6xl mx-auto">
@@ -395,6 +432,12 @@ export default function AdminPage() {
             <p className="text-ink-secondary text-sm mt-0.5">Houston Skate Project</p>
           </div>
           <div className="flex gap-3">
+            <button
+              onClick={() => setPickerDone(false)}
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-charcoal/20 text-charcoal text-sm hover:bg-charcoal/5 transition-colors"
+            >
+              Switch Workshop
+            </button>
             <button
               onClick={() => fetchData(password, eventFilter)}
               disabled={loading}
@@ -417,16 +460,7 @@ export default function AdminPage() {
 
         {/* Event filter tabs */}
         <div className="flex gap-2 mb-8 flex-wrap">
-          {([
-            { key: "current",   label: "Workshop 8 · Oct 14, 2026" },
-            { key: "workshop7", label: "Workshop 7 · Oct 11, 2026" },
-            { key: "workshop6", label: "Workshop 6 · Oct 4, 2026" },
-            { key: "workshop5", label: "Workshop 5 · Sep 27, 2026" },
-            { key: "workshop4", label: "Workshop 4 · Sep 13, 2026" },
-            { key: "workshop3", label: "Workshop 3 · Sep 6, 2026" },
-            { key: "workshop2", label: "Workshop 2 · Aug 30, 2026" },
-            { key: "previous",  label: "Workshop 1 · Aug 9, 2026" },
-          ] as const).map(({ key, label }) => (
+          {EVENT_FILTER_TABS.map(({ key, label }) => (
             <button
               key={key}
               onClick={() => switchFilter(key)}
