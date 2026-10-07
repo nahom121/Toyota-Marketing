@@ -418,7 +418,8 @@ export default function AdminPage() {
         {/* Event filter tabs */}
         <div className="flex gap-2 mb-8 flex-wrap">
           {([
-            { key: "current",   label: "Workshop 7 · Oct 11, 2026" },
+            { key: "current",   label: "Workshop 8 · Oct 14, 2026" },
+            { key: "workshop7", label: "Workshop 7 · Oct 11, 2026" },
             { key: "workshop6", label: "Workshop 6 · Oct 4, 2026" },
             { key: "workshop5", label: "Workshop 5 · Sep 27, 2026" },
             { key: "workshop4", label: "Workshop 4 · Sep 13, 2026" },
