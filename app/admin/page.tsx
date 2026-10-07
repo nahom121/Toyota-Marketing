@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { Download, RefreshCw, Lock, Users, Ticket, DollarSign, ArrowRight, Trash2, Plus } from "lucide-react";
+import { Download, RefreshCw, Lock, Users, Ticket, DollarSign, ArrowRight, Trash2, Plus, ChevronDown } from "lucide-react";
 
 type Transfer = {
   id: string;
@@ -188,6 +188,7 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [authed, setAuthed] = useState(false);
   const [pickerDone, setPickerDone] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [eventFilter, setEventFilter] = useState<"current" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous">("current");
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [showTransferForm, setShowTransferForm] = useState(false);
@@ -400,23 +401,32 @@ export default function AdminPage() {
   if (!pickerDone) {
     return (
       <main className="min-h-screen bg-cream flex items-center justify-center px-4 py-16">
-        <div className="w-full max-w-xl">
-          <div className="text-center mb-8">
-            <h1 className="font-display text-3xl text-charcoal">Select a workshop</h1>
-            <p className="text-ink-secondary text-sm mt-1">Choose which workshop&apos;s registrations to view</p>
+        <div className="w-full max-w-sm">
+          <div className="text-center mb-6">
+            <h1 className="font-display text-3xl text-charcoal">Registrations</h1>
+            <p className="text-ink-secondary text-sm mt-1">Houston Skate Project</p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-3">
-            {EVENT_FILTER_TABS.map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => { switchFilter(key); setPickerDone(true); }}
-                className="flex items-center justify-between gap-3 px-5 py-4 rounded-2xl border-2 border-charcoal/15 bg-white text-left hover:border-charcoal/40 transition-colors"
-              >
-                <span className="font-semibold text-charcoal text-sm">{label}</span>
-                <ArrowRight className="w-4 h-4 text-ink-muted shrink-0" />
-              </button>
-            ))}
-          </div>
+          <button
+            onClick={() => setPickerOpen((v) => !v)}
+            className="btn-primary w-full py-3.5 flex items-center justify-center gap-2"
+          >
+            Select Workshop
+            <ChevronDown className={`w-4 h-4 transition-transform ${pickerOpen ? "rotate-180" : ""}`} />
+          </button>
+          {pickerOpen && (
+            <div className="mt-3 flex flex-col gap-2">
+              {EVENT_FILTER_TABS.map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => { switchFilter(key); setPickerDone(true); setPickerOpen(false); }}
+                  className="flex items-center justify-between gap-3 px-5 py-3.5 rounded-2xl border-2 border-charcoal/15 bg-white text-left hover:border-charcoal/40 transition-colors"
+                >
+                  <span className="font-semibold text-charcoal text-sm">{label}</span>
+                  <ArrowRight className="w-4 h-4 text-ink-muted shrink-0" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </main>
     );
