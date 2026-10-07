@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: "%s | Houston Skate Project",
   },
   description:
-    "A pop-up roller skating workshop in Houston, TX hosted by national champion skater Michaela. October 11th, 2026. All skill levels welcome. Register now.",
+    "Pop-up roller skating workshops in Houston, TX hosted by national champion skater Michaela. October 11th & 14th, 2026. All skill levels welcome. Register now.",
   keywords: [
     "Houston Skate Project",
     "roller skating Houston",
@@ -46,16 +46,16 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    title: "Houston Skate Project · Pop-Up Workshop · October 11, 2026",
+    title: "Houston Skate Project · Pop-Up Workshops · October 11 & 14, 2026",
     description:
-      "National champion skater Michaela brings a pop-up roller skating workshop to Houston. All skill levels welcome. Register now.",
+      "National champion skater Michaela brings pop-up roller skating workshops to Houston. All skill levels welcome. Register now.",
     siteName: "Houston Skate Project",
     images: [{ url: "/og-image.png", width: 1200, height: 1200, alt: "Houston Skate Project Logo" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Houston Skate Project · Pop-Up Workshop · October 11",
-    description: "Roll how you want. Express who you are. Houston, TX · October 11, 2026.",
+    title: "Houston Skate Project · Pop-Up Workshops · Oct 11 & 14",
+    description: "Roll how you want. Express who you are. Houston, TX · October 11 & 14, 2026.",
     images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },

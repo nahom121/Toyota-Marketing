@@ -6,16 +6,16 @@ import { Calendar, MapPin, Clock, Ticket } from "lucide-react";
 const details = [
   {
     icon: Calendar,
-    label: "Date",
-    value: "October 11th, 2026",
-    sub: "Sunday",
+    label: "Dates",
+    value: "Oct 11 & 14, 2026",
+    sub: "Sunday & Wednesday",
     color: "bg-crimson/10 text-crimson",
   },
   {
     icon: Clock,
     label: "Time",
-    value: "4 Sessions",
-    sub: "10:00 AM · 11:00 AM · 12:00 PM · 1:00 PM",
+    value: "6 Sessions",
+    sub: "Sun: 10AM · 11AM · 12PM · 1PM — Wed: 6:30PM · 7:30PM",
     color: "bg-sand/30 text-sand-dark",
   },
   {
@@ -52,7 +52,7 @@ export default function EventDetails() {
             Mark your calendar.
             <br />
             <span className="font-script text-sand" style={{ fontSize: "1.05em" }}>
-              October 11th.
+              Oct 11th & 14th.
             </span>
           </h2>
           <p className="text-white/60 text-lg mt-4 max-w-lg mx-auto">

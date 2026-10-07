@@ -15,6 +15,7 @@ type Transfer = {
 };
 
 const WORKSHOPS = [
+  "Workshop 8 · Oct 14, 2026",
   "Workshop 7 · Oct 11, 2026",
   "Workshop 6 · Oct 4, 2026",
   "Workshop 5 · Sep 27, 2026",
@@ -25,6 +26,7 @@ const WORKSHOPS = [
 ];
 
 const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
+  "Workshop 8 · Oct 14, 2026": ["6:30 PM", "7:30 PM"],
   "Workshop 7 · Oct 11, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"],
   "Workshop 6 · Oct 4, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "1:00 PM (Beginner)"],
   "Workshop 5 · Sep 27, 2026": ["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"],
@@ -35,7 +37,8 @@ const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
 };
 
 const WORKSHOP_TO_FILTER: Record<string, string> = {
-  "Workshop 7 · Oct 11, 2026": "current",
+  "Workshop 8 · Oct 14, 2026": "current",
+  "Workshop 7 · Oct 11, 2026": "workshop7",
   "Workshop 6 · Oct 4, 2026": "workshop6",
   "Workshop 5 · Sep 27, 2026": "workshop5",
   "Workshop 4 · Sep 13, 2026": "workshop4",
@@ -45,7 +48,8 @@ const WORKSHOP_TO_FILTER: Record<string, string> = {
 };
 
 const FILTER_TO_WORKSHOP: Record<string, string> = {
-  current: "Workshop 7 · Oct 11, 2026",
+  current: "Workshop 8 · Oct 14, 2026",
+  workshop7: "Workshop 7 · Oct 11, 2026",
   workshop6: "Workshop 6 · Oct 4, 2026",
   workshop5: "Workshop 5 · Sep 27, 2026",
   workshop4: "Workshop 4 · Sep 13, 2026",
@@ -76,6 +80,10 @@ type Stats = {
 };
 
 const SLOT_TITLES_BY_WORKSHOP: Record<string, Record<string, string>> = {
+  "Workshop 8 · Oct 14, 2026": {
+    "6:30 PM": "Pre-Beginner",
+    "7:30 PM": "Beginner",
+  },
   "Workshop 7 · Oct 11, 2026": {
     "10:00 AM": "Pre-Beginner",
     "11:00 AM": "Beginner",
@@ -168,10 +176,10 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [authed, setAuthed] = useState(false);
-  const [eventFilter, setEventFilter] = useState<"current" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous">("current");
+  const [eventFilter, setEventFilter] = useState<"current" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous">("current");
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [showTransferForm, setShowTransferForm] = useState(false);
-  const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "1:00 PM", toWorkshop: WORKSHOPS[0], toSlot: "10:00 AM", note: "" });
+  const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "1:00 PM", toWorkshop: WORKSHOPS[0], toSlot: "6:30 PM", note: "" });
   const [tfError, setTfError] = useState("");
   const [tfLoading, setTfLoading] = useState(false);
   const [attendance, setAttendance] = useState<Record<string, string>>({});
@@ -281,7 +289,7 @@ export default function AdminPage() {
 
       const entry: Transfer = { ...tf, id: Date.now().toString(), addedAt: new Date().toISOString() };
       saveTransfers([entry, ...transfers]);
-      setTf({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "1:00 PM", toWorkshop: WORKSHOPS[0], toSlot: "10:00 AM", note: "" });
+      setTf({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "1:00 PM", toWorkshop: WORKSHOPS[0], toSlot: "6:30 PM", note: "" });
       setShowTransferForm(false);
     } catch {
       setTfError("Something went wrong. Try again.");
@@ -336,7 +344,7 @@ export default function AdminPage() {
     fetchData(password, eventFilter);
   };
 
-  const switchFilter = (filter: "current" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous") => {
+  const switchFilter = (filter: "current" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous") => {
     setEventFilter(filter);
     fetchData(password, filter);
   };

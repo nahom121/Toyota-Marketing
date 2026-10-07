@@ -3,62 +3,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail, Bell } from "lucide-react";
-import { FORCE_SOLD_OUT } from "@/lib/slots";
+import { FORCE_SOLD_OUT, WORKSHOP_DATES, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, SLOT_LEVELS_BY_DATE, SLOT_START_UTC_MS_BY_DATE, SLOT_CAPACITY } from "@/lib/slots";
+import type { WorkshopDate } from "@/lib/slots";
 
 const TICKET_PRICE = 25;
-const SLOT_CAPACITY = 30;
-const SLOT_CAPACITIES: Record<Slot, number> = {
-  "10:00 AM": 30,
-  "11:00 AM": 30,
-  "12:00 PM": 30,
-  "1:00 PM": 30,
-};
-const SLOTS = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"] as const;
-type Slot = typeof SLOTS[number];
-
-// Slots close exactly at class start time on Oct 11, 2026
-const SLOT_CUTOFFS: Record<Slot, Date> = {
-  "10:00 AM": new Date("2026-10-11T10:00:00"),
-  "11:00 AM": new Date("2026-10-11T11:00:00"),
-  "12:00 PM": new Date("2026-10-11T12:00:00"),
-  "1:00 PM":  new Date("2026-10-11T13:00:00"),
-};
-
-const SLOT_LEVELS: Record<Slot, { title: string; bullets: string[] }> = {
-  "10:00 AM": {
-    title: "Pre-Beginner",
-    bullets: [
-      "Have never skated before",
-      "Cannot skate across the floor on your own",
-      "Need to hold the wall or another person to skate or keep your balance",
-    ],
-  },
-  "11:00 AM": {
-    title: "Beginner",
-    bullets: [
-      "Can skate across the floor without holding the wall or another person",
-      "Can pick up both feet while skating instead of walking/shuffling",
-      "Can glide forward and keep your balance without assistance",
-    ],
-  },
-  "12:00 PM": {
-    title: "Intermediate",
-    bullets: [
-      "Can comfortably make forward scissors/bubbles (circles with your feet) while moving",
-      "Can glide on one foot for at least 5 seconds without putting your foot down",
-      "Can comfortably complete at least one backward scissor/bubble on your own",
-    ],
-  },
-  "1:00 PM": {
-    title: "Advanced",
-    bullets: [
-      "Can comfortably skate backward across the floor using backward scissors/bubbles without falling",
-      "Can squat all the way down into a cannonball while rolling and maintain your balance",
-      "Can cross one foot over the other while skating forward around a circle without losing your balance",
-    ],
-  },
-};
+type Slot = string;
 type SlotData = { sold: number; remaining: number; isFull: boolean };
+type CapacityResponse = { dates: Record<WorkshopDate, { slots: Record<string, SlotData>; slotCapacity: Record<string, number> }> };
 
 type TicketInfo = {
   name: string;
@@ -179,8 +130,9 @@ export default function Registration() {
   const [levelAcknowledged, setLevelAcknowledged] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedDate, setSelectedDate] = useState<WorkshopDate | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
-  const [slotData, setSlotData] = useState<Record<string, SlotData> | null>(null);
+  const [capacity, setCapacity] = useState<CapacityResponse["dates"] | null>(null);
   const [promoInput, setPromoInput] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoCode, setPromoCode] = useState("");
@@ -188,19 +140,20 @@ export default function Registration() {
   const [promoError, setPromoError] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
   const [showPromo, setShowPromo] = useState(false);
-  const [timeClosedSlots, setTimeClosedSlots] = useState<Set<Slot>>(() => {
-    const now = new Date();
-    return new Set(SLOTS.filter((s) => now >= SLOT_CUTOFFS[s]));
-  });
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    const check = () => {
-      const now = new Date();
-      setTimeClosedSlots(new Set(SLOTS.filter((s) => now >= SLOT_CUTOFFS[s])));
-    };
-    const id = setInterval(check, 30000);
+    const id = setInterval(() => setNow(Date.now()), 30000);
     return () => clearInterval(id);
   }, []);
+
+  const SLOTS = selectedDate ? SLOTS_BY_DATE[selectedDate] : [];
+  const SLOT_LEVELS = selectedDate ? SLOT_LEVELS_BY_DATE[selectedDate] : {};
+  const SLOT_CAPACITIES = selectedDate ? SLOT_CAPACITIES_BY_DATE[selectedDate] : {};
+  const slotData = selectedDate ? capacity?.[selectedDate]?.slots ?? null : null;
+  const timeClosedSlots = new Set(
+    selectedDate ? SLOTS.filter((s) => now >= (SLOT_START_UTC_MS_BY_DATE[selectedDate][s] ?? Infinity)) : []
+  );
 
   // Each step can be a different height than the last, so without this the
   // browser keeps the same scroll position and the user can land anywhere —
@@ -214,11 +167,8 @@ export default function Registration() {
   useEffect(() => {
     fetch("/api/capacity")
       .then((r) => r.json())
-      .then((d) => setSlotData(d.slots))
-      .catch(() => {
-        const fallback = Object.fromEntries(SLOTS.map((s) => [s, { sold: 0, remaining: SLOT_CAPACITIES[s], isFull: false }]));
-        setSlotData(fallback);
-      });
+      .then((d: CapacityResponse) => setCapacity(d.dates))
+      .catch(() => setCapacity(null));
   }, []);
 
   const spotsLeft = selectedSlot && slotData
@@ -269,7 +219,7 @@ export default function Registration() {
   };
 
   const isSoldOut = selectedSlot ? (promoApplied && selectedSlot === promoSlot ? false : slotData?.[selectedSlot]?.isFull ?? false) : false;
-  const step1Valid = !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut && byosAcknowledged && levelAcknowledged;
+  const step1Valid = !!selectedDate && !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut && byosAcknowledged && levelAcknowledged;
   const step2Valid = tickets.every((t, i) => {
     if (!t.name.trim()) return false;
     if (i === 0 && (!t.email || t.email === "N/A" || !t.phone || t.phone === "N/A")) return false;
@@ -284,6 +234,7 @@ export default function Registration() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          date: selectedDate,
           ticketCount,
           timeSlot: selectedSlot,
           primaryEmail: tickets[0].email,
@@ -320,16 +271,12 @@ export default function Registration() {
           <div className="label-tag mx-auto mb-5">Register Now</div>
           <h2 className="font-display text-4xl md:text-5xl text-charcoal leading-tight">
             Secure your spot.
-            <br />
-            <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-              October 11th.
-            </span>
           </h2>
           <p className="text-ink-secondary mt-3 text-base">
             General Admission: <span className="font-semibold text-charcoal">$25</span> per person
           </p>
-          {slotData && !FORCE_SOLD_OUT && (
-            <p className="text-ink-muted text-xs mt-3">Select a session below to see availability</p>
+          {!FORCE_SOLD_OUT && (
+            <p className="text-ink-muted text-xs mt-3">Choose a date below, then select a session to see availability</p>
           )}
         </motion.div>
 
@@ -344,14 +291,10 @@ export default function Registration() {
               <Bell className="w-7 h-7 text-crimson" />
             </div>
             <h3 className="font-display text-2xl md:text-3xl text-charcoal mb-3">
-              Registration for the{" "}
-              <span className="font-script text-crimson" style={{ fontSize: "1.1em" }}>
-                October 11th
-              </span>{" "}
-              workshop will open soon.
+              Registration will open soon.
             </h3>
             <p className="text-ink-secondary text-base max-w-md mx-auto mb-2">
-              Spots are coming soon! We&apos;re putting the finishing touches on our next pop-up, happening Sunday, October 11th. Check back shortly, or join our email list below to be the first to know the moment tickets go live.
+              Spots are coming soon! We&apos;re putting the finishing touches on our next pop-ups. Check back shortly, or join our email list below to be the first to know the moment tickets go live.
             </p>
           </motion.div>
         ) : (
@@ -362,7 +305,7 @@ export default function Registration() {
         <div className="bg-cream-light border border-charcoal/10 rounded-3xl p-6 md:p-8">
           <AnimatePresence mode="wait">
 
-            {/* STEP 1 — Ticket Count */}
+            {/* STEP 1 — Date + Session */}
             {step === 1 && (
               <motion.div
                 key="step1"
@@ -371,6 +314,35 @@ export default function Registration() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
+                <h3 className="font-display text-2xl text-charcoal mb-1">Pick your workshop date</h3>
+
+                {/* Date selector */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                  {WORKSHOP_DATES.map(({ value, dayLabel }) => {
+                    const selected = selectedDate === value;
+                    return (
+                      <button
+                        key={value}
+                        onClick={() => {
+                          if (selectedDate !== value) {
+                            setSelectedDate(value);
+                            setSelectedSlot(null);
+                            setTicketCount(1);
+                            setLevelAcknowledged(false);
+                          }
+                        }}
+                        className={`rounded-2xl p-4 text-left border-2 transition-all ${
+                          selected ? "border-crimson bg-crimson/5" : "border-charcoal/15 hover:border-sand bg-white"
+                        }`}
+                      >
+                        <p className={`font-display text-lg ${selected ? "text-crimson" : "text-charcoal"}`}>{dayLabel}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {selectedDate && (
+                <>
                 <h3 className="font-display text-2xl text-charcoal mb-1">Pick your session</h3>
 
                 {/* Slot selector */}
@@ -583,6 +555,8 @@ export default function Registration() {
                     Continue to Attendee Info
                   </button>
                 )}
+                </>
+                )}
               </motion.div>
             )}
 
@@ -735,10 +709,12 @@ export default function Registration() {
                     <p className="font-semibold text-charcoal text-sm">Order Summary</p>
                   </div>
                   <div className="p-4 space-y-3">
-                    {selectedSlot && (
+                    {selectedSlot && selectedDate && (
                       <div className="flex justify-between text-sm">
                         <span className="text-ink-secondary">Session</span>
-                        <span className="font-semibold text-charcoal">{selectedSlot} · Oct 11</span>
+                        <span className="font-semibold text-charcoal">
+                          {selectedSlot} · {WORKSHOP_DATES.find((d) => d.value === selectedDate)?.shortLabel}
+                        </span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm">

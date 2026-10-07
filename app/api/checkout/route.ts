@@ -1,23 +1,9 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
-import { FORCE_SOLD_OUT, WORKSHOP7_START, CURRENT_EVENT_DATE } from "@/lib/slots";
+import { FORCE_SOLD_OUT, ACTIVE_WORKSHOPS_START, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, SLOT_CAPACITY, SLOT_START_UTC_MS_BY_DATE } from "@/lib/slots";
+import type { WorkshopDate } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
-const SLOT_CAPACITIES: Record<string, number> = {
-  "10:00 AM": 30,
-  "11:00 AM": 30,
-  "12:00 PM": 30,
-  "1:00 PM": 30,
-};
-const SLOT_CAPACITY = 30;
-
-// Registration closes at class start time (Houston CDT = UTC-5), Oct 11, 2026
-const SLOT_START_UTC: Record<string, number> = {
-  "10:00 AM": new Date("2026-10-11T15:00:00Z").getTime(),
-  "11:00 AM": new Date("2026-10-11T16:00:00Z").getTime(),
-  "12:00 PM": new Date("2026-10-11T17:00:00Z").getTime(),
-  "1:00 PM":  new Date("2026-10-11T18:00:00Z").getTime(),
-};
 
 const PROMO_CODES: Record<string, { slot: string }> = {
   ABATAD: { slot: "9:30 AM" },
@@ -33,11 +19,17 @@ function isRefunded(s: Stripe.Checkout.Session): boolean {
 
 export async function POST(request: NextRequest) {
   try {
-    const { ticketCount, timeSlot, secondSlot, primaryEmail, primaryName, primaryPhone, registrants, promoCode } =
+    const { date, ticketCount, timeSlot, secondSlot, primaryEmail, primaryName, primaryPhone, registrants, promoCode } =
       await request.json();
 
-    if (!ticketCount || !timeSlot || !primaryEmail || !primaryName) {
+    if (!date || !ticketCount || !timeSlot || !primaryEmail || !primaryName) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    const workshopDate = date as WorkshopDate;
+    const validSlots = SLOTS_BY_DATE[workshopDate];
+    if (!validSlots || !validSlots.includes(timeSlot)) {
+      return NextResponse.json({ error: "Invalid workshop date or session." }, { status: 400 });
     }
 
     if (FORCE_SOLD_OUT && !promoCode) {
@@ -46,6 +38,8 @@ export async function POST(request: NextRequest) {
 
     const isBundle = !!secondSlot;
     const unitAmount = isBundle ? 5000 : 2500;
+    const SLOT_CAPACITIES = SLOT_CAPACITIES_BY_DATE[workshopDate];
+    const SLOT_START_UTC = SLOT_START_UTC_MS_BY_DATE[workshopDate];
 
     // Validate promo code if provided
     const promoUpper = promoCode ? String(promoCode).toUpperCase().trim() : null;
@@ -82,7 +76,7 @@ export async function POST(request: NextRequest) {
     while (hasMore) {
       const page = await stripe.checkout.sessions.list({
         limit: 100,
-        created: { gte: WORKSHOP7_START },
+        created: { gte: ACTIVE_WORKSHOPS_START },
         expand: ["data.payment_intent.latest_charge"],
         ...(startingAfter ? { starting_after: startingAfter } : {}),
       });
@@ -97,7 +91,7 @@ export async function POST(request: NextRequest) {
         (s) =>
           s.payment_status === "paid" &&
           !isRefunded(s) &&
-          s.metadata?.date === CURRENT_EVENT_DATE &&
+          s.metadata?.date === workshopDate &&
           s.metadata?.promo_code === promoUpper
       );
       if (codeUsed) {
@@ -113,7 +107,7 @@ export async function POST(request: NextRequest) {
       const slotSold = allSessions
         .filter((s) => {
           if (s.payment_status !== "paid" || isRefunded(s)) return false;
-          if (s.metadata?.date !== CURRENT_EVENT_DATE) return false;
+          if (s.metadata?.date !== workshopDate) return false;
           return s.metadata?.time_slot === slot || s.metadata?.second_time_slot === slot;
         })
         .reduce((sum, s) => sum + Number(s.metadata?.ticket_count || 1), 0);
@@ -136,7 +130,7 @@ export async function POST(request: NextRequest) {
             name: isBundle
               ? "Houston Skate Project · 2-Session Pass"
               : "Houston Skate Project · General Admission",
-            description: `Pop-Up Workshop · October 11th, 2026 · ${sessionLabel} · Houston, TX`,
+            description: `Pop-Up Workshop · ${workshopDate} · ${sessionLabel} · Houston, TX`,
           },
           unit_amount: unitAmount,
         },
@@ -150,7 +144,7 @@ export async function POST(request: NextRequest) {
       customer_email: primaryEmail,
       metadata: {
         event: "Houston Skate Project",
-        date: "October 11, 2026",
+        date: workshopDate,
         time_slot: timeSlot,
         ...(isBundle ? { second_time_slot: secondSlot } : {}),
         primary_name: primaryName,
