@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Download, RefreshCw, Lock, Users, Ticket, DollarSign, ArrowRight, Trash2, Plus, ChevronDown } from "lucide-react";
 
 type Transfer = {
@@ -211,6 +211,10 @@ export default function AdminPage() {
   const [backfillStatus, setBackfillStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [backfillResult, setBackfillResult] = useState("");
   const [announceError, setAnnounceError] = useState("");
+  const attendanceRef = useRef<Record<string, string>>({});
+  const notesRef = useRef<Record<string, string>>({});
+  useEffect(() => { attendanceRef.current = attendance; }, [attendance]);
+  useEffect(() => { notesRef.current = notes; }, [notes]);
 
   useEffect(() => {
     try {
@@ -222,6 +226,16 @@ export default function AdminPage() {
       // show the same on every device.
       const att = localStorage.getItem("hsp_attendance_transfers");
       if (att) setAttendance((prev) => ({ ...prev, ...JSON.parse(att) }));
+
+      // Before attendance/notes moved to Stripe metadata, marks for past
+      // workshops were saved under these two keys, browser-local only. Read
+      // them back in so marks made on this device before the switch are
+      // still visible; fetchData below migrates them into Stripe metadata
+      // as each workshop's tab is viewed, so they stop being device-locked.
+      const legacyAtt = localStorage.getItem("hsp_attendance");
+      if (legacyAtt) setAttendance((prev) => ({ ...JSON.parse(legacyAtt), ...prev }));
+      const legacyNotes = localStorage.getItem("hsp_notes");
+      if (legacyNotes) setNotes((prev) => ({ ...JSON.parse(legacyNotes), ...prev }));
     } catch {}
   }, []);
 
@@ -330,20 +344,65 @@ export default function AdminPage() {
         // so every device sees the same values — pull them in from the fetch.
         const attUpdates: Record<string, string> = {};
         const noteUpdates: Record<string, string> = {};
+        // Marks made before attendance/notes moved to Stripe are still sitting
+        // in this browser's legacy localStorage (see the mount effect above).
+        // Stripe has nothing for those keys yet, so push them up now that we
+        // know each one's sessionId + slot position — a one-time migration
+        // that runs per attendee the first time their workshop tab is viewed.
+        const migrations: Promise<unknown>[] = [];
+        const migrate = (sessionId: string, slotIndex: 1 | 2, field: "attendance" | "note", value: string) =>
+          fetch(`/api/admin/attendance?password=${encodeURIComponent(pw)}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sessionId, slotIndex, field, value }),
+          }).catch(() => {});
+
         for (const a of data.attendees as Attendee[]) {
           if (a.timeSlot.includes("+")) {
             const [s1, s2] = a.timeSlot.split("+").map((s) => s.trim());
             if (a.attendance) attUpdates[`${a.sessionId}-${s1}`] = a.attendance;
+            else if (attendanceRef.current[`${a.sessionId}-${s1}`]) {
+              const v = attendanceRef.current[`${a.sessionId}-${s1}`];
+              attUpdates[`${a.sessionId}-${s1}`] = v;
+              migrations.push(migrate(a.sessionId, 1, "attendance", v));
+            }
             if (a.attendance2) attUpdates[`${a.sessionId}-${s2}`] = a.attendance2;
+            else if (attendanceRef.current[`${a.sessionId}-${s2}`]) {
+              const v = attendanceRef.current[`${a.sessionId}-${s2}`];
+              attUpdates[`${a.sessionId}-${s2}`] = v;
+              migrations.push(migrate(a.sessionId, 2, "attendance", v));
+            }
             if (a.note) noteUpdates[`${a.sessionId}-${s1}`] = a.note;
+            else if (notesRef.current[`${a.sessionId}-${s1}`]) {
+              const v = notesRef.current[`${a.sessionId}-${s1}`];
+              noteUpdates[`${a.sessionId}-${s1}`] = v;
+              migrations.push(migrate(a.sessionId, 1, "note", v));
+            }
             if (a.note2) noteUpdates[`${a.sessionId}-${s2}`] = a.note2;
+            else if (notesRef.current[`${a.sessionId}-${s2}`]) {
+              const v = notesRef.current[`${a.sessionId}-${s2}`];
+              noteUpdates[`${a.sessionId}-${s2}`] = v;
+              migrations.push(migrate(a.sessionId, 2, "note", v));
+            }
           } else {
-            if (a.attendance) attUpdates[`${a.sessionId}-${a.timeSlot}`] = a.attendance;
-            if (a.note) noteUpdates[`${a.sessionId}-${a.timeSlot}`] = a.note;
+            const key = `${a.sessionId}-${a.timeSlot}`;
+            if (a.attendance) attUpdates[key] = a.attendance;
+            else if (attendanceRef.current[key]) {
+              const v = attendanceRef.current[key];
+              attUpdates[key] = v;
+              migrations.push(migrate(a.sessionId, 1, "attendance", v));
+            }
+            if (a.note) noteUpdates[key] = a.note;
+            else if (notesRef.current[key]) {
+              const v = notesRef.current[key];
+              noteUpdates[key] = v;
+              migrations.push(migrate(a.sessionId, 1, "note", v));
+            }
           }
         }
         setAttendance((prev) => ({ ...prev, ...attUpdates }));
         setNotes((prev) => ({ ...prev, ...noteUpdates }));
+        if (migrations.length) Promise.all(migrations).catch(() => {});
       }
     } catch {
       setError("Network error. Try again.");
