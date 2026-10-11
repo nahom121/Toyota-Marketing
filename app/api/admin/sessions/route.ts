@@ -14,7 +14,8 @@ export async function GET(request: NextRequest) {
   // label is the reliable way to know which workshop someone signed up for,
   // instead of guessing from when the sale happened relative to a cutoff.
   const EVENT_DATE_LABELS: Record<string, string> = {
-    current: "October 14, 2026",
+    current: "October 18, 2026",
+    workshop8: "October 14, 2026",
     workshop7: "October 11, 2026",
     workshop6: "October 4, 2026",
     workshop5: "September 27, 2026",
@@ -30,6 +31,7 @@ export async function GET(request: NextRequest) {
   // metadata.date, so imprecise padding here can't cause anyone to be missed.
   const QUERY_RANGE: Record<string, { gte?: number; lt?: number }> = {
     current:   { gte: new Date("2026-10-02T00:00:00Z").getTime() / 1000 },
+    workshop8: { gte: new Date("2026-10-02T00:00:00Z").getTime() / 1000, lt: new Date("2026-10-23T00:00:00Z").getTime() / 1000 },
     workshop7: { gte: new Date("2026-10-02T00:00:00Z").getTime() / 1000, lt: new Date("2026-10-16T00:00:00Z").getTime() / 1000 },
     workshop6: { gte: new Date("2026-09-25T00:00:00Z").getTime() / 1000, lt: new Date("2026-10-09T00:00:00Z").getTime() / 1000 },
     workshop5: { gte: new Date("2026-09-20T00:00:00Z").getTime() / 1000, lt: new Date("2026-10-02T00:00:00Z").getTime() / 1000 },

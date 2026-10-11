@@ -15,6 +15,7 @@ type Transfer = {
 };
 
 const WORKSHOPS = [
+  "Workshop 9 · Oct 18, 2026",
   "Workshop 8 · Oct 14, 2026",
   "Workshop 7 · Oct 11, 2026",
   "Workshop 6 · Oct 4, 2026",
@@ -26,6 +27,7 @@ const WORKSHOPS = [
 ];
 
 const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
+  "Workshop 9 · Oct 18, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"],
   "Workshop 8 · Oct 14, 2026": ["6:30 PM", "7:30 PM"],
   "Workshop 7 · Oct 11, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"],
   "Workshop 6 · Oct 4, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "1:00 PM (Beginner)"],
@@ -37,7 +39,8 @@ const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
 };
 
 const WORKSHOP_TO_FILTER: Record<string, string> = {
-  "Workshop 8 · Oct 14, 2026": "current",
+  "Workshop 9 · Oct 18, 2026": "current",
+  "Workshop 8 · Oct 14, 2026": "workshop8",
   "Workshop 7 · Oct 11, 2026": "workshop7",
   "Workshop 6 · Oct 4, 2026": "workshop6",
   "Workshop 5 · Sep 27, 2026": "workshop5",
@@ -48,7 +51,8 @@ const WORKSHOP_TO_FILTER: Record<string, string> = {
 };
 
 const FILTER_TO_WORKSHOP: Record<string, string> = {
-  current: "Workshop 8 · Oct 14, 2026",
+  current: "Workshop 9 · Oct 18, 2026",
+  workshop8: "Workshop 8 · Oct 14, 2026",
   workshop7: "Workshop 7 · Oct 11, 2026",
   workshop6: "Workshop 6 · Oct 4, 2026",
   workshop5: "Workshop 5 · Sep 27, 2026",
@@ -80,6 +84,12 @@ type Stats = {
 };
 
 const SLOT_TITLES_BY_WORKSHOP: Record<string, Record<string, string>> = {
+  "Workshop 9 · Oct 18, 2026": {
+    "10:00 AM": "Pre-Beginner",
+    "11:00 AM": "Beginner",
+    "12:00 PM": "Intermediate",
+    "1:00 PM": "Advanced",
+  },
   "Workshop 8 · Oct 14, 2026": {
     "6:30 PM": "Pre-Beginner",
     "7:30 PM": "Beginner",
@@ -129,7 +139,8 @@ const SLOT_ORDER = [
 ];
 
 const EVENT_FILTER_TABS = [
-  { key: "current",   label: "Workshop 8 · Oct 14, 2026" },
+  { key: "current",   label: "Workshop 9 · Oct 18, 2026" },
+  { key: "workshop8", label: "Workshop 8 · Oct 14, 2026" },
   { key: "workshop7", label: "Workshop 7 · Oct 11, 2026" },
   { key: "workshop6", label: "Workshop 6 · Oct 4, 2026" },
   { key: "workshop5", label: "Workshop 5 · Sep 27, 2026" },
@@ -189,10 +200,10 @@ export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [pickerDone, setPickerDone] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [eventFilter, setEventFilter] = useState<"current" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous">("current");
+  const [eventFilter, setEventFilter] = useState<"current" | "workshop8" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous">("current");
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [showTransferForm, setShowTransferForm] = useState(false);
-  const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "1:00 PM", toWorkshop: WORKSHOPS[0], toSlot: "6:30 PM", note: "" });
+  const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "6:30 PM", toWorkshop: WORKSHOPS[0], toSlot: "10:00 AM", note: "" });
   const [tfError, setTfError] = useState("");
   const [tfLoading, setTfLoading] = useState(false);
   const [attendance, setAttendance] = useState<Record<string, string>>({});
@@ -319,7 +330,7 @@ export default function AdminPage() {
 
       const entry: Transfer = { ...tf, id: Date.now().toString(), addedAt: new Date().toISOString() };
       saveTransfers([entry, ...transfers]);
-      setTf({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "1:00 PM", toWorkshop: WORKSHOPS[0], toSlot: "6:30 PM", note: "" });
+      setTf({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "6:30 PM", toWorkshop: WORKSHOPS[0], toSlot: "10:00 AM", note: "" });
       setShowTransferForm(false);
     } catch {
       setTfError("Something went wrong. Try again.");
@@ -419,7 +430,7 @@ export default function AdminPage() {
     fetchData(password, eventFilter);
   };
 
-  const switchFilter = (filter: "current" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous") => {
+  const switchFilter = (filter: "current" | "workshop8" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous") => {
     setEventFilter(filter);
     fetchData(password, filter);
   };
