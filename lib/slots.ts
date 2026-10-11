@@ -91,4 +91,4 @@ export const FORCE_SOLD_OUT = false;
 
 // Coarse bound only, for limiting how much Stripe data gets pulled — exact
 // classification of a sale is by matching metadata.date, not this cutoff.
-export const ACTIVE_WORKSHOPS_START = new Date("2026-10-12T00:00:00Z").getTime() / 1000;
+export const ACTIVE_WORKSHOPS_START = new Date("2026-10-05T00:00:00Z").getTime() / 1000;
