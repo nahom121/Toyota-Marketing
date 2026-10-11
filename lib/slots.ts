@@ -7,14 +7,14 @@ export const WORKSHOP_DATES: { value: WorkshopDate; dayLabel: string; shortLabel
 
 export const SLOTS_BY_DATE: Record<WorkshopDate, string[]> = {
   "October 14, 2026": ["6:30 PM", "7:30 PM"],
-  "October 18, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"],
+  "October 18, 2026": ["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"],
 };
 
 export const SLOT_CAPACITY = 30;
 
 export const SLOT_CAPACITIES_BY_DATE: Record<WorkshopDate, Record<string, number>> = {
   "October 14, 2026": { "6:30 PM": 30, "7:30 PM": 30 },
-  "October 18, 2026": { "10:00 AM": 30, "11:00 AM": 30, "12:00 PM": 30, "1:00 PM": 30 },
+  "October 18, 2026": { "11:00 AM": 30, "12:00 PM": 30, "1:00 PM": 30, "2:00 PM": 30 },
 };
 
 export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: string; bullets: string[] }>> = {
@@ -37,7 +37,7 @@ export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: s
     },
   },
   "October 18, 2026": {
-    "10:00 AM": {
+    "11:00 AM": {
       title: "Pre-Beginner",
       bullets: [
         "Have never skated before",
@@ -45,7 +45,7 @@ export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: s
         "Need to hold the wall or another person to skate or keep your balance",
       ],
     },
-    "11:00 AM": {
+    "12:00 PM": {
       title: "Beginner",
       bullets: [
         "Can skate across the floor without holding the wall or another person",
@@ -53,7 +53,7 @@ export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: s
         "Can glide forward and keep your balance without assistance",
       ],
     },
-    "12:00 PM": {
+    "1:00 PM": {
       title: "Intermediate",
       bullets: [
         "Can comfortably make forward scissors/bubbles (circles with your feet) while moving",
@@ -61,7 +61,7 @@ export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: s
         "Can comfortably complete at least one backward scissor/bubble on your own",
       ],
     },
-    "1:00 PM": {
+    "2:00 PM": {
       title: "Advanced",
       bullets: [
         "Can comfortably skate backward across the floor using backward scissors/bubbles without falling",
@@ -80,10 +80,10 @@ export const SLOT_START_UTC_MS_BY_DATE: Record<WorkshopDate, Record<string, numb
     "7:30 PM": new Date("2026-10-15T00:30:00Z").getTime(),
   },
   "October 18, 2026": {
-    "10:00 AM": new Date("2026-10-18T15:00:00Z").getTime(),
     "11:00 AM": new Date("2026-10-18T16:00:00Z").getTime(),
     "12:00 PM": new Date("2026-10-18T17:00:00Z").getTime(),
     "1:00 PM": new Date("2026-10-18T18:00:00Z").getTime(),
+    "2:00 PM": new Date("2026-10-18T19:00:00Z").getTime(),
   },
 };
 

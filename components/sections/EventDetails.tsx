@@ -15,7 +15,7 @@ const details = [
     icon: Clock,
     label: "Time",
     value: "6 Sessions",
-    sub: "Wed: 6:30PM · 7:30PM — Sun: 10AM · 11AM · 12PM · 1PM",
+    sub: "Wed: 6:30PM · 7:30PM — Sun: 11AM · 12PM · 1PM · 2PM",
     color: "bg-sand/30 text-sand-dark",
   },
   {

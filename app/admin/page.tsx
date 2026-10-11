@@ -27,7 +27,7 @@ const WORKSHOPS = [
 ];
 
 const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
-  "Workshop 9 · Oct 18, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"],
+  "Workshop 9 · Oct 18, 2026": ["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"],
   "Workshop 8 · Oct 14, 2026": ["6:30 PM", "7:30 PM"],
   "Workshop 7 · Oct 11, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"],
   "Workshop 6 · Oct 4, 2026": ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "1:00 PM (Beginner)"],
@@ -85,10 +85,10 @@ type Stats = {
 
 const SLOT_TITLES_BY_WORKSHOP: Record<string, Record<string, string>> = {
   "Workshop 9 · Oct 18, 2026": {
-    "10:00 AM": "Pre-Beginner",
-    "11:00 AM": "Beginner",
-    "12:00 PM": "Intermediate",
-    "1:00 PM": "Advanced",
+    "11:00 AM": "Pre-Beginner",
+    "12:00 PM": "Beginner",
+    "1:00 PM": "Intermediate",
+    "2:00 PM": "Advanced",
   },
   "Workshop 8 · Oct 14, 2026": {
     "6:30 PM": "Pre-Beginner",
@@ -203,7 +203,7 @@ export default function AdminPage() {
   const [eventFilter, setEventFilter] = useState<"current" | "workshop8" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous">("current");
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [showTransferForm, setShowTransferForm] = useState(false);
-  const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "6:30 PM", toWorkshop: WORKSHOPS[0], toSlot: "10:00 AM", note: "" });
+  const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "6:30 PM", toWorkshop: WORKSHOPS[0], toSlot: "11:00 AM", note: "" });
   const [tfError, setTfError] = useState("");
   const [tfLoading, setTfLoading] = useState(false);
   const [attendance, setAttendance] = useState<Record<string, string>>({});
@@ -330,7 +330,7 @@ export default function AdminPage() {
 
       const entry: Transfer = { ...tf, id: Date.now().toString(), addedAt: new Date().toISOString() };
       saveTransfers([entry, ...transfers]);
-      setTf({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "6:30 PM", toWorkshop: WORKSHOPS[0], toSlot: "10:00 AM", note: "" });
+      setTf({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "6:30 PM", toWorkshop: WORKSHOPS[0], toSlot: "11:00 AM", note: "" });
       setShowTransferForm(false);
     } catch {
       setTfError("Something went wrong. Try again.");
