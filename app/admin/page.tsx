@@ -287,6 +287,25 @@ export default function AdminPage() {
     }).catch(() => {});
   };
 
+  // Corrects which session/level a registrant is recorded under — e.g. when
+  // a workshop's times get shifted after people already registered, so the
+  // slot string stored on their ticket no longer lines up with the level
+  // they actually signed up for.
+  const [fixingSlot, setFixingSlot] = useState<string | null>(null);
+  const fixSlot = async (sessionId: string, slotIndex: 1 | 2, newSlot: string) => {
+    setFixingSlot(`${sessionId}-${slotIndex}`);
+    try {
+      await fetch(`/api/admin/update-slot?password=${encodeURIComponent(password)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId, slotIndex, timeSlot: newSlot }),
+      });
+      await fetchData(password, eventFilter);
+    } finally {
+      setFixingSlot(null);
+    }
+  };
+
   const saveTransfers = (list: Transfer[]) => {
     setTransfers(list);
     try { localStorage.setItem("hsp_transfers", JSON.stringify(list)); } catch {}
@@ -586,7 +605,7 @@ export default function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-charcoal/10">
-                    {["Name", "Email", "Phone", "Session", "Level", "Tickets", "Paid", "Attendance", "Notes"].map((h) => (
+                    {["Name", "Email", "Phone", "Session", "Level", "Tickets", "Paid", "Attendance", "Notes", "Fix Slot"].map((h) => (
                       <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-ink-muted uppercase tracking-wider whitespace-nowrap">
                         {h}
                       </th>
@@ -668,6 +687,23 @@ export default function AdminPage() {
                                   placeholder="Add note…"
                                   className="text-xs border border-charcoal/15 rounded-lg px-2 py-1.5 w-36 bg-white text-charcoal placeholder-ink-muted/50 focus:outline-none focus:border-crimson transition-colors"
                                 />
+                              </td>
+                              <td className="px-4 py-3">
+                                <select
+                                  value={a.displaySlot}
+                                  disabled={fixingSlot === `${a.sessionId}-${a.slotIndex}`}
+                                  onChange={(e) => fixSlot(a.sessionId, a.slotIndex, e.target.value)}
+                                  className="text-xs rounded-lg px-2 py-1.5 border border-charcoal/15 bg-white text-charcoal focus:outline-none cursor-pointer disabled:opacity-50"
+                                >
+                                  {(SLOTS_BY_WORKSHOP[FILTER_TO_WORKSHOP[eventFilter]] || []).map((s) => (
+                                    <option key={s} value={s}>
+                                      {s} · {SLOT_TITLES_BY_WORKSHOP[FILTER_TO_WORKSHOP[eventFilter]]?.[s] || ""}
+                                    </option>
+                                  ))}
+                                  {!(SLOTS_BY_WORKSHOP[FILTER_TO_WORKSHOP[eventFilter]] || []).includes(a.displaySlot) && (
+                                    <option value={a.displaySlot}>{a.displaySlot} (original)</option>
+                                  )}
+                                </select>
                               </td>
                             </tr>
                           );
