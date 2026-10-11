@@ -210,6 +210,9 @@ export default function AdminPage() {
   const [backfillEmails, setBackfillEmails] = useState("");
   const [backfillStatus, setBackfillStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [backfillResult, setBackfillResult] = useState("");
+  const [removeEmail, setRemoveEmail] = useState("");
+  const [removeStatus, setRemoveStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [removeResult, setRemoveResult] = useState("");
   const [announceError, setAnnounceError] = useState("");
   const attendanceRef = useRef<Record<string, string>>({});
   const notesRef = useRef<Record<string, string>>({});
@@ -974,6 +977,56 @@ export default function AdminPage() {
               className="btn-primary px-6 py-2 disabled:opacity-50"
             >
               {backfillStatus === "loading" ? "Adding…" : "Add to Email List"}
+            </button>
+          </div>
+        </div>
+
+        {/* Remove a subscriber who asked to be taken off the list */}
+        <div className="mt-12">
+          <div className="mb-4">
+            <h2 className="font-display text-xl text-charcoal">Remove from the Email List</h2>
+            <p className="text-ink-muted text-xs mt-0.5">
+              Removes someone from the Resend audience so they stop receiving announcements and workshop emails.
+            </p>
+          </div>
+          <div className="bg-cream-light border border-charcoal/10 rounded-2xl p-5 space-y-3">
+            <input
+              type="email"
+              className="form-input w-full"
+              placeholder="email@example.com"
+              value={removeEmail}
+              onChange={(e) => { setRemoveEmail(e.target.value); setRemoveStatus("idle"); }}
+            />
+            {removeStatus === "success" && (
+              <p className="text-green-700 text-sm font-semibold">{removeResult}</p>
+            )}
+            {removeStatus === "error" && (
+              <p className="text-crimson text-sm">{removeResult}</p>
+            )}
+            <button
+              disabled={!removeEmail.trim() || removeStatus === "loading"}
+              onClick={async () => {
+                setRemoveStatus("loading");
+                setRemoveResult("");
+                try {
+                  const res = await fetch(`/api/admin/remove-subscriber?password=${encodeURIComponent(password)}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: removeEmail.trim() }),
+                  });
+                  const data = await res.json();
+                  if (!res.ok) throw new Error(data.error || "Failed");
+                  setRemoveResult(`Removed ${removeEmail.trim()} from the email list.`);
+                  setRemoveStatus("success");
+                  setRemoveEmail("");
+                } catch (err: unknown) {
+                  setRemoveResult(err instanceof Error ? err.message : "Something went wrong.");
+                  setRemoveStatus("error");
+                }
+              }}
+              className="btn-primary px-6 py-2 disabled:opacity-50"
+            >
+              {removeStatus === "loading" ? "Removing…" : "Remove from Email List"}
             </button>
           </div>
         </div>
