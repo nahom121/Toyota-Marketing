@@ -136,6 +136,7 @@ const SLOT_TITLES_BY_WORKSHOP: Record<string, Record<string, string>> = {
 const SLOT_ORDER = [
   "9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM",
   "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "1:00 PM (Beginner)", "2:00 PM", "3:00 PM", "4:00 PM",
+  "6:30 PM", "7:30 PM",
 ];
 
 const EVENT_FILTER_TABS = [
