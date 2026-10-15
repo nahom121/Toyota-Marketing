@@ -1,41 +1,20 @@
-export type WorkshopDate = "October 14, 2026" | "October 18, 2026";
+export type WorkshopDate = "October 18, 2026";
 
 export const WORKSHOP_DATES: { value: WorkshopDate; dayLabel: string; shortLabel: string }[] = [
-  { value: "October 14, 2026", dayLabel: "Wednesday, October 14th", shortLabel: "Oct 14" },
   { value: "October 18, 2026", dayLabel: "Sunday, October 18th", shortLabel: "Oct 18" },
 ];
 
 export const SLOTS_BY_DATE: Record<WorkshopDate, string[]> = {
-  "October 14, 2026": ["6:30 PM", "7:30 PM"],
   "October 18, 2026": ["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"],
 };
 
 export const SLOT_CAPACITY = 30;
 
 export const SLOT_CAPACITIES_BY_DATE: Record<WorkshopDate, Record<string, number>> = {
-  "October 14, 2026": { "6:30 PM": 30, "7:30 PM": 30 },
   "October 18, 2026": { "11:00 AM": 30, "12:00 PM": 30, "1:00 PM": 30, "2:00 PM": 30 },
 };
 
 export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: string; bullets: string[] }>> = {
-  "October 14, 2026": {
-    "6:30 PM": {
-      title: "Pre-Beginner",
-      bullets: [
-        "Have never skated before",
-        "Cannot skate across the floor on your own",
-        "Need to hold the wall or another person to skate or keep your balance",
-      ],
-    },
-    "7:30 PM": {
-      title: "Beginner",
-      bullets: [
-        "Can skate across the floor without holding the wall or another person",
-        "Can pick up both feet while skating instead of walking/shuffling",
-        "Can glide forward and keep your balance without assistance",
-      ],
-    },
-  },
   "October 18, 2026": {
     "11:00 AM": {
       title: "Pre-Beginner",
@@ -75,10 +54,6 @@ export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: s
 // Slot start times in UTC ms, Houston is CDT = UTC-5 through Nov 1, 2026.
 // Used server-side to close registration the moment a class starts.
 export const SLOT_START_UTC_MS_BY_DATE: Record<WorkshopDate, Record<string, number>> = {
-  "October 14, 2026": {
-    "6:30 PM": new Date("2026-10-14T23:30:00Z").getTime(),
-    "7:30 PM": new Date("2026-10-15T00:30:00Z").getTime(),
-  },
   "October 18, 2026": {
     "11:00 AM": new Date("2026-10-18T16:00:00Z").getTime(),
     "12:00 PM": new Date("2026-10-18T17:00:00Z").getTime(),

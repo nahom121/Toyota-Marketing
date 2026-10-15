@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: "%s | Houston Skate Project",
   },
   description:
-    "Pop-up roller skating workshops in Houston, TX hosted by national champion skater Michaela. October 14th & 18th, 2026. All skill levels welcome. Register now.",
+    "A pop-up roller skating workshop in Houston, TX hosted by national champion skater Michaela. October 18th, 2026. All skill levels welcome. Register now.",
   keywords: [
     "Houston Skate Project",
     "roller skating Houston",
@@ -46,16 +46,16 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    title: "Houston Skate Project · Pop-Up Workshops · October 14 & 18, 2026",
+    title: "Houston Skate Project · Pop-Up Workshop · October 18, 2026",
     description:
-      "National champion skater Michaela brings pop-up roller skating workshops to Houston. All skill levels welcome. Register now.",
+      "National champion skater Michaela brings a pop-up roller skating workshop to Houston. All skill levels welcome. Register now.",
     siteName: "Houston Skate Project",
     images: [{ url: "/og-image.png", width: 1200, height: 1200, alt: "Houston Skate Project Logo" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Houston Skate Project · Pop-Up Workshops · Oct 14 & 18",
-    description: "Roll how you want. Express who you are. Houston, TX · October 14 & 18, 2026.",
+    title: "Houston Skate Project · Pop-Up Workshop · October 18",
+    description: "Roll how you want. Express who you are. Houston, TX · October 18, 2026.",
     images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
@@ -70,7 +70,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Event",
   name: "Houston Skate Project · Pop-Up Workshop",
-  startDate: "2026-10-14",
+  startDate: "2026-10-18",
   eventStatus: "https://schema.org/EventScheduled",
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   location: {

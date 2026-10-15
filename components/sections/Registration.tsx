@@ -130,7 +130,9 @@ export default function Registration() {
   const [levelAcknowledged, setLevelAcknowledged] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [selectedDate, setSelectedDate] = useState<WorkshopDate | null>(null);
+  const [selectedDate, setSelectedDate] = useState<WorkshopDate | null>(
+    WORKSHOP_DATES.length === 1 ? WORKSHOP_DATES[0].value : null
+  );
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [capacity, setCapacity] = useState<CapacityResponse["dates"] | null>(null);
   const [promoInput, setPromoInput] = useState("");
@@ -314,6 +316,8 @@ export default function Registration() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
+                {WORKSHOP_DATES.length > 1 && (
+                <>
                 <h3 className="font-display text-2xl text-charcoal mb-1">Pick your workshop date</h3>
 
                 {/* Date selector */}
@@ -340,6 +344,8 @@ export default function Registration() {
                     );
                   })}
                 </div>
+                </>
+                )}
 
                 {selectedDate && (
                 <>
