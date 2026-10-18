@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail, Bell } from "lucide-react";
-import { FORCE_SOLD_OUT, WORKSHOP_DATES, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, SLOT_LEVELS_BY_DATE, SLOT_START_UTC_MS_BY_DATE, SLOT_CAPACITY } from "@/lib/slots";
+import { FORCE_SOLD_OUT, getVisibleWorkshopDates, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, SLOT_LEVELS_BY_DATE, SLOT_START_UTC_MS_BY_DATE, SLOT_CAPACITY } from "@/lib/slots";
 import type { WorkshopDate } from "@/lib/slots";
 
 const TICKET_PRICE = 25;
@@ -130,24 +130,38 @@ export default function Registration() {
   const [levelAcknowledged, setLevelAcknowledged] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [now, setNow] = useState(() => Date.now());
+  const WORKSHOP_DATES = getVisibleWorkshopDates(now);
   const [selectedDate, setSelectedDate] = useState<WorkshopDate | null>(
-    WORKSHOP_DATES.length === 1 ? WORKSHOP_DATES[0].value : null
+    () => (getVisibleWorkshopDates().length === 1 ? getVisibleWorkshopDates()[0].value : null)
   );
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [capacity, setCapacity] = useState<CapacityResponse["dates"] | null>(null);
   const [promoInput, setPromoInput] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
+  const [promoType, setPromoType] = useState<"reserved_slot" | "discount" | null>(null);
   const [promoCode, setPromoCode] = useState("");
   const [promoSlot, setPromoSlot] = useState<Slot | null>(null);
+  const [discountPercent, setDiscountPercent] = useState(0);
+  const [discountValidDates, setDiscountValidDates] = useState<WorkshopDate[]>([]);
   const [promoError, setPromoError] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
   const [showPromo, setShowPromo] = useState(false);
-  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 30000);
     return () => clearInterval(id);
   }, []);
+
+  // If the date this customer had selected drops off the site mid-session
+  // (its visibility window closed while they were on the page), clear it
+  // so they're not stuck trying to book a now-unavailable workshop.
+  useEffect(() => {
+    if (selectedDate && !WORKSHOP_DATES.some((d) => d.value === selectedDate)) {
+      setSelectedDate(WORKSHOP_DATES.length === 1 ? WORKSHOP_DATES[0].value : null);
+      setSelectedSlot(null);
+    }
+  }, [now]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const SLOTS = selectedDate ? SLOTS_BY_DATE[selectedDate] : [];
   const SLOT_LEVELS = selectedDate ? SLOT_LEVELS_BY_DATE[selectedDate] : {};
@@ -188,7 +202,9 @@ export default function Registration() {
     });
   }, [ticketCount]);
 
-  const total = ticketCount * TICKET_PRICE;
+  const discountEligible = promoType === "discount" && !!selectedDate && discountValidDates.includes(selectedDate);
+  const perTicketPrice = discountEligible ? Math.round(TICKET_PRICE * (1 - discountPercent / 100) * 100) / 100 : TICKET_PRICE;
+  const total = Math.round(ticketCount * perTicketPrice * 100) / 100;
 
   const updateTicket = (i: number, t: TicketInfo) =>
     setTickets((prev) => { const next = [...prev]; next[i] = t; return next; });
@@ -205,8 +221,16 @@ export default function Registration() {
       const data = await res.json();
       if (!res.ok || !data.valid) {
         setPromoError(data.error || "Invalid code.");
+      } else if (data.type === "discount") {
+        setPromoCode(promoInput.toUpperCase().trim());
+        setPromoType("discount");
+        setDiscountPercent(data.percentOff);
+        setDiscountValidDates(data.validDates as WorkshopDate[]);
+        setPromoApplied(true);
+        setShowPromo(false);
       } else {
         setPromoCode(promoInput.toUpperCase().trim());
+        setPromoType("reserved_slot");
         setPromoSlot(data.slot as Slot);
         setPromoApplied(true);
         setSelectedSlot(data.slot as Slot);
@@ -220,7 +244,7 @@ export default function Registration() {
     }
   };
 
-  const isSoldOut = selectedSlot ? (promoApplied && selectedSlot === promoSlot ? false : slotData?.[selectedSlot]?.isFull ?? false) : false;
+  const isSoldOut = selectedSlot ? (promoApplied && promoType === "reserved_slot" && selectedSlot === promoSlot ? false : slotData?.[selectedSlot]?.isFull ?? false) : false;
   const step1Valid = !!selectedDate && !!selectedSlot && ticketCount >= 1 && ticketCount <= maxTickets && !isSoldOut && byosAcknowledged && levelAcknowledged;
   const step2Valid = tickets.every((t, i) => {
     if (!t.name.trim()) return false;
@@ -356,7 +380,7 @@ export default function Registration() {
                   {SLOTS.map((slot) => {
                     const info = slotData?.[slot];
                     const timeClosed = timeClosedSlots.has(slot);
-                    const promoUnlocked = promoApplied && slot === promoSlot;
+                    const promoUnlocked = promoApplied && promoType === "reserved_slot" && slot === promoSlot;
                     const full = promoUnlocked ? false : (info?.isFull ?? false) || timeClosed;
                     const left = info?.remaining;
                     const selected = selectedSlot === slot;
@@ -364,7 +388,7 @@ export default function Registration() {
                       <button
                         key={slot}
                         onClick={() => {
-                          if (!full && !promoApplied) { setSelectedSlot(slot); setTicketCount(1); setLevelAcknowledged(false); }
+                          if (!full && !(promoApplied && promoType === "reserved_slot")) { setSelectedSlot(slot); setTicketCount(1); setLevelAcknowledged(false); }
                           else if (promoUnlocked) { setSelectedSlot(slot); setLevelAcknowledged(false); }
                         }}
                         disabled={(full && !promoUnlocked) || slotData === null}
@@ -407,7 +431,7 @@ export default function Registration() {
                         onClick={() => setShowPromo(true)}
                         className="text-xs text-ink-muted hover:text-charcoal underline underline-offset-2 transition-colors"
                       >
-                        Have a reservation code?
+                        Have a promo code?
                       </button>
                     ) : (
                       <div className="flex gap-2 items-start">
@@ -438,6 +462,18 @@ export default function Registration() {
                           Cancel
                         </button>
                       </div>
+                    )}
+                  </div>
+                ) : promoType === "discount" ? (
+                  <div className="mb-6 bg-crimson/8 border border-crimson/20 rounded-xl px-4 py-2.5">
+                    <div className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-crimson shrink-0" />
+                      <p className="text-sm text-crimson font-semibold">{promoCode} applied · {discountPercent}% off</p>
+                    </div>
+                    {!discountEligible && (
+                      <p className="text-xs text-crimson/80 mt-1 ml-6">
+                        Not valid for this date — valid for {discountValidDates.map((d) => WORKSHOP_DATES.find((w) => w.value === d)?.shortLabel || d).join(" & ")} only.
+                      </p>
                     )}
                   </div>
                 ) : (
@@ -486,8 +522,8 @@ export default function Registration() {
                   );
                 })()}
 
-                {/* Ticket count — only show after slot selected; locked to 1 for promo */}
-                {selectedSlot && !isSoldOut && !promoApplied && (
+                {/* Ticket count — only show after slot selected; locked to 1 for a reserved-slot code */}
+                {selectedSlot && !isSoldOut && promoType !== "reserved_slot" && (
                   <>
                     <p className="text-ink-secondary text-sm font-medium mb-4">
                       How many people for the {selectedSlot} session?
@@ -532,8 +568,10 @@ export default function Registration() {
                 {/* Price preview */}
                 <div className="bg-sand/20 border border-sand/40 rounded-2xl p-4 text-center mb-6">
                   <p className="text-ink-secondary text-sm">
-                    {ticketCount} ticket{ticketCount > 1 ? "s" : ""} × $25{" = "}
-                    <span className="font-display text-2xl text-charcoal">${total}</span>
+                    {ticketCount} ticket{ticketCount > 1 ? "s" : ""} × ${discountEligible ? perTicketPrice.toFixed(2) : "25"}
+                    {discountEligible && <span className="line-through text-ink-muted ml-1">$25</span>}
+                    {" = "}
+                    <span className="font-display text-2xl text-charcoal">${total.toFixed(2)}</span>
                   </p>
                 </div>
 
@@ -723,13 +761,19 @@ export default function Registration() {
                         </span>
                       </div>
                     )}
+                    {discountEligible && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-ink-secondary">{promoCode} discount</span>
+                        <span className="font-medium text-crimson">-{discountPercent}%</span>
+                      </div>
+                    )}
                     <div className="flex justify-between text-sm">
                       <span className="text-ink-secondary">General Admission × {ticketCount}</span>
-                      <span className="font-medium text-charcoal">${total}</span>
+                      <span className="font-medium text-charcoal">${total.toFixed(2)}</span>
                     </div>
                     <div className="pt-3 border-t border-charcoal/10 flex justify-between">
                       <span className="font-bold text-charcoal">Total</span>
-                      <span className="font-display text-2xl text-charcoal">${total}</span>
+                      <span className="font-display text-2xl text-charcoal">${total.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
@@ -776,7 +820,7 @@ export default function Registration() {
                     className="btn-primary flex-1 py-4 text-base gap-3 disabled:opacity-60"
                   >
                     <ShoppingCart className="w-5 h-5" />
-                    {loading ? "Redirecting…" : `Pay $${total} Securely`}
+                    {loading ? "Redirecting…" : `Pay $${total.toFixed(2)} Securely`}
                   </button>
                 </div>
 

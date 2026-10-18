@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import { WORKSHOP_DATES, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, FORCE_SOLD_OUT, ACTIVE_WORKSHOPS_START } from "@/lib/slots";
+import { getVisibleWorkshopDates, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, FORCE_SOLD_OUT, ACTIVE_WORKSHOPS_START } from "@/lib/slots";
 import type { WorkshopDate } from "@/lib/slots";
 
 type SlotInfo = { sold: number; remaining: number; isFull: boolean };
@@ -22,7 +22,7 @@ export async function GET() {
   // Short-circuit: skip Stripe entirely and return all slots sold out
   if (FORCE_SOLD_OUT) {
     const dates = Object.fromEntries(
-      WORKSHOP_DATES.map(({ value }) => {
+      getVisibleWorkshopDates().map(({ value }) => {
         const caps = SLOT_CAPACITIES_BY_DATE[value];
         const slots = Object.fromEntries(
           SLOTS_BY_DATE[value].map((slot) => [slot, { sold: caps[slot], remaining: 0, isFull: true }])
@@ -57,7 +57,7 @@ export async function GET() {
     const valid = sessions.filter((s) => s.payment_status === "paid" && !isRefunded(s));
 
     const dates = Object.fromEntries(
-      WORKSHOP_DATES.map(({ value }) => {
+      getVisibleWorkshopDates().map(({ value }) => {
         const caps = SLOT_CAPACITIES_BY_DATE[value];
         const sessionsForDate = valid.filter((s) => s.metadata?.date === value);
         const slots = Object.fromEntries(
@@ -79,7 +79,7 @@ export async function GET() {
   } catch (error) {
     console.error("Capacity error:", error);
     const dates = Object.fromEntries(
-      WORKSHOP_DATES.map(({ value }) => [value, { slots: fallbackSlots(value), slotCapacity: SLOT_CAPACITIES_BY_DATE[value] }])
+      getVisibleWorkshopDates().map(({ value }) => [value, { slots: fallbackSlots(value), slotCapacity: SLOT_CAPACITIES_BY_DATE[value] }])
     );
     return NextResponse.json({ dates });
   }

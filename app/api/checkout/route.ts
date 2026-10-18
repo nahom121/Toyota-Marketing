@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
-import { FORCE_SOLD_OUT, ACTIVE_WORKSHOPS_START, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, SLOT_CAPACITY, SLOT_START_UTC_MS_BY_DATE } from "@/lib/slots";
+import { FORCE_SOLD_OUT, ACTIVE_WORKSHOPS_START, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, SLOT_CAPACITY, SLOT_START_UTC_MS_BY_DATE, DISCOUNT_CODES } from "@/lib/slots";
 import type { WorkshopDate } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
@@ -37,16 +37,29 @@ export async function POST(request: NextRequest) {
     }
 
     const isBundle = !!secondSlot;
-    const unitAmount = isBundle ? 5000 : 2500;
+    const baseUnitAmount = isBundle ? 5000 : 2500;
+    let unitAmount = baseUnitAmount;
     const SLOT_CAPACITIES = SLOT_CAPACITIES_BY_DATE[workshopDate];
     const SLOT_START_UTC = SLOT_START_UTC_MS_BY_DATE[workshopDate];
 
-    // Validate promo code if provided
+    // Validate promo code if provided. Two kinds: a discount code (public,
+    // reusable, % off, valid for specific dates/a time window) or a
+    // reservation code (single-use, locks the buyer to one specific slot
+    // outside normal capacity).
     const promoUpper = promoCode ? String(promoCode).toUpperCase().trim() : null;
-    if (promoUpper) {
+    const discount = promoUpper ? DISCOUNT_CODES[promoUpper] : null;
+    if (promoUpper && discount) {
+      if (Date.now() >= discount.expiresAt) {
+        return NextResponse.json({ error: "This code has expired." }, { status: 400 });
+      }
+      if (!discount.validDates.includes(workshopDate)) {
+        return NextResponse.json({ error: "This code is not valid for this workshop date." }, { status: 400 });
+      }
+      unitAmount = Math.round(baseUnitAmount * (1 - discount.percentOff / 100));
+    } else if (promoUpper) {
       const promo = PROMO_CODES[promoUpper];
       if (!promo) {
-        return NextResponse.json({ error: "Invalid reservation code." }, { status: 400 });
+        return NextResponse.json({ error: "Invalid code." }, { status: 400 });
       }
       if (promo.slot !== timeSlot) {
         return NextResponse.json({ error: "Reservation code is not valid for this session." }, { status: 400 });
@@ -85,8 +98,8 @@ export async function POST(request: NextRequest) {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
-    // Check promo code hasn't been used
-    if (promoUpper) {
+    // Check reservation code hasn't been used (discount codes are reusable)
+    if (promoUpper && !discount) {
       const codeUsed = allSessions.some(
         (s) =>
           s.payment_status === "paid" &&
@@ -99,10 +112,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Capacity check — skip for promo-code slots (reserved spots are outside normal cap)
+    // Capacity check — skip for reservation-code slots (reserved spots are
+    // outside normal cap); discount codes still go through normal capacity.
     const slotsToCheck: string[] = isBundle ? [timeSlot, secondSlot] : [timeSlot];
     for (const slot of slotsToCheck) {
-      if (promoUpper && slot === timeSlot) continue; // reserved spot bypasses capacity
+      if (promoUpper && !discount && slot === timeSlot) continue; // reserved spot bypasses capacity
       const cap = SLOT_CAPACITIES[slot] ?? SLOT_CAPACITY;
       const slotSold = allSessions
         .filter((s) => {
@@ -152,6 +166,7 @@ export async function POST(request: NextRequest) {
         ticket_count: String(ticketCount),
         registrants: JSON.stringify(registrants).slice(0, 490),
         ...(promoUpper ? { promo_code: promoUpper } : {}),
+        ...(discount ? { discount_percent: String(discount.percentOff) } : {}),
       },
       success_url: `${SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/#tickets`,

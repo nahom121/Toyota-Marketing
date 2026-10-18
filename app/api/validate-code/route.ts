@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
+import { DISCOUNT_CODES } from "@/lib/slots";
 
 const PROMO_CODES: Record<string, { slot: string }> = {
   ABATAD: { slot: "9:30 AM" },
@@ -17,8 +18,23 @@ export async function POST(request: NextRequest) {
   try {
     const { code } = await request.json();
     const upper = String(code || "").toUpperCase().trim();
-    const promo = PROMO_CODES[upper];
 
+    // Discount codes are public, reusable, % off codes — no single-use
+    // check needed, just whether it's still within its valid window.
+    const discount = DISCOUNT_CODES[upper];
+    if (discount) {
+      if (Date.now() >= discount.expiresAt) {
+        return NextResponse.json({ valid: false, error: "This code has expired." }, { status: 400 });
+      }
+      return NextResponse.json({
+        valid: true,
+        type: "discount",
+        percentOff: discount.percentOff,
+        validDates: discount.validDates,
+      });
+    }
+
+    const promo = PROMO_CODES[upper];
     if (!promo) {
       return NextResponse.json({ valid: false, error: "Invalid code." }, { status: 400 });
     }
@@ -53,7 +69,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ valid: false, error: "This code has already been used." }, { status: 409 });
     }
 
-    return NextResponse.json({ valid: true, slot: promo.slot });
+    return NextResponse.json({ valid: true, type: "reserved_slot", slot: promo.slot });
   } catch (error) {
     console.error("Validate code error:", error);
     return NextResponse.json({ valid: false, error: "Could not validate code. Try again." }, { status: 500 });
