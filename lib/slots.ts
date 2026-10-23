@@ -25,8 +25,10 @@ const ALL_WORKSHOP_DATES: WorkshopDateConfig[] = [
     value: "October 21, 2026",
     dayLabel: "Wednesday, October 21st",
     shortLabel: "Oct 21",
-    // Opens at 10:00 AM CDT on Oct 18.
+    // Opened at 10:00 AM CDT on Oct 18; taken off the site once its last
+    // (8pm) session has started — that class runs its course by 9:00 PM CDT.
     visibleFrom: new Date("2026-10-18T15:00:00Z").getTime(),
+    visibleUntil: new Date("2026-10-22T02:00:00Z").getTime(),
   },
   {
     value: "October 25, 2026",
