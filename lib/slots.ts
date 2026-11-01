@@ -142,7 +142,7 @@ export const DISCOUNT_CODES: Record<string, { percentOff: number; validDates: Wo
   },
 };
 
-export const FORCE_SOLD_OUT = false;
+export const FORCE_SOLD_OUT = true;
 
 // Coarse bound only, for limiting how much Stripe data gets pulled — exact
 // classification of a sale is by matching metadata.date, not this cutoff.

@@ -317,10 +317,10 @@ export default function Registration() {
               <Bell className="w-7 h-7 text-crimson" />
             </div>
             <h3 className="font-display text-2xl md:text-3xl text-charcoal mb-3">
-              Registration will open soon.
+              New classes coming soon.
             </h3>
             <p className="text-ink-secondary text-base max-w-md mx-auto mb-2">
-              Spots are coming soon! We&apos;re putting the finishing touches on our next pop-ups. Check back shortly, or join our email list below to be the first to know the moment tickets go live.
+              We&apos;re planning our next pop-up! Join our email list below and you&apos;ll be the first to know the moment the next date and registration go live.
             </p>
           </motion.div>
         ) : (

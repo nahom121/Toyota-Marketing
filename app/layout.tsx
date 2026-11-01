@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, Inter, Dancing_Script } from "next/font/google";
+import { FORCE_SOLD_OUT } from "@/lib/slots";
 import "./globals.css";
 
 const dmSerif = DM_Serif_Display({
@@ -29,8 +30,9 @@ export const metadata: Metadata = {
     default: "Houston Skate Project",
     template: "%s | Houston Skate Project",
   },
-  description:
-    "A pop-up roller skating workshop in Houston, TX hosted by national champion skater Michaela. October 25th, 2026. All skill levels welcome. Register now.",
+  description: FORCE_SOLD_OUT
+    ? "Pop-up roller skating workshops in Houston, TX hosted by national champion skater Michaela. New dates coming soon — join the email list to be the first to know."
+    : "A pop-up roller skating workshop in Houston, TX hosted by national champion skater Michaela. October 25th, 2026. All skill levels welcome. Register now.",
   keywords: [
     "Houston Skate Project",
     "roller skating Houston",
@@ -46,16 +48,19 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    title: "Houston Skate Project · Pop-Up Workshop · October 25, 2026",
-    description:
-      "National champion skater Michaela brings a pop-up roller skating workshop to Houston. All skill levels welcome. Register now.",
+    title: FORCE_SOLD_OUT ? "Houston Skate Project · New Classes Coming Soon" : "Houston Skate Project · Pop-Up Workshop · October 25, 2026",
+    description: FORCE_SOLD_OUT
+      ? "National champion skater Michaela brings pop-up roller skating workshops to Houston. New dates coming soon."
+      : "National champion skater Michaela brings a pop-up roller skating workshop to Houston. All skill levels welcome. Register now.",
     siteName: "Houston Skate Project",
     images: [{ url: "/og-image.png", width: 1200, height: 1200, alt: "Houston Skate Project Logo" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Houston Skate Project · Pop-Up Workshop · October 25",
-    description: "Roll how you want. Express who you are. Houston, TX · October 25, 2026.",
+    title: FORCE_SOLD_OUT ? "Houston Skate Project · New Classes Coming Soon" : "Houston Skate Project · Pop-Up Workshop · October 25",
+    description: FORCE_SOLD_OUT
+      ? "Roll how you want. Express who you are. Houston, TX · New dates coming soon."
+      : "Roll how you want. Express who you are. Houston, TX · October 25, 2026.",
     images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
@@ -94,10 +99,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${dmSerif.variable} ${inter.variable} ${dancingScript.variable}`}>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        {!FORCE_SOLD_OUT && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+        )}
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/logo.png" />
         <meta name="theme-color" content="#F5EDD9" />

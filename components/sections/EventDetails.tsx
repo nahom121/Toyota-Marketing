@@ -2,20 +2,21 @@
 
 import { motion } from "framer-motion";
 import { Calendar, MapPin, Clock, Ticket } from "lucide-react";
+import { FORCE_SOLD_OUT } from "@/lib/slots";
 
 const details = [
   {
     icon: Calendar,
     label: "Date",
-    value: "October 25th, 2026",
-    sub: "Sunday",
+    value: FORCE_SOLD_OUT ? "Coming Soon" : "October 25th, 2026",
+    sub: FORCE_SOLD_OUT ? "Join our email list for updates" : "Sunday",
     color: "bg-crimson/10 text-crimson",
   },
   {
     icon: Clock,
     label: "Time",
-    value: "4 Sessions",
-    sub: "10:30 AM · 11:30 AM · 12:30 PM · 1:30 PM",
+    value: FORCE_SOLD_OUT ? "TBA" : "4 Sessions",
+    sub: FORCE_SOLD_OUT ? "Sessions for all skill levels" : "10:30 AM · 11:30 AM · 12:30 PM · 1:30 PM",
     color: "bg-sand/30 text-sand-dark",
   },
   {
@@ -49,10 +50,10 @@ export default function EventDetails() {
         >
           <div className="label-tag-dark mx-auto mb-5">Pop-Up Details</div>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white leading-tight">
-            Mark your calendar.
+            {FORCE_SOLD_OUT ? "New classes" : "Mark your calendar."}
             <br />
             <span className="font-script text-sand" style={{ fontSize: "1.05em" }}>
-              October 25th.
+              {FORCE_SOLD_OUT ? "coming soon." : "October 25th."}
             </span>
           </h2>
           <p className="text-white/60 text-lg mt-4 max-w-lg mx-auto">

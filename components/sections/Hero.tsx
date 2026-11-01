@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
+import { FORCE_SOLD_OUT } from "@/lib/slots";
 
 function useCountdown(targetDate: Date) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -70,29 +71,38 @@ export default function Hero() {
           {/* CTAs */}
           <div className="hero-ctas flex flex-col sm:flex-row gap-4 mb-12">
             <button onClick={() => scrollTo("#tickets")} className="btn-primary text-base px-8 py-4 font-black">
-              Get Your Tickets · $25
+              {FORCE_SOLD_OUT ? "New Classes Coming Soon" : "Get Your Tickets · $25"}
             </button>
           </div>
 
           {/* Countdown */}
-          <div className="hero-countdown">
-            <p className="text-white/40 text-xs uppercase tracking-widest mb-3">Pop-up starts in</p>
-            <div className="grid grid-cols-4 gap-3 max-w-xs">
-              {[
-                { value: days, label: "Days" },
-                { value: hours, label: "Hrs" },
-                { value: minutes, label: "Min" },
-                { value: seconds, label: "Sec" },
-              ].map(({ value, label }) => (
-                <div key={label} className="bg-white/8 rounded-xl p-3 text-center border border-white/10">
-                  <div className="font-display text-2xl text-white leading-none">
-                    {String(value).padStart(2, "0")}
-                  </div>
-                  <div className="text-white/40 text-[10px] uppercase tracking-wider mt-1">{label}</div>
-                </div>
-              ))}
+          {FORCE_SOLD_OUT ? (
+            <div className="hero-countdown">
+              <div className="inline-flex items-center gap-2 bg-white/8 rounded-xl px-4 py-3 border border-white/10">
+                <span className="text-white/40 text-xs uppercase tracking-widest">Next pop-up</span>
+                <span className="font-display text-lg text-white">Coming Soon</span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="hero-countdown">
+              <p className="text-white/40 text-xs uppercase tracking-widest mb-3">Pop-up starts in</p>
+              <div className="grid grid-cols-4 gap-3 max-w-xs">
+                {[
+                  { value: days, label: "Days" },
+                  { value: hours, label: "Hrs" },
+                  { value: minutes, label: "Min" },
+                  { value: seconds, label: "Sec" },
+                ].map(({ value, label }) => (
+                  <div key={label} className="bg-white/8 rounded-xl p-3 text-center border border-white/10">
+                    <div className="font-display text-2xl text-white leading-none">
+                      {String(value).padStart(2, "0")}
+                    </div>
+                    <div className="text-white/40 text-[10px] uppercase tracking-wider mt-1">{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right: Photo */}
