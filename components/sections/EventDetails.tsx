@@ -22,7 +22,7 @@ const details = [
   {
     icon: MapPin,
     label: "Location",
-    value: "Houston, TX 77090",
+    value: "Houston, TX 77047",
     sub: "Full address revealed after registration",
     color: "bg-forest/10 text-forest",
   },
@@ -78,7 +78,7 @@ export default function EventDetails() {
               <p className="text-white/40 text-xs uppercase tracking-widest mb-1">{label}</p>
               <p className="font-display text-2xl text-white mb-1">
                 {label === "Location"
-                  ? <>{`Houston, TX `}<span className="font-black">77090</span></>
+                  ? <>{`Houston, TX `}<span className="font-black">77047</span></>
                   : value}
               </p>
               <p className="text-white/50 text-xs leading-relaxed">{sub}</p>
@@ -94,7 +94,7 @@ export default function EventDetails() {
           className="mt-6 text-center"
         >
           <p className="text-white/40 text-sm">
-            📍 Houston, TX 77090 · Exact address sent to your email after registration
+            📍 Houston, TX 77047 · Exact address sent to your email after registration
           </p>
         </motion.div>
       </div>
