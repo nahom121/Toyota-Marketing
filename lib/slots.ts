@@ -1,4 +1,4 @@
-export type WorkshopDate = "October 18, 2026" | "October 21, 2026" | "October 25, 2026";
+export type WorkshopDate = "October 18, 2026" | "October 21, 2026" | "October 25, 2026" | "November 8, 2026";
 
 type WorkshopDateConfig = {
   value: WorkshopDate;
@@ -34,8 +34,15 @@ const ALL_WORKSHOP_DATES: WorkshopDateConfig[] = [
     value: "October 25, 2026",
     dayLabel: "Sunday, October 25th",
     shortLabel: "Oct 25",
-    // Opens at 10:00 AM CDT on Oct 18.
+    // Opened at 10:00 AM CDT on Oct 18; taken off the site once its last
+    // (1:30pm) session has started — that class runs its course by 2:30 PM CDT.
     visibleFrom: new Date("2026-10-18T15:00:00Z").getTime(),
+    visibleUntil: new Date("2026-10-25T19:30:00Z").getTime(),
+  },
+  {
+    value: "November 8, 2026",
+    dayLabel: "Sunday, November 8th",
+    shortLabel: "Nov 8",
   },
 ];
 
@@ -49,6 +56,7 @@ export const SLOTS_BY_DATE: Record<WorkshopDate, string[]> = {
   "October 18, 2026": ["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"],
   "October 21, 2026": ["7:00 PM", "8:00 PM"],
   "October 25, 2026": ["10:30 AM", "11:30 AM", "12:30 PM", "1:30 PM"],
+  "November 8, 2026": ["9:00 AM", "10:00 AM", "11:00 AM"],
 };
 
 export const SLOT_CAPACITY = 30;
@@ -57,6 +65,7 @@ export const SLOT_CAPACITIES_BY_DATE: Record<WorkshopDate, Record<string, number
   "October 18, 2026": { "11:00 AM": 30, "12:00 PM": 30, "1:00 PM": 30, "2:00 PM": 30 },
   "October 21, 2026": { "7:00 PM": 30, "8:00 PM": 30 },
   "October 25, 2026": { "10:30 AM": 30, "11:30 AM": 30, "12:30 PM": 30, "1:30 PM": 30 },
+  "November 8, 2026": { "9:00 AM": 30, "10:00 AM": 30, "11:00 AM": 30 },
 };
 
 const PRE_BEGINNER = {
@@ -91,6 +100,14 @@ const ADVANCED = {
     "Can cross one foot over the other while skating forward around a circle without losing your balance",
   ],
 };
+// Intermediate and Advanced share a single class this week.
+const INTERMEDIATE_ADVANCED = {
+  title: "Intermediate + Advanced",
+  bullets: [
+    "Intermediate: Can comfortably make forward scissors/bubbles while moving, glide on one foot for 5+ seconds, and complete at least one backward scissor/bubble on your own",
+    "Advanced: Can skate backward using backward scissors/bubbles without falling, squat into a cannonball while rolling, and cross one foot over the other while skating forward around a circle",
+  ],
+};
 
 export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: string; bullets: string[] }>> = {
   "October 18, 2026": {
@@ -109,10 +126,16 @@ export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: s
     "12:30 PM": INTERMEDIATE,
     "1:30 PM": ADVANCED,
   },
+  "November 8, 2026": {
+    "9:00 AM": PRE_BEGINNER,
+    "10:00 AM": BEGINNER,
+    "11:00 AM": INTERMEDIATE_ADVANCED,
+  },
 };
 
-// Slot start times in UTC ms, Houston is CDT = UTC-5 through Nov 1, 2026.
-// Used server-side to close registration the moment a class starts.
+// Slot start times in UTC ms. Houston is CDT (UTC-5) through Nov 1, 2026,
+// then CST (UTC-6) afterward. Used server-side to close registration the
+// moment a class starts.
 export const SLOT_START_UTC_MS_BY_DATE: Record<WorkshopDate, Record<string, number>> = {
   "October 18, 2026": {
     "11:00 AM": new Date("2026-10-18T16:00:00Z").getTime(),
@@ -130,6 +153,11 @@ export const SLOT_START_UTC_MS_BY_DATE: Record<WorkshopDate, Record<string, numb
     "12:30 PM": new Date("2026-10-25T17:30:00Z").getTime(),
     "1:30 PM": new Date("2026-10-25T18:30:00Z").getTime(),
   },
+  "November 8, 2026": {
+    "9:00 AM": new Date("2026-11-08T15:00:00Z").getTime(),
+    "10:00 AM": new Date("2026-11-08T16:00:00Z").getTime(),
+    "11:00 AM": new Date("2026-11-08T17:00:00Z").getTime(),
+  },
 };
 
 // SKATEHSP: 15% off, valid for either the Oct 21 or Oct 25 workshop (any
@@ -142,8 +170,8 @@ export const DISCOUNT_CODES: Record<string, { percentOff: number; validDates: Wo
   },
 };
 
-export const FORCE_SOLD_OUT = true;
+export const FORCE_SOLD_OUT = false;
 
 // Coarse bound only, for limiting how much Stripe data gets pulled — exact
 // classification of a sale is by matching metadata.date, not this cutoff.
-export const ACTIVE_WORKSHOPS_START = new Date("2026-10-05T00:00:00Z").getTime() / 1000;
+export const ACTIVE_WORKSHOPS_START = new Date("2026-11-04T00:00:00Z").getTime() / 1000;

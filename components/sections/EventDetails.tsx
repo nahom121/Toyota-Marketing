@@ -8,15 +8,15 @@ const details = [
   {
     icon: Calendar,
     label: "Date",
-    value: FORCE_SOLD_OUT ? "Coming Soon" : "October 25th, 2026",
+    value: FORCE_SOLD_OUT ? "Coming Soon" : "November 8th, 2026",
     sub: FORCE_SOLD_OUT ? "Join our email list for updates" : "Sunday",
     color: "bg-crimson/10 text-crimson",
   },
   {
     icon: Clock,
     label: "Time",
-    value: FORCE_SOLD_OUT ? "TBA" : "4 Sessions",
-    sub: FORCE_SOLD_OUT ? "Sessions for all skill levels" : "10:30 AM · 11:30 AM · 12:30 PM · 1:30 PM",
+    value: FORCE_SOLD_OUT ? "TBA" : "3 Sessions",
+    sub: FORCE_SOLD_OUT ? "Sessions for all skill levels" : "9:00 AM · 10:00 AM · 11:00 AM",
     color: "bg-sand/30 text-sand-dark",
   },
   {
@@ -53,7 +53,7 @@ export default function EventDetails() {
             {FORCE_SOLD_OUT ? "New classes" : "Mark your calendar."}
             <br />
             <span className="font-script text-sand" style={{ fontSize: "1.05em" }}>
-              {FORCE_SOLD_OUT ? "coming soon." : "October 25th."}
+              {FORCE_SOLD_OUT ? "coming soon." : "November 8th."}
             </span>
           </h2>
           <p className="text-white/60 text-lg mt-4 max-w-lg mx-auto">
