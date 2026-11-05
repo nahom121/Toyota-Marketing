@@ -81,7 +81,7 @@ const jsonLd = {
   location: {
     "@type": "Place",
     name: "Houston, TX",
-    address: { "@type": "PostalAddress", addressLocality: "Houston", addressRegion: "TX", postalCode: "77047", addressCountry: "US" },
+    address: { "@type": "PostalAddress", streetAddress: "8800 W Sam Houston Pkwy S, Ste 107", addressLocality: "Houston", addressRegion: "TX", postalCode: "77047", addressCountry: "US" },
   },
   organizer: { "@type": "Person", name: "Michaela" },
   offers: {

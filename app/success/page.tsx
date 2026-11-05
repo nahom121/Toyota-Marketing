@@ -79,7 +79,7 @@ function SuccessContent() {
         <div className="bg-charcoal text-white rounded-2xl p-5 mb-6">
           <Calendar className="w-6 h-6 text-sand mx-auto mb-3" />
           <p className="font-display text-xl mb-1">{data?.date || "See you soon"}</p>
-          <p className="text-white/60 text-sm">221 Barren Springs Dr, Ste 15, Houston, TX 77047</p>
+          <p className="text-white/60 text-sm">8800 W Sam Houston Pkwy S, Ste 107, Houston, TX 77047</p>
           <p className="text-white/50 text-xs mt-2">
             Arrive at your booked session time!
           </p>
