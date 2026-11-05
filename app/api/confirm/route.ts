@@ -1,6 +1,8 @@
 import Stripe from "stripe";
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
+import { displayTime, SLOT_LEVELS_BY_DATE } from "@/lib/slots";
+import type { WorkshopDate } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
 
@@ -26,9 +28,19 @@ export async function GET(request: NextRequest) {
     const isBundle = !!secondTimeSlot;
     const amountPaid = ((session.amount_total || 0) / 100).toFixed(2);
 
+    // Two different classes can share a clock time (e.g. "11:00 AM" and
+    // "11:00 AM (Advanced)") — show the time plus level so it's unambiguous.
+    const levelsForDate = SLOT_LEVELS_BY_DATE[eventDate as WorkshopDate];
+    const sessionLabel = (slot: string) => {
+      const title = levelsForDate?.[slot]?.title;
+      return title ? `${displayTime(slot)} (${title})` : displayTime(slot);
+    };
+    const timeSlotLabel = sessionLabel(timeSlot);
+    const secondTimeSlotLabel = secondTimeSlot ? sessionLabel(secondTimeSlot) : "";
+
     // Already sent — return success without re-sending
     if (meta.confirmation_sent === "true") {
-      return NextResponse.json({ success: true, name, email, ticketCount, timeSlot, date: eventDate, amountPaid });
+      return NextResponse.json({ success: true, name, email, ticketCount, timeSlot: timeSlotLabel, date: eventDate, amountPaid });
     }
 
     // Mark as sent before sending (prevents double-send on concurrent requests)
@@ -54,7 +66,7 @@ export async function GET(request: NextRequest) {
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Your Order</h2>
               <table style="width:100%;font-size:14px;color:#1C1C1C;border-collapse:collapse">
                 <tr><td style="padding:6px 0">Hi, ${name}!</td></tr>
-                <tr><td style="padding:6px 0">${isBundle ? "Sessions" : "Session"}</td><td style="padding:6px 0;text-align:right;font-weight:600">${isBundle ? `${timeSlot} + ${secondTimeSlot}` : timeSlot}</td></tr>
+                <tr><td style="padding:6px 0">${isBundle ? "Sessions" : "Session"}</td><td style="padding:6px 0;text-align:right;font-weight:600">${isBundle ? `${timeSlotLabel} + ${secondTimeSlotLabel}` : timeSlotLabel}</td></tr>
                 <tr><td style="padding:6px 0">${isBundle ? "Bundle" : "Tickets"}</td><td style="padding:6px 0;text-align:right;font-weight:600">${isBundle ? `${ticketCount} person${Number(ticketCount) > 1 ? "s" : ""} · 2 sessions` : ticketCount}</td></tr>
                 <tr style="border-top:1px solid rgba(28,28,28,0.1)">
                   <td style="padding:10px 0 0;font-weight:bold">Total Paid</td>
@@ -66,7 +78,7 @@ export async function GET(request: NextRequest) {
             <div style="background:white;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid rgba(28,28,28,0.1)">
               <h2 style="font-size:14px;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px">Pop-Up Details</h2>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📅 <strong>Date:</strong> ${eventDate}</p>
-              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>${isBundle ? "Your sessions:" : "Your session:"}</strong> ${isBundle ? `${timeSlot} &amp; ${secondTimeSlot}` : timeSlot}</p>
+              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>${isBundle ? "Your sessions:" : "Your session:"}</strong> ${isBundle ? `${timeSlotLabel} &amp; ${secondTimeSlotLabel}` : timeSlotLabel}</p>
               <p style="margin:8px 0 4px;font-size:13px;color:#4A4A4A;background:#FFF8EC;border-left:3px solid #8B5E3C;padding:8px 10px;border-radius:4px">📌 <strong>Arrive at your session time.</strong> The time above is your check-in time — you'll use the first 15 minutes to get your skates on and get comfortable. Class begins 15 minutes after you arrive.</p>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> 221 Barren Springs Dr, Ste 15, Houston, TX 77047</p>
             </div>
@@ -91,14 +103,14 @@ export async function GET(request: NextRequest) {
       await resend2.emails.send({
         from: "Houston Skate Project <info@houstonskateproject.org>",
         to: organizerEmail,
-        subject: `New booking: ${name} · ${timeSlot} · ${ticketCount} ticket${Number(ticketCount) > 1 ? "s" : ""}`,
+        subject: `New booking: ${name} · ${timeSlotLabel} · ${ticketCount} ticket${Number(ticketCount) > 1 ? "s" : ""}`,
         html: `
           <div style="font-family:sans-serif;max-width:400px;margin:0 auto;padding:24px">
             <h2 style="color:#1C1C1C;margin:0 0 16px">New Registration 🛼</h2>
             <table style="width:100%;font-size:14px;color:#1C1C1C;border-collapse:collapse">
               <tr><td style="padding:6px 0;color:#8A8A8A">Name</td><td style="padding:6px 0;font-weight:600;text-align:right">${name}</td></tr>
               <tr><td style="padding:6px 0;color:#8A8A8A">Email</td><td style="padding:6px 0;text-align:right">${email}</td></tr>
-              <tr><td style="padding:6px 0;color:#8A8A8A">${isBundle ? "Sessions" : "Session"}</td><td style="padding:6px 0;font-weight:600;text-align:right">${isBundle ? `${timeSlot} + ${secondTimeSlot}` : timeSlot}</td></tr>
+              <tr><td style="padding:6px 0;color:#8A8A8A">${isBundle ? "Sessions" : "Session"}</td><td style="padding:6px 0;font-weight:600;text-align:right">${isBundle ? `${timeSlotLabel} + ${secondTimeSlotLabel}` : timeSlotLabel}</td></tr>
               <tr><td style="padding:6px 0;color:#8A8A8A">Tickets</td><td style="padding:6px 0;font-weight:600;text-align:right">${ticketCount}</td></tr>
               <tr style="border-top:1px solid #eee"><td style="padding:10px 0 0;font-weight:bold">Paid</td><td style="padding:10px 0 0;text-align:right;font-weight:bold;color:#8B5E3C;font-size:18px">$${amountPaid}</td></tr>
             </table>
@@ -112,7 +124,7 @@ export async function GET(request: NextRequest) {
       name,
       email,
       ticketCount,
-      timeSlot,
+      timeSlot: timeSlotLabel,
       date: eventDate,
       amountPaid,
     });

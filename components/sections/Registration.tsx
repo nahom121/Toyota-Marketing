@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { Check, Minus, Plus, ShoppingCart, User, Phone, Mail, Bell } from "lucide-react";
-import { FORCE_SOLD_OUT, getVisibleWorkshopDates, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, SLOT_LEVELS_BY_DATE, SLOT_START_UTC_MS_BY_DATE, SLOT_CAPACITY } from "@/lib/slots";
+import { FORCE_SOLD_OUT, getVisibleWorkshopDates, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, SLOT_LEVELS_BY_DATE, SLOT_START_UTC_MS_BY_DATE, SLOT_CAPACITY, displayTime } from "@/lib/slots";
 import type { WorkshopDate } from "@/lib/slots";
 
 const TICKET_PRICE = 25;
@@ -403,7 +403,7 @@ export default function Registration() {
                         <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${selected ? "text-crimson" : "text-ink-muted"}`}>
                           {SLOT_LEVELS[slot].title} <span className="font-semibold normal-case tracking-normal opacity-70">(click to see what this requires)</span>
                         </p>
-                        <p className={`font-display text-xl mb-1 ${selected ? "text-crimson" : "text-charcoal"}`}>{slot}</p>
+                        <p className={`font-display text-xl mb-1 ${selected ? "text-crimson" : "text-charcoal"}`}>{displayTime(slot)}</p>
                         {slotData === null ? (
                           <div className="h-3 w-16 bg-charcoal/10 rounded animate-pulse mt-1" />
                         ) : promoUnlocked ? (
@@ -479,7 +479,7 @@ export default function Registration() {
                 ) : (
                   <div className="mb-6 flex items-center gap-2 bg-crimson/8 border border-crimson/20 rounded-xl px-4 py-2.5">
                     <Check className="w-4 h-4 text-crimson shrink-0" />
-                    <p className="text-sm text-crimson font-semibold">Reserved spot unlocked · {promoSlot} {promoSlot ? SLOT_LEVELS[promoSlot].title : ""}</p>
+                    <p className="text-sm text-crimson font-semibold">Reserved spot unlocked · {promoSlot ? displayTime(promoSlot) : ""} {promoSlot ? SLOT_LEVELS[promoSlot].title : ""}</p>
                   </div>
                 )}
 
@@ -489,7 +489,7 @@ export default function Registration() {
                   return (
                     <div className="bg-charcoal/4 border border-charcoal/10 rounded-2xl p-5 mb-6">
                       <p className="font-semibold text-charcoal text-sm mb-1">
-                        🛼 {level.title} — {selectedSlot}
+                        🛼 {level.title} — {displayTime(selectedSlot)}
                       </p>
                       <p className="text-ink-muted text-xs mb-3">Choose this class if you:</p>
                       <ul className="space-y-1.5">
@@ -516,7 +516,7 @@ export default function Registration() {
                       </label>
 
                       <p className="text-xs text-ink-muted mt-4 border-t border-charcoal/10 pt-3">
-                        📌 <strong>Arrive at {selectedSlot}</strong> — that's your check-in time, not your class start time. You'll use those first 15 minutes to get your skates on and get comfortable. Class begins at 15 minutes past your arrival time.
+                        📌 <strong>Arrive at {displayTime(selectedSlot)}</strong> — that's your check-in time, not your class start time. You'll use those first 15 minutes to get your skates on and get comfortable. Class begins at 15 minutes past your arrival time.
                       </p>
                     </div>
                   );
@@ -526,7 +526,7 @@ export default function Registration() {
                 {selectedSlot && !isSoldOut && promoType !== "reserved_slot" && (
                   <>
                     <p className="text-ink-secondary text-sm font-medium mb-4">
-                      How many people for the {selectedSlot} session?
+                      How many people for the {displayTime(selectedSlot)} session?
                     </p>
                     <div className="flex items-center justify-center gap-6 mb-6">
                       <button
@@ -757,7 +757,7 @@ export default function Registration() {
                       <div className="flex justify-between text-sm">
                         <span className="text-ink-secondary">Session</span>
                         <span className="font-semibold text-charcoal">
-                          {selectedSlot} · {WORKSHOP_DATES.find((d) => d.value === selectedDate)?.shortLabel}
+                          {displayTime(selectedSlot)} {SLOT_LEVELS[selectedSlot] ? `(${SLOT_LEVELS[selectedSlot].title})` : ""} · {WORKSHOP_DATES.find((d) => d.value === selectedDate)?.shortLabel}
                         </span>
                       </div>
                     )}

@@ -30,7 +30,7 @@ const WORKSHOPS = [
 ];
 
 const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
-  "Workshop 12 · Nov 8, 2026": ["9:00 AM", "10:00 AM", "11:00 AM"],
+  "Workshop 12 · Nov 8, 2026": ["9:00 AM", "10:00 AM", "11:00 AM", "11:00 AM (Advanced)"],
   "Workshop 11 · Oct 25, 2026": ["10:30 AM", "11:30 AM", "12:30 PM", "1:30 PM"],
   "Workshop 10 · Oct 21, 2026": ["7:00 PM", "8:00 PM"],
   "Workshop 9 · Oct 18, 2026": ["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"],
@@ -99,7 +99,8 @@ const SLOT_TITLES_BY_WORKSHOP: Record<string, Record<string, string>> = {
   "Workshop 12 · Nov 8, 2026": {
     "9:00 AM": "Pre-Beginner",
     "10:00 AM": "Beginner",
-    "11:00 AM": "Intermediate + Advanced",
+    "11:00 AM": "Intermediate",
+    "11:00 AM (Advanced)": "Advanced",
   },
   "Workshop 11 · Oct 25, 2026": {
     "10:30 AM": "Pre-Beginner",
@@ -162,7 +163,7 @@ const SLOT_TITLES_BY_WORKSHOP: Record<string, Record<string, string>> = {
 
 const SLOT_ORDER = [
   "9:00 AM", "9:30 AM", "10:30 AM", "11:30 AM", "12:30 PM", "1:30 PM",
-  "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "1:00 PM (Beginner)", "2:00 PM", "3:00 PM", "4:00 PM",
+  "10:00 AM", "11:00 AM", "11:00 AM (Advanced)", "12:00 PM", "1:00 PM", "1:00 PM (Beginner)", "2:00 PM", "3:00 PM", "4:00 PM",
   "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM",
 ];
 

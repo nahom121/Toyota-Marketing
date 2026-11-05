@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { NextRequest, NextResponse } from "next/server";
-import { FORCE_SOLD_OUT, ACTIVE_WORKSHOPS_START, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, SLOT_CAPACITY, SLOT_START_UTC_MS_BY_DATE, DISCOUNT_CODES } from "@/lib/slots";
+import { FORCE_SOLD_OUT, ACTIVE_WORKSHOPS_START, SLOTS_BY_DATE, SLOT_CAPACITIES_BY_DATE, SLOT_CAPACITY, SLOT_START_UTC_MS_BY_DATE, DISCOUNT_CODES, displayTime, SLOT_LEVELS_BY_DATE } from "@/lib/slots";
 import type { WorkshopDate } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
@@ -41,6 +41,13 @@ export async function POST(request: NextRequest) {
     let unitAmount = baseUnitAmount;
     const SLOT_CAPACITIES = SLOT_CAPACITIES_BY_DATE[workshopDate];
     const SLOT_START_UTC = SLOT_START_UTC_MS_BY_DATE[workshopDate];
+    const SLOT_LEVELS = SLOT_LEVELS_BY_DATE[workshopDate];
+    // Two different classes can share a clock time (e.g. "11:00 AM" and
+    // "11:00 AM (Advanced)") — show the time plus level so it's unambiguous.
+    const slotLabel = (slot: string) => {
+      const title = SLOT_LEVELS?.[slot]?.title;
+      return title ? `${displayTime(slot)} (${title})` : displayTime(slot);
+    };
 
     // Validate promo code if provided. Two kinds: a discount code (public,
     // reusable, % off, valid for specific dates/a time window) or a
@@ -75,7 +82,7 @@ export async function POST(request: NextRequest) {
       const startUtc = SLOT_START_UTC[slot];
       if (startUtc && Date.now() >= startUtc) {
         return NextResponse.json(
-          { error: `Registration for the ${slot} session is now closed — class has already started.` },
+          { error: `Registration for the ${slotLabel(slot)} session is now closed — class has already started.` },
           { status: 409 }
         );
       }
@@ -128,13 +135,13 @@ export async function POST(request: NextRequest) {
       const remaining = Math.max(0, cap - slotSold);
       if (ticketCount > remaining) {
         return NextResponse.json(
-          { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left for the ${slot} session.` },
+          { error: `Only ${remaining} spot${remaining === 1 ? "" : "s"} left for the ${slotLabel(slot)} session.` },
           { status: 409 }
         );
       }
     }
 
-    const sessionLabel = isBundle ? `${timeSlot} + ${secondSlot}` : `${timeSlot} session`;
+    const sessionLabel = isBundle ? `${slotLabel(timeSlot)} + ${slotLabel(secondSlot)}` : `${slotLabel(timeSlot)} session`;
 
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
       {

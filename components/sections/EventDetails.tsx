@@ -15,8 +15,8 @@ const details = [
   {
     icon: Clock,
     label: "Time",
-    value: FORCE_SOLD_OUT ? "TBA" : "3 Sessions",
-    sub: FORCE_SOLD_OUT ? "Sessions for all skill levels" : "9:00 AM · 10:00 AM · 11:00 AM",
+    value: FORCE_SOLD_OUT ? "TBA" : "4 Classes",
+    sub: FORCE_SOLD_OUT ? "Sessions for all skill levels" : "9:00 AM · 10:00 AM · 11:00 AM (two classes)",
     color: "bg-sand/30 text-sand-dark",
   },
   {

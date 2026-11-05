@@ -1,5 +1,14 @@
 export type WorkshopDate = "October 18, 2026" | "October 21, 2026" | "October 25, 2026" | "November 8, 2026";
 
+// Some slot keys carry a parenthetical suffix (e.g. "11:00 AM (Advanced)")
+// so two different classes meeting at the same clock time can each have
+// their own capacity. This strips that suffix for anything shown to a
+// customer — the slot key itself (with the suffix) stays the source of
+// truth for capacity/metadata.
+export function displayTime(slot: string): string {
+  return slot.replace(/\s*\([^)]*\)\s*$/, "");
+}
+
 type WorkshopDateConfig = {
   value: WorkshopDate;
   dayLabel: string;
@@ -56,7 +65,10 @@ export const SLOTS_BY_DATE: Record<WorkshopDate, string[]> = {
   "October 18, 2026": ["11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM"],
   "October 21, 2026": ["7:00 PM", "8:00 PM"],
   "October 25, 2026": ["10:30 AM", "11:30 AM", "12:30 PM", "1:30 PM"],
-  "November 8, 2026": ["9:00 AM", "10:00 AM", "11:00 AM"],
+  // Intermediate and Advanced are two separate classes that both meet at
+  // 11:00 AM — "11:00 AM (Advanced)" is an internal-only key so they can
+  // have their own capacity; displayTime() strips the suffix for customers.
+  "November 8, 2026": ["9:00 AM", "10:00 AM", "11:00 AM", "11:00 AM (Advanced)"],
 };
 
 export const SLOT_CAPACITY = 30;
@@ -65,7 +77,7 @@ export const SLOT_CAPACITIES_BY_DATE: Record<WorkshopDate, Record<string, number
   "October 18, 2026": { "11:00 AM": 30, "12:00 PM": 30, "1:00 PM": 30, "2:00 PM": 30 },
   "October 21, 2026": { "7:00 PM": 30, "8:00 PM": 30 },
   "October 25, 2026": { "10:30 AM": 30, "11:30 AM": 30, "12:30 PM": 30, "1:30 PM": 30 },
-  "November 8, 2026": { "9:00 AM": 30, "10:00 AM": 30, "11:00 AM": 30 },
+  "November 8, 2026": { "9:00 AM": 30, "10:00 AM": 30, "11:00 AM": 15, "11:00 AM (Advanced)": 15 },
 };
 
 const PRE_BEGINNER = {
@@ -100,15 +112,6 @@ const ADVANCED = {
     "Can cross one foot over the other while skating forward around a circle without losing your balance",
   ],
 };
-// Intermediate and Advanced share a single class this week.
-const INTERMEDIATE_ADVANCED = {
-  title: "Intermediate + Advanced",
-  bullets: [
-    "Intermediate: Can comfortably make forward scissors/bubbles while moving, glide on one foot for 5+ seconds, and complete at least one backward scissor/bubble on your own",
-    "Advanced: Can skate backward using backward scissors/bubbles without falling, squat into a cannonball while rolling, and cross one foot over the other while skating forward around a circle",
-  ],
-};
-
 export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: string; bullets: string[] }>> = {
   "October 18, 2026": {
     "11:00 AM": PRE_BEGINNER,
@@ -129,7 +132,8 @@ export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: s
   "November 8, 2026": {
     "9:00 AM": PRE_BEGINNER,
     "10:00 AM": BEGINNER,
-    "11:00 AM": INTERMEDIATE_ADVANCED,
+    "11:00 AM": INTERMEDIATE,
+    "11:00 AM (Advanced)": ADVANCED,
   },
 };
 
@@ -157,6 +161,7 @@ export const SLOT_START_UTC_MS_BY_DATE: Record<WorkshopDate, Record<string, numb
     "9:00 AM": new Date("2026-11-08T15:00:00Z").getTime(),
     "10:00 AM": new Date("2026-11-08T16:00:00Z").getTime(),
     "11:00 AM": new Date("2026-11-08T17:00:00Z").getTime(),
+    "11:00 AM (Advanced)": new Date("2026-11-08T17:00:00Z").getTime(),
   },
 };
 
