@@ -173,13 +173,6 @@ export const DISCOUNT_CODES: Record<string, { percentOff: number; validDates: Wo
     validDates: ["October 21, 2026", "October 25, 2026"],
     expiresAt: new Date("2026-10-19T04:59:00Z").getTime(),
   },
-  // Free registration, one person only, valid for any Nov 8 session.
-  SKATEFREE: {
-    percentOff: 100,
-    validDates: ["November 8, 2026"],
-    expiresAt: new Date("2026-11-08T23:59:00Z").getTime(),
-    singleUse: true,
-  },
 };
 
 export const FORCE_SOLD_OUT = false;
