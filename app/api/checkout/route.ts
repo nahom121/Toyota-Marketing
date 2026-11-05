@@ -17,6 +17,12 @@ function isRefunded(s: Stripe.Checkout.Session): boolean {
   return charge?.refunded === true;
 }
 
+// A 100%-off order has nothing to charge, so Stripe marks it
+// "no_payment_required" instead of "paid" — treat both as a completed order.
+function isCompleted(s: Stripe.Checkout.Session): boolean {
+  return s.payment_status === "paid" || s.payment_status === "no_payment_required";
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { date, ticketCount, timeSlot, secondSlot, primaryEmail, primaryName, primaryPhone, registrants, promoCode } =
@@ -105,17 +111,19 @@ export async function POST(request: NextRequest) {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
-    // Check reservation code hasn't been used (discount codes are reusable)
-    if (promoUpper && !discount) {
+    // Check a single-use code hasn't been used already — plain reservation
+    // codes are always single-use; a discount code only if marked singleUse
+    // (most discount codes, like SKATEHSP, are public/reusable).
+    if (promoUpper && (!discount || discount.singleUse)) {
       const codeUsed = allSessions.some(
         (s) =>
-          s.payment_status === "paid" &&
+          isCompleted(s) &&
           !isRefunded(s) &&
           s.metadata?.date === workshopDate &&
           s.metadata?.promo_code === promoUpper
       );
       if (codeUsed) {
-        return NextResponse.json({ error: "This reservation code has already been used." }, { status: 409 });
+        return NextResponse.json({ error: "This code has already been used." }, { status: 409 });
       }
     }
 
@@ -127,7 +135,7 @@ export async function POST(request: NextRequest) {
       const cap = SLOT_CAPACITIES[slot] ?? SLOT_CAPACITY;
       const slotSold = allSessions
         .filter((s) => {
-          if (s.payment_status !== "paid" || isRefunded(s)) return false;
+          if (!isCompleted(s) || isRefunded(s)) return false;
           if (s.metadata?.date !== workshopDate) return false;
           return s.metadata?.time_slot === slot || s.metadata?.second_time_slot === slot;
         })
@@ -159,6 +167,8 @@ export async function POST(request: NextRequest) {
       },
     ];
 
+    const isFree = unitAmount * ticketCount === 0;
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items,
@@ -177,9 +187,13 @@ export async function POST(request: NextRequest) {
       },
       success_url: `${SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/#tickets`,
-      payment_intent_data: {
-        description: `Houston Skate Project · ${sessionLabel} · ${ticketCount} ticket(s) · ${primaryName}`,
-      },
+      // Stripe doesn't create a PaymentIntent for a fully free order, so
+      // payment_intent_data isn't valid to pass in that case.
+      ...(isFree ? {} : {
+        payment_intent_data: {
+          description: `Houston Skate Project · ${sessionLabel} · ${ticketCount} ticket(s) · ${primaryName}`,
+        },
+      }),
     });
 
     return NextResponse.json({ url: session.url });

@@ -11,6 +11,12 @@ function isRefunded(s: Stripe.Checkout.Session): boolean {
   return charge?.refunded === true;
 }
 
+// A 100%-off order has nothing to charge, so Stripe marks it
+// "no_payment_required" instead of "paid" — treat both as a completed order.
+function isCompleted(s: Stripe.Checkout.Session): boolean {
+  return s.payment_status === "paid" || s.payment_status === "no_payment_required";
+}
+
 function fallbackSlots(date: WorkshopDate): Record<string, SlotInfo> {
   const caps = SLOT_CAPACITIES_BY_DATE[date];
   return Object.fromEntries(
@@ -54,7 +60,7 @@ export async function GET() {
       if (page.data.length > 0) startingAfter = page.data[page.data.length - 1].id;
     }
 
-    const valid = sessions.filter((s) => s.payment_status === "paid" && !isRefunded(s));
+    const valid = sessions.filter((s) => isCompleted(s) && !isRefunded(s));
 
     const dates = Object.fromEntries(
       getVisibleWorkshopDates().map(({ value }) => {

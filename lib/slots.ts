@@ -167,11 +167,18 @@ export const SLOT_START_UTC_MS_BY_DATE: Record<WorkshopDate, Record<string, numb
 
 // SKATEHSP: 15% off, valid for either the Oct 21 or Oct 25 workshop (any
 // session), good through 11:59 PM CDT on Oct 18 — the day it was announced.
-export const DISCOUNT_CODES: Record<string, { percentOff: number; validDates: WorkshopDate[]; expiresAt: number }> = {
+export const DISCOUNT_CODES: Record<string, { percentOff: number; validDates: WorkshopDate[]; expiresAt: number; singleUse?: boolean }> = {
   SKATEHSP: {
     percentOff: 15,
     validDates: ["October 21, 2026", "October 25, 2026"],
     expiresAt: new Date("2026-10-19T04:59:00Z").getTime(),
+  },
+  // Free registration, one person only, valid for any Nov 8 session.
+  SKATEFREE: {
+    percentOff: 100,
+    validDates: ["November 8, 2026"],
+    expiresAt: new Date("2026-11-08T23:59:00Z").getTime(),
+    singleUse: true,
   },
 };
 

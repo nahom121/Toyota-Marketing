@@ -69,7 +69,9 @@ export async function GET(request: NextRequest) {
     }
 
     const paid = sessions.filter((s) => {
-      if (s.payment_status !== "paid") return false;
+      // A 100%-off order has nothing to charge, so Stripe marks it
+      // "no_payment_required" instead of "paid" — count both as registered.
+      if (s.payment_status !== "paid" && s.payment_status !== "no_payment_required") return false;
       const pi = s.payment_intent as Stripe.PaymentIntent | null;
       const charge = pi?.latest_charge as Stripe.Charge | null;
       if (charge?.refunded) return false;

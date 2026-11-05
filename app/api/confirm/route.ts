@@ -14,7 +14,9 @@ export async function GET(request: NextRequest) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    if (session.payment_status !== "paid") {
+    // A 100%-off order has nothing to charge, so Stripe marks it
+    // "no_payment_required" instead of "paid" — treat both as completed.
+    if (session.payment_status !== "paid" && session.payment_status !== "no_payment_required") {
       return NextResponse.json({ error: "Payment not completed" }, { status: 402 });
     }
 

@@ -820,7 +820,7 @@ export default function Registration() {
                     className="btn-primary flex-1 py-4 text-base gap-3 disabled:opacity-60"
                   >
                     <ShoppingCart className="w-5 h-5" />
-                    {loading ? "Redirecting…" : `Pay $${total.toFixed(2)} Securely`}
+                    {loading ? "Redirecting…" : total === 0 ? "Complete Free Registration" : `Pay $${total.toFixed(2)} Securely`}
                   </button>
                 </div>
 
