@@ -77,7 +77,7 @@ export const SLOT_CAPACITIES_BY_DATE: Record<WorkshopDate, Record<string, number
   "October 18, 2026": { "11:00 AM": 30, "12:00 PM": 30, "1:00 PM": 30, "2:00 PM": 30 },
   "October 21, 2026": { "7:00 PM": 30, "8:00 PM": 30 },
   "October 25, 2026": { "10:30 AM": 30, "11:30 AM": 30, "12:30 PM": 30, "1:30 PM": 30 },
-  "November 8, 2026": { "9:00 AM": 30, "10:00 AM": 30, "11:00 AM": 15, "11:00 AM (Advanced)": 15 },
+  "November 8, 2026": { "9:00 AM": 30, "10:00 AM": 31, "11:00 AM": 15, "11:00 AM (Advanced)": 15 },
 };
 
 const PRE_BEGINNER = {
