@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📅 <strong>Date:</strong> ${eventDate}</p>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>${isBundle ? "Your sessions:" : "Your session:"}</strong> ${isBundle ? `${timeSlotLabel} &amp; ${secondTimeSlotLabel}` : timeSlotLabel}</p>
               <p style="margin:8px 0 4px;font-size:13px;color:#4A4A4A;background:#FFF8EC;border-left:3px solid #8B5E3C;padding:8px 10px;border-radius:4px">📌 <strong>Arrive at your session time.</strong> The time above is your check-in time — you'll use the first 15 minutes to get your skates on and get comfortable. Class begins 15 minutes after you arrive.</p>
-              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> 8800 W Sam Houston Pkwy S, Ste 107, Houston, TX 77047</p>
+              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> P8 Sportsplex, 8800 W Sam Houston Pkwy S, Ste 107, Houston, TX 77047</p>
             </div>
 
             <div style="text-align:center;padding:16px;background:#8B5E3C;border-radius:12px;color:white">

@@ -80,7 +80,7 @@ const jsonLd = {
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   location: {
     "@type": "Place",
-    name: "Houston, TX",
+    name: "P8 Sportsplex",
     address: { "@type": "PostalAddress", streetAddress: "8800 W Sam Houston Pkwy S, Ste 107", addressLocality: "Houston", addressRegion: "TX", postalCode: "77047", addressCountry: "US" },
   },
   organizer: { "@type": "Person", name: "Michaela" },
