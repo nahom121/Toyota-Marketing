@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   description: FORCE_SOLD_OUT
     ? "Pop-up roller skating workshops in Houston, TX hosted by national champion skater Michaela. New dates coming soon — join the email list to be the first to know."
-    : "A pop-up roller skating workshop in Houston, TX hosted by national champion skater Michaela. November 8th, 2026. All skill levels welcome. Register now.",
+    : "A pop-up roller skating workshop in Houston, TX hosted by national champion skater Michaela. November 18th, 2026. All skill levels welcome. Register now.",
   keywords: [
     "Houston Skate Project",
     "roller skating Houston",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    title: FORCE_SOLD_OUT ? "Houston Skate Project · New Classes Coming Soon" : "Houston Skate Project · Pop-Up Workshop · November 8, 2026",
+    title: FORCE_SOLD_OUT ? "Houston Skate Project · New Classes Coming Soon" : "Houston Skate Project · Pop-Up Workshop · November 18, 2026",
     description: FORCE_SOLD_OUT
       ? "National champion skater Michaela brings pop-up roller skating workshops to Houston. New dates coming soon."
       : "National champion skater Michaela brings a pop-up roller skating workshop to Houston. All skill levels welcome. Register now.",
@@ -57,10 +57,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: FORCE_SOLD_OUT ? "Houston Skate Project · New Classes Coming Soon" : "Houston Skate Project · Pop-Up Workshop · November 8",
+    title: FORCE_SOLD_OUT ? "Houston Skate Project · New Classes Coming Soon" : "Houston Skate Project · Pop-Up Workshop · November 18",
     description: FORCE_SOLD_OUT
       ? "Roll how you want. Express who you are. Houston, TX · New dates coming soon."
-      : "Roll how you want. Express who you are. Houston, TX · November 8, 2026.",
+      : "Roll how you want. Express who you are. Houston, TX · November 18, 2026.",
     images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
@@ -75,13 +75,13 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Event",
   name: "Houston Skate Project · Pop-Up Workshop",
-  startDate: "2026-11-08",
+  startDate: "2026-11-18",
   eventStatus: "https://schema.org/EventScheduled",
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   location: {
     "@type": "Place",
-    name: "P8 Sportsplex",
-    address: { "@type": "PostalAddress", streetAddress: "8800 W Sam Houston Pkwy S, Ste 107", addressLocality: "Houston", addressRegion: "TX", postalCode: "77047", addressCountry: "US" },
+    name: "Houston, TX",
+    address: { "@type": "PostalAddress", streetAddress: "221 Barren Springs Dr, Ste 15", addressLocality: "Houston", addressRegion: "TX", postalCode: "77090", addressCountry: "US" },
   },
   organizer: { "@type": "Person", name: "Michaela" },
   offers: {

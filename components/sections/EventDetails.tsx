@@ -8,21 +8,21 @@ const details = [
   {
     icon: Calendar,
     label: "Date",
-    value: FORCE_SOLD_OUT ? "Coming Soon" : "November 8th, 2026",
-    sub: FORCE_SOLD_OUT ? "Join our email list for updates" : "Sunday",
+    value: FORCE_SOLD_OUT ? "Coming Soon" : "November 18th, 2026",
+    sub: FORCE_SOLD_OUT ? "Join our email list for updates" : "Wednesday",
     color: "bg-crimson/10 text-crimson",
   },
   {
     icon: Clock,
     label: "Time",
-    value: FORCE_SOLD_OUT ? "TBA" : "4 Classes",
-    sub: FORCE_SOLD_OUT ? "Sessions for all skill levels" : "9:00 AM · 10:00 AM · 11:00 AM (two classes)",
+    value: FORCE_SOLD_OUT ? "TBA" : "2 Sessions",
+    sub: FORCE_SOLD_OUT ? "Sessions for all skill levels" : "6:30 PM · 7:30 PM",
     color: "bg-sand/30 text-sand-dark",
   },
   {
     icon: MapPin,
     label: "Location",
-    value: "Houston, TX 77047",
+    value: "Houston, TX 77090",
     sub: "Full address revealed after registration",
     color: "bg-forest/10 text-forest",
   },
@@ -53,7 +53,7 @@ export default function EventDetails() {
             {FORCE_SOLD_OUT ? "New classes" : "Mark your calendar."}
             <br />
             <span className="font-script text-sand" style={{ fontSize: "1.05em" }}>
-              {FORCE_SOLD_OUT ? "coming soon." : "November 8th."}
+              {FORCE_SOLD_OUT ? "coming soon." : "November 18th."}
             </span>
           </h2>
           <p className="text-white/60 text-lg mt-4 max-w-lg mx-auto">
@@ -78,7 +78,7 @@ export default function EventDetails() {
               <p className="text-white/40 text-xs uppercase tracking-widest mb-1">{label}</p>
               <p className="font-display text-2xl text-white mb-1">
                 {label === "Location"
-                  ? <>{`Houston, TX `}<span className="font-black">77047</span></>
+                  ? <>{`Houston, TX `}<span className="font-black">77090</span></>
                   : value}
               </p>
               <p className="text-white/50 text-xs leading-relaxed">{sub}</p>
@@ -94,7 +94,7 @@ export default function EventDetails() {
           className="mt-6 text-center"
         >
           <p className="text-white/40 text-sm">
-            📍 Houston, TX 77047 · Exact address sent to your email after registration
+            📍 Houston, TX 77090 · Exact address sent to your email after registration
           </p>
         </motion.div>
       </div>
