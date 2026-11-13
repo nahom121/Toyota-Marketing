@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s | Houston Skate Project",
   },
   description: FORCE_SOLD_OUT
-    ? "Pop-up roller skating workshops in Houston, TX hosted by national champion skater Michaela. New dates coming soon — join the email list to be the first to know."
+    ? "Pop-up roller skating workshops in Houston, TX hosted by national champion skater Michaela. New dates coming soon. Join the email list to be the first to know."
     : "A pop-up roller skating workshop in Houston, TX hosted by national champion skater Michaela. November 18th, 2026. All skill levels welcome. Register now.",
   keywords: [
     "Houston Skate Project",

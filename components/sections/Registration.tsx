@@ -469,7 +469,7 @@ export default function Registration() {
                     </div>
                     {!discountEligible && (
                       <p className="text-xs text-crimson/80 mt-1 ml-6">
-                        Not valid for this date — valid for {discountValidDates.map((d) => WORKSHOP_DATES.find((w) => w.value === d)?.shortLabel || d).join(" & ")} only.
+                        Not valid for this date. Valid for {discountValidDates.map((d) => WORKSHOP_DATES.find((w) => w.value === d)?.shortLabel || d).join(" & ")} only.
                       </p>
                     )}
                   </div>
@@ -486,7 +486,7 @@ export default function Registration() {
                   return (
                     <div className="bg-charcoal/4 border border-charcoal/10 rounded-2xl p-5 mb-6">
                       <p className="font-semibold text-charcoal text-sm mb-1">
-                        🛼 {level.title} — {displayTime(selectedSlot)}
+                        🛼 {level.title} · {displayTime(selectedSlot)}
                       </p>
                       <p className="text-ink-muted text-xs mb-3">Choose this class if you:</p>
                       <ul className="space-y-1.5">
@@ -513,7 +513,7 @@ export default function Registration() {
                       </label>
 
                       <p className="text-xs text-ink-muted mt-4 border-t border-charcoal/10 pt-3">
-                        📌 <strong>Arrive at {displayTime(selectedSlot)}</strong> — that's your check-in time, not your class start time. You'll use those first 15 minutes to get your skates on and get comfortable. Class begins at 15 minutes past your arrival time.
+                        📌 <strong>Arrive at {displayTime(selectedSlot)}</strong>. That's your check-in time, not your class start time. You'll use those first 15 minutes to get your skates on and get comfortable. Class begins at 15 minutes past your arrival time.
                       </p>
                     </div>
                   );

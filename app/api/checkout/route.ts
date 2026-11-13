@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       const startUtc = SLOT_START_UTC[slot];
       if (startUtc && Date.now() >= startUtc) {
         return NextResponse.json(
-          { error: `Registration for the ${slotLabel(slot)} session is now closed — class has already started.` },
+          { error: `Registration for the ${slotLabel(slot)} session is now closed. Class has already started.` },
           { status: 409 }
         );
       }

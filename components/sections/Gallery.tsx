@@ -37,7 +37,7 @@ export default function Gallery() {
             </span>
           </h2>
           <p className="text-ink-muted text-base mt-3 max-w-md mx-auto">
-            Highlights from our workshops — real people, real progress.
+            Highlights from our workshops: real people, real progress.
           </p>
         </motion.div>
 

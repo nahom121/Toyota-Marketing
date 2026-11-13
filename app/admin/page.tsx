@@ -727,7 +727,7 @@ export default function AdminPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="font-display text-xl text-charcoal">Transfers</h2>
-              <p className="text-ink-muted text-xs mt-0.5">Manual ticket transfers — for record keeping only, does not affect capacity</p>
+              <p className="text-ink-muted text-xs mt-0.5">Manual ticket transfers, for record keeping only. Does not affect capacity</p>
             </div>
             <button
               onClick={() => setShowTransferForm(!showTransferForm)}
@@ -862,7 +862,7 @@ export default function AdminPage() {
         <div className="mt-12">
           <div className="mb-4">
             <h2 className="font-display text-xl text-charcoal">Email This Workshop&apos;s Registrants</h2>
-            <p className="text-ink-muted text-xs mt-0.5">Sends a one-time email directly to everyone who registered for the currently selected workshop tab. If you send again with the same subject line, anyone who already received it is automatically skipped — only people who didn&apos;t get it (or failed) will be retried.</p>
+            <p className="text-ink-muted text-xs mt-0.5">Sends a one-time email directly to everyone who registered for the currently selected workshop tab. If you send again with the same subject line, anyone who already received it is automatically skipped. Only people who didn&apos;t get it (or failed) will be retried.</p>
           </div>
           <div className="bg-cream-light border border-charcoal/10 rounded-2xl p-5 space-y-3">
             <p className="text-sm text-ink-secondary">
@@ -1094,7 +1094,7 @@ export default function AdminPage() {
               <label className="text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1 block">Subject Line</label>
               <input
                 className="form-input w-full"
-                placeholder="e.g. New date just dropped — Register now!"
+                placeholder="e.g. New date just dropped, register now!"
                 value={announceSubject}
                 onChange={(e) => { setAnnounceSubject(e.target.value); setAnnounceStatus("idle"); }}
               />
