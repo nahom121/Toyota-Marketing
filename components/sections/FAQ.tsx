@@ -35,7 +35,7 @@ const faqs = [
   },
   {
     q: "Where is the pop-up located?",
-    a: "The pop-up is in Houston, TX (77090). The exact address will be sent to your email after you register. Doors open at your booked session time.",
+    a: "We host pop-up workshops throughout Houston and surrounding areas, with locations changing regularly!\n\nEach workshop lists its ZIP code at the registration details so you can check the general distance. Exact addresses are emailed after registration.\n\nOur goal is to bring skating to communities all across HTX! 🛼",
   },
   {
     q: "What if I don't have skates?",
@@ -77,7 +77,7 @@ function FAQItem({ q, a, index }: { q: string; a: string; index: number }) {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <p className="text-ink-secondary text-sm leading-relaxed pb-5">{a}</p>
+            <p className="text-ink-secondary text-sm leading-relaxed pb-5 whitespace-pre-line">{a}</p>
           </motion.div>
         )}
       </AnimatePresence>
