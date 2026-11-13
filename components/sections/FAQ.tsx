@@ -14,6 +14,10 @@ const faqs = [
     a: "Absolutely! If you have your own skates, bring them. Please make sure your wheels are clean. BYOS (Bring Your Own Skates!) Skate rentals are not available at this pop-up, so please plan to bring a pair or borrow one from a friend.",
   },
   {
+    q: "What if I have inlines/rollerblades?",
+    a: "Bring them! You're welcome to skate with us and learn!!!",
+  },
+  {
     q: "What skill level is this for?",
     a: "All levels are welcome, and we mean it. Whether you've never touched a pair of skates in your life or you've been rolling for years, this pop-up is built for you. Michaela's whole mission is to make skating accessible and fun for everyone.",
   },
