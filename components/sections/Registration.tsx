@@ -374,6 +374,9 @@ export default function Registration() {
                 {selectedDate && (
                 <>
                 <h3 className="font-display text-2xl text-charcoal mb-1">Pick your session</h3>
+                <p className="text-ink-muted text-sm mb-4">
+                  Registering for {WORKSHOP_DATES.find((d) => d.value === selectedDate)?.dayLabel}
+                </p>
 
                 {/* Slot selector */}
                 <div className="grid grid-cols-2 gap-3 mb-8">
