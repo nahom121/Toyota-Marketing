@@ -793,16 +793,6 @@ export default function Registration() {
                   </div>
                 </div>
 
-                {/* Video recording notice */}
-                <div className="bg-sand/40 border border-charcoal/10 rounded-2xl p-4 mb-5 text-sm text-ink-secondary leading-relaxed">
-                  <p className="font-semibold text-charcoal mb-1 text-xs uppercase tracking-wider">Notice Regarding Video Recording</p>
-                  <p>
-                    Personal video recording and filming are strictly prohibited during workshop sessions. Spectators and
-                    participants are welcome to take quick photos, but continuous video recording is not permitted. Thank
-                    you for respecting the privacy and learning space of our community!
-                  </p>
-                </div>
-
                 {error && (
                   <p className="text-crimson text-sm text-center mb-4">{error}</p>
                 )}
