@@ -132,9 +132,7 @@ export default function Registration() {
   const [error, setError] = useState("");
   const [now, setNow] = useState(() => Date.now());
   const WORKSHOP_DATES = getVisibleWorkshopDates(now);
-  const [selectedDate, setSelectedDate] = useState<WorkshopDate | null>(
-    () => (getVisibleWorkshopDates().length === 1 ? getVisibleWorkshopDates()[0].value : null)
-  );
+  const [selectedDate, setSelectedDate] = useState<WorkshopDate | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [capacity, setCapacity] = useState<CapacityResponse["dates"] | null>(null);
   const [promoInput, setPromoInput] = useState("");
@@ -158,7 +156,7 @@ export default function Registration() {
   // so they're not stuck trying to book a now-unavailable workshop.
   useEffect(() => {
     if (selectedDate && !WORKSHOP_DATES.some((d) => d.value === selectedDate)) {
-      setSelectedDate(WORKSHOP_DATES.length === 1 ? WORKSHOP_DATES[0].value : null);
+      setSelectedDate(null);
       setSelectedSlot(null);
     }
   }, [now]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -340,8 +338,6 @@ export default function Registration() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                {WORKSHOP_DATES.length > 1 && (
-                <>
                 <h3 className="font-display text-2xl text-charcoal mb-1">Pick your workshop date</h3>
 
                 {/* Date selector */}
@@ -368,8 +364,6 @@ export default function Registration() {
                     );
                   })}
                 </div>
-                </>
-                )}
 
                 {selectedDate && (
                 <>
