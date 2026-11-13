@@ -42,10 +42,10 @@ export default function Hero() {
       className="relative min-h-screen flex flex-col overflow-hidden bg-charcoal"
     >
 
-      <div className="relative z-10 flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-32 pb-12 grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-28 lg:pt-32 pb-12 grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
 
         {/* Left: Text */}
-        <div>
+        <div className="order-2 lg:order-1">
 
           {/* Headline */}
           <div className="hero-headline">
@@ -106,7 +106,7 @@ export default function Hero() {
         </div>
 
         {/* Right: Photo */}
-        <div className="hero-image relative hidden lg:block">
+        <div className="hero-image relative order-1 lg:order-2 max-w-xs mx-auto w-full lg:max-w-none">
           <div className="absolute -inset-3 border-2 border-crimson/40 rounded-3xl" />
 
           <div className="relative rounded-2xl overflow-hidden bg-sand/20 aspect-[3/4]">
