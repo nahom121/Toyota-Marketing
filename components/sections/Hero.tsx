@@ -118,22 +118,11 @@ export default function Hero() {
               priority
               unoptimized
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent" />
-
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <div className="font-script text-sand text-5xl leading-none mb-1">Skate</div>
-              <div className="font-display text-white text-lg tracking-wider uppercase">Houston · 2026</div>
-            </div>
           </div>
 
           <div className="float-up absolute -top-4 -left-4 bg-sand text-charcoal rounded-2xl px-4 py-3 shadow-warm-lg">
             <div className="font-display text-2xl leading-none">7+</div>
             <div className="text-xs font-bold uppercase tracking-wide leading-none mt-0.5">Yrs Experience</div>
-          </div>
-
-          <div className="float-down absolute -bottom-4 -right-4 bg-crimson text-white rounded-2xl px-4 py-3 shadow-crimson-glow">
-            <div className="font-display text-lg leading-none">Natl.</div>
-            <div className="font-display text-lg leading-none">Champion</div>
           </div>
         </div>
       </div>
