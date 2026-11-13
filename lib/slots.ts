@@ -13,6 +13,11 @@ type WorkshopDateConfig = {
   value: WorkshopDate;
   dayLabel: string;
   shortLabel: string;
+  // The ZIP code for this workshop's venue, shown next to the date so
+  // customers can gauge distance before registering. Every workshop needs
+  // one — set it when adding a new date, even if the exact address only
+  // gets emailed after registration.
+  zip: string;
   // When set, this workshop only appears on the site / accepts new
   // bookings within this window. Both are checked against the current
   // time on every request, so nothing needs to be manually toggled at
@@ -26,6 +31,7 @@ const ALL_WORKSHOP_DATES: WorkshopDateConfig[] = [
     value: "October 18, 2026",
     dayLabel: "Sunday, October 18th",
     shortLabel: "Oct 18",
+    zip: "77090",
     // Taken off the site once the last (2pm) session has started — all
     // four sessions run their course by 3:00 PM CDT.
     visibleUntil: new Date("2026-10-18T20:00:00Z").getTime(),
@@ -34,6 +40,7 @@ const ALL_WORKSHOP_DATES: WorkshopDateConfig[] = [
     value: "October 21, 2026",
     dayLabel: "Wednesday, October 21st",
     shortLabel: "Oct 21",
+    zip: "77090",
     // Opened at 10:00 AM CDT on Oct 18; taken off the site once its last
     // (8pm) session has started — that class runs its course by 9:00 PM CDT.
     visibleFrom: new Date("2026-10-18T15:00:00Z").getTime(),
@@ -43,6 +50,7 @@ const ALL_WORKSHOP_DATES: WorkshopDateConfig[] = [
     value: "October 25, 2026",
     dayLabel: "Sunday, October 25th",
     shortLabel: "Oct 25",
+    zip: "77090",
     // Opened at 10:00 AM CDT on Oct 18; taken off the site once its last
     // (1:30pm) session has started — that class runs its course by 2:30 PM CDT.
     visibleFrom: new Date("2026-10-18T15:00:00Z").getTime(),
@@ -52,6 +60,7 @@ const ALL_WORKSHOP_DATES: WorkshopDateConfig[] = [
     value: "November 8, 2026",
     dayLabel: "Sunday, November 8th",
     shortLabel: "Nov 8",
+    zip: "77047",
     // Taken off the site once the last (11am) session has started — that
     // class runs its course by noon CST.
     visibleUntil: new Date("2026-11-08T18:00:00Z").getTime(),
@@ -60,10 +69,11 @@ const ALL_WORKSHOP_DATES: WorkshopDateConfig[] = [
     value: "November 18, 2026",
     dayLabel: "Wednesday, November 18th",
     shortLabel: "Nov 18",
+    zip: "77090",
   },
 ];
 
-export function getVisibleWorkshopDates(now: number = Date.now()): { value: WorkshopDate; dayLabel: string; shortLabel: string }[] {
+export function getVisibleWorkshopDates(now: number = Date.now()): { value: WorkshopDate; dayLabel: string; shortLabel: string; zip: string }[] {
   return ALL_WORKSHOP_DATES.filter(
     (w) => (w.visibleFrom === undefined || now >= w.visibleFrom) && (w.visibleUntil === undefined || now < w.visibleUntil)
   );

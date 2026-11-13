@@ -342,7 +342,7 @@ export default function Registration() {
 
                 {/* Date selector */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                  {WORKSHOP_DATES.map(({ value, dayLabel }) => {
+                  {WORKSHOP_DATES.map(({ value, dayLabel, zip }) => {
                     const selected = selectedDate === value;
                     return (
                       <button
@@ -360,6 +360,7 @@ export default function Registration() {
                         }`}
                       >
                         <p className={`font-display text-lg ${selected ? "text-crimson" : "text-charcoal"}`}>{dayLabel}</p>
+                        <p className="text-ink-muted text-xs mt-0.5">ZIP {zip}</p>
                       </button>
                     );
                   })}
