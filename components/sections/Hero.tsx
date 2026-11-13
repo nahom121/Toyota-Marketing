@@ -85,7 +85,7 @@ export default function Hero() {
             </div>
           ) : (
             <div className="hero-countdown">
-              <p className="text-white/40 text-xs uppercase tracking-widest mb-3">Pop-up starts in</p>
+              <p className="text-white/40 text-xs uppercase tracking-widest mb-3">Next pop-up starts in</p>
               <div className="grid grid-cols-4 gap-3 max-w-xs">
                 {[
                   { value: days, label: "Days" },
