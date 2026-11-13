@@ -11,7 +11,7 @@ const faqs = [
   },
   {
     q: "Do I bring my own skates?",
-    a: "Absolutely! If you have your own skates, bring them. Please make sure your wheels are clean.",
+    a: "Absolutely! If you have your own skates, bring them. Please make sure your wheels are clean. BYOS (Bring Your Own Skates!) Skate rentals are not available at this pop-up, so please plan to bring a pair or borrow one from a friend.",
   },
   {
     q: "What skill level is this for?",
@@ -36,10 +36,6 @@ const faqs = [
   {
     q: "Where is the pop-up located?",
     a: "We host pop-up workshops throughout Houston and surrounding areas, with locations changing regularly!\n\nEach workshop lists its ZIP code at the registration details so you can check the general distance. Exact addresses are emailed after registration.\n\nOur goal is to bring skating to communities all across HTX! 🛼",
-  },
-  {
-    q: "What if I don't have skates?",
-    a: "BYOS (Bring Your Own Skates!) Skate rentals are not available at this pop-up, so please plan to bring a pair or borrow one from a friend.",
   },
   {
     q: "Can I film or record during the workshop?",
