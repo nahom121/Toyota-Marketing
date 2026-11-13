@@ -4,7 +4,6 @@ import Footer from "@/components/layout/Footer";
 import Hero from "@/components/sections/Hero";
 
 const About = dynamic(() => import("@/components/sections/About"));
-const EventDetails = dynamic(() => import("@/components/sections/EventDetails"));
 const Registration = dynamic(() => import("@/components/sections/Registration"));
 const FAQ = dynamic(() => import("@/components/sections/FAQ"));
 const NotifySignup = dynamic(() => import("@/components/sections/NotifySignup"));
@@ -17,7 +16,6 @@ export default function Home() {
       <main>
         <Hero />
         <About />
-        <EventDetails />
         <Registration />
         <FAQ />
         <ContactStrip />
