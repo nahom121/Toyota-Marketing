@@ -24,7 +24,7 @@ const pillars = [
 
 export default function About() {
   return (
-    <section id="about" className="section-pad bg-cream-light relative overflow-hidden">
+    <section id="about" className="section-pad bg-cream-dark relative overflow-hidden">
       {/* Subtle top rule */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sand to-transparent" />
 
