@@ -1,4 +1,4 @@
-export type WorkshopDate = "October 18, 2026" | "October 21, 2026" | "October 25, 2026" | "November 8, 2026" | "November 18, 2026";
+export type WorkshopDate = "October 18, 2026" | "October 21, 2026" | "October 25, 2026" | "November 8, 2026" | "November 18, 2026" | "November 22, 2026";
 
 // Some slot keys carry a parenthetical suffix (e.g. "11:00 AM (Advanced)")
 // so two different classes meeting at the same clock time can each have
@@ -71,6 +71,12 @@ const ALL_WORKSHOP_DATES: WorkshopDateConfig[] = [
     shortLabel: "Nov 18",
     zip: "77090",
   },
+  {
+    value: "November 22, 2026",
+    dayLabel: "Sunday, November 22nd",
+    shortLabel: "Nov 22",
+    zip: "77090",
+  },
 ];
 
 export function getVisibleWorkshopDates(now: number = Date.now()): { value: WorkshopDate; dayLabel: string; shortLabel: string; zip: string }[] {
@@ -88,6 +94,7 @@ export const SLOTS_BY_DATE: Record<WorkshopDate, string[]> = {
   // have their own capacity; displayTime() strips the suffix for customers.
   "November 8, 2026": ["9:00 AM", "10:00 AM", "11:00 AM", "11:00 AM (Advanced)"],
   "November 18, 2026": ["6:30 PM", "7:30 PM"],
+  "November 22, 2026": ["12:30 PM", "1:30 PM", "2:30 PM", "3:30 PM"],
 };
 
 export const SLOT_CAPACITY = 30;
@@ -98,6 +105,7 @@ export const SLOT_CAPACITIES_BY_DATE: Record<WorkshopDate, Record<string, number
   "October 25, 2026": { "10:30 AM": 30, "11:30 AM": 30, "12:30 PM": 30, "1:30 PM": 30 },
   "November 8, 2026": { "9:00 AM": 30, "10:00 AM": 31, "11:00 AM": 15, "11:00 AM (Advanced)": 15 },
   "November 18, 2026": { "6:30 PM": 30, "7:30 PM": 30 },
+  "November 22, 2026": { "12:30 PM": 30, "1:30 PM": 30, "2:30 PM": 30, "3:30 PM": 30 },
 };
 
 const PRE_BEGINNER = {
@@ -159,6 +167,12 @@ export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: s
     "6:30 PM": BEGINNER,
     "7:30 PM": INTERMEDIATE,
   },
+  "November 22, 2026": {
+    "12:30 PM": PRE_BEGINNER,
+    "1:30 PM": BEGINNER,
+    "2:30 PM": INTERMEDIATE,
+    "3:30 PM": ADVANCED,
+  },
 };
 
 // Slot start times in UTC ms. Houston is CDT (UTC-5) through Nov 1, 2026,
@@ -190,6 +204,12 @@ export const SLOT_START_UTC_MS_BY_DATE: Record<WorkshopDate, Record<string, numb
   "November 18, 2026": {
     "6:30 PM": new Date("2026-11-19T00:30:00Z").getTime(),
     "7:30 PM": new Date("2026-11-19T01:30:00Z").getTime(),
+  },
+  "November 22, 2026": {
+    "12:30 PM": new Date("2026-11-22T18:30:00Z").getTime(),
+    "1:30 PM": new Date("2026-11-22T19:30:00Z").getTime(),
+    "2:30 PM": new Date("2026-11-22T20:30:00Z").getTime(),
+    "3:30 PM": new Date("2026-11-22T21:30:00Z").getTime(),
   },
 };
 
