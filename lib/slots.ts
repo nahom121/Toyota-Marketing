@@ -70,6 +70,9 @@ const ALL_WORKSHOP_DATES: WorkshopDateConfig[] = [
     dayLabel: "Wednesday, November 18th",
     shortLabel: "Nov 18",
     zip: "77090",
+    // Taken off the site once the last (7:30pm) session has started — that
+    // class runs its course by 8:30 PM CST.
+    visibleUntil: new Date("2026-11-19T01:30:00Z").getTime(),
   },
   {
     value: "November 22, 2026",
