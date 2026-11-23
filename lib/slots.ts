@@ -260,7 +260,7 @@ export const DISCOUNT_CODES: Record<string, { percentOff: number; validDates: Wo
 // most workshops share the main floor, but a workshop at a different
 // location overrides it here.
 export const VENUE_ADDRESS_BY_DATE: Partial<Record<WorkshopDate, string>> = {
-  "November 29, 2026": "8800 West Sam Houston Pkwy South, Suite 107, Houston, TX 77099",
+  "November 29, 2026": "P8 Sportsplex, 8800 West Sam Houston Pkwy South, Suite 107, Houston, Texas 77099",
 };
 export const DEFAULT_VENUE_ADDRESS = "221 Barren Springs Dr, Ste 15, Houston, TX 77090";
 
