@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
-import { displayTime, SLOT_LEVELS_BY_DATE } from "@/lib/slots";
+import { displayTime, SLOT_LEVELS_BY_DATE, VENUE_ADDRESS_BY_DATE, DEFAULT_VENUE_ADDRESS } from "@/lib/slots";
 import type { WorkshopDate } from "@/lib/slots";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.houstonskateproject.org";
@@ -39,10 +39,11 @@ export async function GET(request: NextRequest) {
     };
     const timeSlotLabel = sessionLabel(timeSlot);
     const secondTimeSlotLabel = secondTimeSlot ? sessionLabel(secondTimeSlot) : "";
+    const venueAddress = VENUE_ADDRESS_BY_DATE[eventDate as WorkshopDate] || DEFAULT_VENUE_ADDRESS;
 
     // Already sent — return success without re-sending
     if (meta.confirmation_sent === "true") {
-      return NextResponse.json({ success: true, name, email, ticketCount, timeSlot: timeSlotLabel, date: eventDate, amountPaid });
+      return NextResponse.json({ success: true, name, email, ticketCount, timeSlot: timeSlotLabel, date: eventDate, amountPaid, address: venueAddress });
     }
 
     // Mark as sent before sending (prevents double-send on concurrent requests)
@@ -82,7 +83,7 @@ export async function GET(request: NextRequest) {
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📅 <strong>Date:</strong> ${eventDate}</p>
               <p style="margin:4px 0;font-size:14px;color:#1C1C1C">🕐 <strong>${isBundle ? "Your sessions:" : "Your session:"}</strong> ${isBundle ? `${timeSlotLabel} &amp; ${secondTimeSlotLabel}` : timeSlotLabel}</p>
               <p style="margin:8px 0 4px;font-size:13px;color:#4A4A4A;background:#FFF8EC;border-left:3px solid #8B5E3C;padding:8px 10px;border-radius:4px">📌 <strong>Arrive at your session time.</strong> The time above is your check-in time. You'll use the first 15 minutes to get your skates on and get comfortable. Class begins 15 minutes after you arrive.</p>
-              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> 221 Barren Springs Dr, Ste 15, Houston, TX 77090</p>
+              <p style="margin:4px 0;font-size:14px;color:#1C1C1C">📍 <strong>Location:</strong> ${venueAddress}</p>
             </div>
 
             <div style="text-align:center;padding:16px;background:#8B5E3C;border-radius:12px;color:white">
@@ -129,6 +130,7 @@ export async function GET(request: NextRequest) {
       timeSlot: timeSlotLabel,
       date: eventDate,
       amountPaid,
+      address: venueAddress,
     });
   } catch (error) {
     console.error("Confirm error:", error);

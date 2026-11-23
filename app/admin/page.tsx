@@ -15,6 +15,7 @@ type Transfer = {
 };
 
 const WORKSHOPS = [
+  "Workshop 15 · Nov 29, 2026",
   "Workshop 14 · Nov 22, 2026",
   "Workshop 13 · Nov 18, 2026",
   "Workshop 12 · Nov 8, 2026",
@@ -32,6 +33,7 @@ const WORKSHOPS = [
 ];
 
 const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
+  "Workshop 15 · Nov 29, 2026": ["9:00 AM", "10:00 AM", "11:00 AM", "11:00 AM (Advanced)"],
   "Workshop 14 · Nov 22, 2026": ["12:30 PM", "1:30 PM", "2:30 PM", "3:30 PM"],
   "Workshop 13 · Nov 18, 2026": ["6:30 PM", "7:30 PM"],
   "Workshop 12 · Nov 8, 2026": ["9:00 AM", "10:00 AM", "11:00 AM", "11:00 AM (Advanced)"],
@@ -49,7 +51,8 @@ const SLOTS_BY_WORKSHOP: Record<string, string[]> = {
 };
 
 const WORKSHOP_TO_FILTER: Record<string, string> = {
-  "Workshop 14 · Nov 22, 2026": "current",
+  "Workshop 15 · Nov 29, 2026": "current",
+  "Workshop 14 · Nov 22, 2026": "workshop14",
   "Workshop 13 · Nov 18, 2026": "workshop13",
   "Workshop 12 · Nov 8, 2026": "workshop12",
   "Workshop 11 · Oct 25, 2026": "workshop11",
@@ -66,7 +69,8 @@ const WORKSHOP_TO_FILTER: Record<string, string> = {
 };
 
 const FILTER_TO_WORKSHOP: Record<string, string> = {
-  current: "Workshop 14 · Nov 22, 2026",
+  current: "Workshop 15 · Nov 29, 2026",
+  workshop14: "Workshop 14 · Nov 22, 2026",
   workshop13: "Workshop 13 · Nov 18, 2026",
   workshop12: "Workshop 12 · Nov 8, 2026",
   workshop11: "Workshop 11 · Oct 25, 2026",
@@ -104,6 +108,12 @@ type Stats = {
 };
 
 const SLOT_TITLES_BY_WORKSHOP: Record<string, Record<string, string>> = {
+  "Workshop 15 · Nov 29, 2026": {
+    "9:00 AM": "Pre-Beginner",
+    "10:00 AM": "Beginner",
+    "11:00 AM": "Intermediate",
+    "11:00 AM (Advanced)": "Advanced",
+  },
   "Workshop 14 · Nov 22, 2026": {
     "12:30 PM": "Pre-Beginner",
     "1:30 PM": "Beginner",
@@ -186,7 +196,8 @@ const SLOT_ORDER = [
 ];
 
 const EVENT_FILTER_TABS = [
-  { key: "current",    label: "Workshop 14 · Nov 22, 2026" },
+  { key: "current",    label: "Workshop 15 · Nov 29, 2026" },
+  { key: "workshop14", label: "Workshop 14 · Nov 22, 2026" },
   { key: "workshop13", label: "Workshop 13 · Nov 18, 2026" },
   { key: "workshop12", label: "Workshop 12 · Nov 8, 2026" },
   { key: "workshop11", label: "Workshop 11 · Oct 25, 2026" },
@@ -252,10 +263,10 @@ export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [pickerDone, setPickerDone] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [eventFilter, setEventFilter] = useState<"current" | "workshop13" | "workshop12" | "workshop11" | "workshop10" | "workshop9" | "workshop8" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous">("current");
+  const [eventFilter, setEventFilter] = useState<"current" | "workshop14" | "workshop13" | "workshop12" | "workshop11" | "workshop10" | "workshop9" | "workshop8" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous">("current");
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [showTransferForm, setShowTransferForm] = useState(false);
-  const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "6:30 PM", toWorkshop: WORKSHOPS[0], toSlot: "12:30 PM", note: "" });
+  const [tf, setTf] = useState({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "12:30 PM", toWorkshop: WORKSHOPS[0], toSlot: "9:00 AM", note: "" });
   const [tfError, setTfError] = useState("");
   const [tfLoading, setTfLoading] = useState(false);
   const [attendance, setAttendance] = useState<Record<string, string>>({});
@@ -382,7 +393,7 @@ export default function AdminPage() {
 
       const entry: Transfer = { ...tf, id: Date.now().toString(), addedAt: new Date().toISOString() };
       saveTransfers([entry, ...transfers]);
-      setTf({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "6:30 PM", toWorkshop: WORKSHOPS[0], toSlot: "12:30 PM", note: "" });
+      setTf({ name: "", phone: "", fromWorkshop: WORKSHOPS[1], fromSlot: "12:30 PM", toWorkshop: WORKSHOPS[0], toSlot: "9:00 AM", note: "" });
       setShowTransferForm(false);
     } catch {
       setTfError("Something went wrong. Try again.");
@@ -482,7 +493,7 @@ export default function AdminPage() {
     fetchData(password, eventFilter);
   };
 
-  const switchFilter = (filter: "current" | "workshop13" | "workshop12" | "workshop11" | "workshop10" | "workshop9" | "workshop8" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous") => {
+  const switchFilter = (filter: "current" | "workshop14" | "workshop13" | "workshop12" | "workshop11" | "workshop10" | "workshop9" | "workshop8" | "workshop7" | "workshop6" | "workshop5" | "workshop4" | "workshop3" | "workshop2" | "previous") => {
     setEventFilter(filter);
     fetchData(password, filter);
   };

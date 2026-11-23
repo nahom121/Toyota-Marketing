@@ -1,4 +1,4 @@
-export type WorkshopDate = "October 18, 2026" | "October 21, 2026" | "October 25, 2026" | "November 8, 2026" | "November 18, 2026" | "November 22, 2026";
+export type WorkshopDate = "October 18, 2026" | "October 21, 2026" | "October 25, 2026" | "November 8, 2026" | "November 18, 2026" | "November 22, 2026" | "November 29, 2026";
 
 // Some slot keys carry a parenthetical suffix (e.g. "11:00 AM (Advanced)")
 // so two different classes meeting at the same clock time can each have
@@ -79,6 +79,15 @@ const ALL_WORKSHOP_DATES: WorkshopDateConfig[] = [
     dayLabel: "Sunday, November 22nd",
     shortLabel: "Nov 22",
     zip: "77090",
+    // Taken off the site once the last (3:30pm) session has started — that
+    // class runs its course by 4:30 PM CST.
+    visibleUntil: new Date("2026-11-22T21:30:00Z").getTime(),
+  },
+  {
+    value: "November 29, 2026",
+    dayLabel: "Sunday, November 29th",
+    shortLabel: "Nov 29",
+    zip: "77099",
   },
 ];
 
@@ -98,6 +107,7 @@ export const SLOTS_BY_DATE: Record<WorkshopDate, string[]> = {
   "November 8, 2026": ["9:00 AM", "10:00 AM", "11:00 AM", "11:00 AM (Advanced)"],
   "November 18, 2026": ["6:30 PM", "7:30 PM"],
   "November 22, 2026": ["12:30 PM", "1:30 PM", "2:30 PM", "3:30 PM"],
+  "November 29, 2026": ["9:00 AM", "10:00 AM", "11:00 AM", "11:00 AM (Advanced)"],
 };
 
 export const SLOT_CAPACITY = 30;
@@ -109,6 +119,7 @@ export const SLOT_CAPACITIES_BY_DATE: Record<WorkshopDate, Record<string, number
   "November 8, 2026": { "9:00 AM": 30, "10:00 AM": 31, "11:00 AM": 15, "11:00 AM (Advanced)": 15 },
   "November 18, 2026": { "6:30 PM": 30, "7:30 PM": 30 },
   "November 22, 2026": { "12:30 PM": 30, "1:30 PM": 30, "2:30 PM": 30, "3:30 PM": 30 },
+  "November 29, 2026": { "9:00 AM": 30, "10:00 AM": 30, "11:00 AM": 30, "11:00 AM (Advanced)": 30 },
 };
 
 const PRE_BEGINNER = {
@@ -176,6 +187,12 @@ export const SLOT_LEVELS_BY_DATE: Record<WorkshopDate, Record<string, { title: s
     "2:30 PM": INTERMEDIATE,
     "3:30 PM": ADVANCED,
   },
+  "November 29, 2026": {
+    "9:00 AM": PRE_BEGINNER,
+    "10:00 AM": BEGINNER,
+    "11:00 AM": INTERMEDIATE,
+    "11:00 AM (Advanced)": ADVANCED,
+  },
 };
 
 // Slot start times in UTC ms. Houston is CDT (UTC-5) through Nov 1, 2026,
@@ -214,17 +231,38 @@ export const SLOT_START_UTC_MS_BY_DATE: Record<WorkshopDate, Record<string, numb
     "2:30 PM": new Date("2026-11-22T20:30:00Z").getTime(),
     "3:30 PM": new Date("2026-11-22T21:30:00Z").getTime(),
   },
+  "November 29, 2026": {
+    "9:00 AM": new Date("2026-11-29T15:00:00Z").getTime(),
+    "10:00 AM": new Date("2026-11-29T16:00:00Z").getTime(),
+    "11:00 AM": new Date("2026-11-29T17:00:00Z").getTime(),
+    "11:00 AM (Advanced)": new Date("2026-11-29T17:00:00Z").getTime(),
+  },
 };
 
 // SKATEHSP: 15% off, valid for either the Oct 21 or Oct 25 workshop (any
 // session), good through 11:59 PM CDT on Oct 18 — the day it was announced.
+// THANKS5: $5 off a $25 ticket (20%), valid for the Nov 29 workshop, good
+// through 11:59 PM CST on Nov 27, 2026.
 export const DISCOUNT_CODES: Record<string, { percentOff: number; validDates: WorkshopDate[]; expiresAt: number; singleUse?: boolean }> = {
   SKATEHSP: {
     percentOff: 15,
     validDates: ["October 21, 2026", "October 25, 2026"],
     expiresAt: new Date("2026-10-19T04:59:00Z").getTime(),
   },
+  THANKS5: {
+    percentOff: 20,
+    validDates: ["November 29, 2026"],
+    expiresAt: new Date("2026-11-28T05:59:00Z").getTime(),
+  },
 };
+
+// The venue address shown in confirmation emails, keyed by workshop date —
+// most workshops share the main floor, but a workshop at a different
+// location overrides it here.
+export const VENUE_ADDRESS_BY_DATE: Partial<Record<WorkshopDate, string>> = {
+  "November 29, 2026": "8800 West Sam Houston Pkwy South, Suite 107, Houston, TX 77099",
+};
+export const DEFAULT_VENUE_ADDRESS = "221 Barren Springs Dr, Ste 15, Houston, TX 77090";
 
 export const FORCE_SOLD_OUT = false;
 
