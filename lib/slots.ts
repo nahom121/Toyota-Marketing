@@ -88,6 +88,8 @@ const ALL_WORKSHOP_DATES: WorkshopDateConfig[] = [
     dayLabel: "Sunday, November 29th",
     shortLabel: "Nov 29",
     zip: "77099",
+    // Closed early, ahead of the workshop itself — all sessions are full.
+    visibleUntil: new Date("2026-11-26T00:00:00Z").getTime(),
   },
 ];
 
@@ -264,7 +266,7 @@ export const VENUE_ADDRESS_BY_DATE: Partial<Record<WorkshopDate, string>> = {
 };
 export const DEFAULT_VENUE_ADDRESS = "221 Barren Springs Dr, Ste 15, Houston, TX 77090";
 
-export const FORCE_SOLD_OUT = false;
+export const FORCE_SOLD_OUT = true;
 
 // Coarse bound only, for limiting how much Stripe data gets pulled — exact
 // classification of a sale is by matching metadata.date, not this cutoff.
